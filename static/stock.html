@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - Stock Register</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+    </div>
+    <div class="topbar-center uppercase">Stock Register</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="menu-items">
+    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
+
+      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
+      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
+      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
+      <div class="menu-divider"></div>
+      
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- Filter Section -->
+    <div class="section-card" style="margin-bottom: 24px;">
+      <div class="section-header active">
+        <div class="section-title">━━ SEARCH & FILTERS</div>
+      </div>
+      <div class="section-content open" style="padding: 16px;">
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label class="form-label">STOCK TYPE</label>
+            <select class="form-control" id="f-source">
+              <option value="party">Party Stock</option>
+              <option value="company">Company Stock</option>
+            </select>
+          </div>
+          <div class="form-group" id="party-filter-group">
+            <label class="form-label">PARTY CODE / NAME</label>
+            <input type="text" class="form-control" id="f-party" list="party-list" placeholder="Search party...">
+          </div>
+        </div>
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label class="form-label">PAPER CODE</label>
+            <input type="text" class="form-control" id="f-paper" list="paper-list" placeholder="Search paper...">
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="visibility: hidden;">Search</label>
+            <button class="btn btn-primary btn-block" onclick="loadStock()">🔍 SEARCH STOCK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="stock-results" class="fade-up">
+      <!-- Injected via JS -->
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item active">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <datalist id="party-list"></datalist>
+  <datalist id="paper-list"></datalist>
+
+  <script>
+    const API_BASE = '/api';
+    
+    // Hamburger Menu Logic
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const sideMenu = document.getElementById('side-menu');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+
+    function toggleMenu() {
+      menuOverlay.classList.toggle('open');
+      sideMenu.classList.toggle('open');
+    }
+
+    hamburgerBtn.addEventListener('click', toggleMenu);
+    menuCloseBtn.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+    
+    async function init() {
+      try {
+        const [pRes, paRes] = await Promise.all([
+          fetch(`${API_BASE}/parties`),
+          fetch(`${API_BASE}/papers`)
+        ]);
+        const parties = await pRes.json();
+        const papers = await paRes.json();
+
+        const partyList = document.getElementById('party-list');
+        parties.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.party_code;
+          opt.textContent = p.party_name;
+          partyList.appendChild(opt);
+        });
+
+        const paperList = document.getElementById('paper-list');
+        papers.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.paper_code;
+          opt.textContent = p.description;
+          paperList.appendChild(opt);
+        });
+      } catch (e) { console.error(e); }
+    }
+
+    document.getElementById('f-source').onchange = (e) => {
+      document.getElementById('party-filter-group').style.opacity = e.target.value === 'company' ? '0.3' : '1';
+      document.getElementById('f-party').disabled = e.target.value === 'company';
+    };
+
+    async function loadStock() {
+      const source = document.getElementById('f-source').value;
+      const party = document.getElementById('f-party').value;
+      const paper = document.getElementById('f-paper').value;
+      const container = document.getElementById('stock-results');
+
+      container.innerHTML = '<div style="text-align:center; padding:40px; color:var(--text3);">Searching inventory...</div>';
+
+      try {
+        const qs = new URLSearchParams({ stock_type: source });
+        if (party && source === 'party') qs.set('party_code', party);
+        if (paper) qs.set('paper_code', paper);
+
+        const res = await fetch(`${API_BASE}/stock/available?${qs}`);
+        const data = await res.json();
+
+        if (data.length === 0) {
+          container.innerHTML = '<div class="empty-state" style="background:var(--surface); border-radius:12px; padding:40px;">No matching stock found.</div>';
+          return;
+        }
+
+        container.innerHTML = data.map(row => {
+          const isNegative = row.balance < 0;
+          return `
+          <div class="section-card" style="margin-bottom:12px; border-left: 4px solid ${isNegative ? 'var(--red)' : 'var(--blue)'};">
+            <div style="padding:16px; display:flex; justify-content:space-between; align-items:flex-start;">
+              <div style="flex:1;">
+                <div style="font-weight:800; font-size:16px; color:var(--text);">${row.paper_desc}</div>
+                <div style="font-size:12px; color:var(--text3); margin-top:2px;">
+                  Code: <span style="font-family:var(--mono); color:var(--blue); font-weight:600;">${row.paper_code}</span> | 
+                  Size: ${row.paper_size}
+                </div>
+                ${row.party_code ? `<div style="font-size:11px; color:var(--text2); margin-top:8px; font-weight:600;">PARTY: ${row.party_code}</div>` : `<div style="font-size:11px; color:var(--orange); margin-top:8px; font-weight:700;">COMPANY STOCK</div>`}
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:20px; font-weight:900; color: ${isNegative ? 'var(--red)' : 'var(--blue)'};">${row.balance.toLocaleString()}</div>
+                <div style="font-size:10px; color:var(--text3); text-transform:uppercase;">${isNegative ? 'Shortfall (Sheets)' : 'Sheets Available'}</div>
+                ${row.party_code ? `<a href="ledger.html?party=${row.party_code}" class="btn btn-secondary btn-sm" style="margin-top:10px; display:inline-block; text-decoration:none; font-size:10px;">VIEW LEDGER →</a>` : ''}
+              </div>
+            </div>
+          </div>
+        `}).join('');
+
+      } catch (err) {
+        container.innerHTML = '<div style="color:var(--red); text-align:center; padding:20px;">Error loading data.</div>';
+      }
+    }
+
+    init();
+    loadStock();
+  </script>
+
+</body>
+</html>

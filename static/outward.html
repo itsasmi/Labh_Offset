@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - Outward Register</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+    </div>
+    <div class="topbar-center uppercase">Outward History</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="menu-items">
+    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
+
+      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
+      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
+      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
+      <div class="menu-divider"></div>
+      
+    </div>
+  </nav>
+
+  <main class="container">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+      <div style="font-size: 20px; font-weight: 600; color: var(--text);">Paper Usage History</div>
+    </div>
+
+    <div class="filter-bar" style="margin-bottom: 24px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);">
+      <div class="form-row form-row-3" style="align-items: end; margin-bottom: 0;">
+        <div class="form-group" style="margin:0;">
+          <label class="form-label" style="font-size: 10px;">FROM DATE</label>
+          <input type="date" id="date-from" class="form-control">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label" style="font-size: 10px;">TO DATE</label>
+          <input type="date" id="date-to" class="form-control">
+        </div>
+        <button class="btn btn-primary" id="btn-filter" style="height: 48px; width: 100%; padding:0;">🔍 SEARCH</button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table id="outward-table">
+        <thead>
+          <tr>
+            <th>DATE</th>
+            <th>JOB NAME</th>
+            <th>PAPER / SIZE</th>
+            <th class="td-right">SHEETS</th>
+          </tr>
+        </thead>
+        <tbody id="outward-body">
+          <tr><td colspan="4"><div class="row-spinner"><div class="spinner"></div>Loading...</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item active">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <script>
+    const API_BASE = '/api';
+    
+    // Hamburger Menu Logic
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const sideMenu = document.getElementById('side-menu');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+
+    function toggleMenu() {
+      menuOverlay.classList.toggle('open');
+      sideMenu.classList.toggle('open');
+    }
+
+    hamburgerBtn.addEventListener('click', toggleMenu);
+    menuCloseBtn.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+    
+    // Default dates
+    const today = new Date().toISOString().split('T')[0];
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    document.getElementById('date-from').value = thirtyDaysAgo;
+    document.getElementById('date-to').value = today;
+
+    async function loadOutward() {
+      const from = document.getElementById('date-from').value;
+      const to = document.getElementById('date-to').value;
+      const body = document.getElementById('outward-body');
+      body.innerHTML = '<tr><td colspan="4"><div class="row-spinner"><div class="spinner"></div>Searching...</div></td></tr>';
+
+      try {
+        const res = await fetch(`${API_BASE}/outward?date_from=${from}&date_to=${to}`);
+        const data = await res.json();
+        
+        if (data.length === 0) {
+          body.innerHTML = '<tr><td colspan="4"><div class="empty-state">No records found.</div></td></tr>';
+          return;
+        }
+
+        body.innerHTML = data.map(row => `
+          <tr class="fade-up">
+            <td data-label="DATE">${row.date}</td>
+            <td data-label="JOB NAME">
+              <div style="font-weight: 600; color: var(--text);">${row.job_name}</div>
+              <div style="font-size: 11px; color: var(--text3);">${row.party_name}</div>
+            </td>
+            <td data-label="PAPER / SIZE">
+              <div style="font-size: 13px;">${row.paper_name}</div>
+              <div style="font-size: 11px; color: var(--text3);">${row.paper_size} (${row.stock_type})</div>
+            </td>
+            <td class="td-right" data-label="SHEETS" style="font-weight: 700; color: var(--orange);">
+              ${row.used_sheets.toLocaleString()}
+            </td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        body.innerHTML = '<tr><td colspan="4" style="padding: 40px; text-align: center; color: var(--red);">Error.</td></tr>';
+      }
+    }
+
+    document.getElementById('btn-filter').onclick = loadOutward;
+    loadOutward();
+  </script>
+
+</body>
+</html>

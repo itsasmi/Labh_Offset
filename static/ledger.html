@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - Party Ledger</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+    </div>
+    <div class="topbar-center uppercase">Party Ledger</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="menu-items">
+    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
+
+      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
+      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
+      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
+      <div class="menu-divider"></div>
+      
+    </div>
+  </nav>
+
+  <main class="container">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+      <div>
+        <div id="party-name" style="font-size: 24px; font-weight: 700; color: var(--text);">Statement</div>
+        <div style="font-size: 13px; color: var(--text3); margin-top: 4px;">Code: <span id="party-code-display" style="font-family: var(--mono); color: var(--blue);"></span></div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨 PRINT</button>
+    </div>
+
+    <div class="table-container" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;">
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr style="background: rgba(255,255,255,0.02);">
+            <th style="padding: 12px 16px; text-align: left; font-size: 11px; color: var(--text3);">TYPE</th>
+            <th style="padding: 12px 16px; text-align: left; font-size: 11px; color: var(--text3);">DATE</th>
+            <th style="padding: 12px 16px; text-align: left; font-size: 11px; color: var(--text3);">DETAILS</th>
+            <th style="padding: 12px 16px; text-align: right; font-size: 11px; color: var(--text3);">SHEETS</th>
+            <th style="padding: 12px 16px; text-align: right; font-size: 11px; color: var(--text3);">BALANCE</th>
+          </tr>
+        </thead>
+        <tbody id="ledger-body">
+          <tr><td colspan="5" style="padding: 60px; text-align: center; color: var(--text3);">Loading statement...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item active">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <script>
+    const API_BASE = '/api';
+
+    // Hamburger Menu Logic
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const sideMenu = document.getElementById('side-menu');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+
+    function toggleMenu() {
+      menuOverlay.classList.toggle('open');
+      sideMenu.classList.toggle('open');
+    }
+
+    hamburgerBtn.addEventListener('click', toggleMenu);
+    menuCloseBtn.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+    const urlParams = new URLSearchParams(window.location.search);
+    const partyCode = urlParams.get('party');
+
+    if (!partyCode) {
+      location.href = 'stock.html';
+    }
+
+    document.getElementById('party-code-display').textContent = partyCode.toUpperCase();
+
+    async function loadLedger() {
+      const body = document.getElementById('ledger-body');
+      try {
+        const res = await fetch(`${API_BASE}/stock/party/${partyCode}`);
+        const data = await res.json();
+        
+        if (data.length === 0) {
+          body.innerHTML = '<tr><td colspan="5" style="padding: 40px; text-align: center; color: var(--text3);">No records.</td></tr>';
+          return;
+        }
+
+        document.getElementById('party-name').textContent = partyCode.toUpperCase();
+
+        body.innerHTML = data.map(row => {
+          const isOut = row.type === 'outward';
+          return `
+            <tr class="fade-up">
+              <td data-label="TYPE"><span class="badge ${isOut ? 'badge-error' : 'badge-success'}">${row.type.toUpperCase()}</span></td>
+              <td data-label="DATE">${row.date}</td>
+              <td data-label="DETAILS">
+                <div style="font-weight: 600; color: var(--text);">${isOut ? row.job_name : (row.supplier || 'Inward')}</div>
+                <div style="font-size: 11px; color: var(--text3);">${row.paper_desc} (${row.paper_size})</div>
+              </td>
+              <td class="td-right" data-label="SHEETS" style="color: ${isOut ? 'var(--red)' : 'var(--green)'}; font-weight: 700;">
+                ${isOut ? '-' : '+'}${row.sheets.toLocaleString()}
+              </td>
+              <td class="td-right" data-label="BALANCE" style="font-weight: 700; font-family: var(--mono); color: var(--text);">
+                ${row.running_balance.toLocaleString()}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        body.innerHTML = '<tr><td colspan="5" style="padding: 40px; text-align: center; color: var(--red);">Error.</td></tr>';
+      }
+    }
+    loadLedger();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Job Card Slips - Labh Offset</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+      --border: #000000;
+      --header-bg: #e0e0e0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f0f0f0; 
+      padding: 20px;
+    }
+
+    .page {
+      background: var(--bg);
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 10mm;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .slip {
+      border: 2px solid var(--border);
+      margin-bottom: 10mm;
+      page-break-inside: avoid;
+    }
+
+    .slip-header {
+      background: var(--header-bg);
+      text-align: center;
+      padding: 8px;
+      font-size: 20px;
+      font-weight: 800;
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table td {
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+
+    .label {
+      font-weight: 700;
+      width: 150px;
+      background: #fafafa;
+    }
+
+    .val {
+      font-weight: 600;
+    }
+
+    .grid-row {
+      display: flex;
+    }
+
+    .grid-col {
+      flex: 1;
+      border: 1px solid var(--border);
+    }
+
+    .sub-header {
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 4px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .col-header {
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+      text-transform: uppercase;
+      background: #f5f5f5;
+      padding: 2px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .col-val {
+      text-align: center;
+      font-weight: 700;
+      padding: 4px;
+      font-size: 14px;
+    }
+
+    .remarks-box {
+      border: 1px solid var(--border);
+      padding: 8px;
+      min-height: 40px;
+      font-size: 12px;
+    }
+
+    .no-print {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background: #000;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      border-radius: 4px;
+    }
+
+    @media print {
+      body { background: none; padding: 0; }
+      .page { box-shadow: none; width: 100%; margin: 0; padding: 0; }
+      .no-print { display: none; }
+      .slip { border-width: 1.5px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="no-print">
+    <button class="btn" onclick="window.print()">🖨 PRINT SLIPS</button>
+  </div>
+
+  <div class="page" id="print-area">
+    <!-- Slips will be injected here -->
+  </div>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobID = urlParams.get('job');
+    const API_BASE = '/api';
+
+    async function fetchJob() {
+      if (!jobID) return;
+      try {
+        const res = await fetch(`${API_BASE}/jobs/${jobID}/card`);
+        if (!res.ok) throw new Error("Job not found");
+        const data = await res.json();
+        render(data);
+      } catch (err) {
+        document.getElementById('print-area').innerHTML = `<div style="padding: 20px; color: red;">Error: ${err.message}</div>`;
+      }
+    }
+
+    function render(job) {
+      const container = document.getElementById('print-area');
+      container.innerHTML = '';
+
+      // 1. CUTTING SLIP
+      container.appendChild(createSlip("CUTTING DETAILS LABH OFFSET", job, renderCutting));
+
+      // 2. OFFSET SLIP
+      container.appendChild(createSlip("OFFSET PRINTER LABH OFFSET", job, renderOffset));
+
+      // 3. LAMINATION SLIP
+      if (job.lam_job) {
+        container.appendChild(createSlip("LAMINATION JOB", job, renderLamination));
+      }
+      
+      // 4. PUNCHING SLIP
+      if (job.punch_job) {
+        container.appendChild(createSlip("PUNCHING / DIE-CUTTING", job, renderPunching));
+      }
+    }
+
+    function createSlip(title, job, contentFn) {
+      const div = document.createElement('div');
+      div.className = 'slip';
+      
+      div.innerHTML = `
+        <div class="slip-header">${title}</div>
+        <table class="data-table">
+          <tr>
+            <td class="label">Job Number :</td>
+            <td class="val" style="color: red; font-size: 18px;">${job.job_id}</td>
+            <td class="label">Date</td>
+            <td class="val">${job.date}</td>
+          </tr>
+          <tr>
+            <td class="label">Party's Name</td>
+            <td class="val" colspan="3" style="font-size: 16px;">${job.party_name}</td>
+          </tr>
+          <tr>
+            <td class="label">Job Name</td>
+            <td class="val" colspan="3">${job.job_name}</td>
+          </tr>
+        </table>
+      `;
+      
+      const contentDiv = document.createElement('div');
+      contentFn(contentDiv, job);
+      div.appendChild(contentDiv);
+      
+      return div;
+    }
+
+    function renderCutting(target, job) {
+      target.innerHTML = `
+        <div class="grid-row">
+          <div class="grid-col"><div class="col-header">PAPER GSM</div><div class="col-val">${job.gsm_desc || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">SIZE</div><div class="col-val">${job.paper_size || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">REAM/PKT</div><div class="col-val">${job.ream || 0}</div></div>
+          <div class="grid-col"><div class="col-header">SHEET/PKT</div><div class="col-val">${job.sheet_per_ream || 0}</div></div>
+          <div class="grid-col"><div class="col-header">LOOSE SHEET</div><div class="col-val">${job.loose_sheets || 0}</div></div>
+          <div class="grid-col"><div class="col-header">TOTAL SHEET</div><div class="col-val">${job.total_sheets || 0}</div></div>
+        </div>
+        <div class="sub-header">CUTTING DETAILS</div>
+        <div class="grid-row">
+          <div class="grid-col" style="flex:2"><div class="col-header">CUT SIZE</div><div class="col-val">${job.cut_size || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">CUT PART</div><div class="col-val">${job.cut_part || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">QTY</div><div class="col-val">${job.qty || 0}</div></div>
+          <div class="grid-col"><div class="col-header">PRINTING</div><div class="col-val">${job.printing || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">PAPER</div><div class="col-val" style="text-transform: capitalize;">${job.paper_source}</div></div>
+        </div>
+        <div class="remarks-box"><strong>REMARKS :</strong> ${job.job_remark || '—'}</div>
+      `;
+    }
+
+    function renderOffset(target, job) {
+      target.innerHTML = `
+        <div class="sub-header">Printing Details</div>
+        <div class="grid-row">
+          <div class="grid-col" style="flex:1.5"><div class="col-header">PAPER GSM</div><div class="col-val">${job.gsm_desc || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">CUT SIZE</div><div class="col-val">${job.cut_size || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">QTY</div><div class="col-val">${job.qty || 0}</div></div>
+          <div class="grid-col"><div class="col-header">PRINTING</div><div class="col-val">${job.printing || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">PULLING</div><div class="col-val">${job.pulling || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">PAPER</div><div class="col-val" style="text-transform: capitalize;">${job.paper_source}</div></div>
+        </div>
+        <div class="grid-row">
+          <div class="grid-col" style="flex:0.8"><div class="col-val" style="font-size:11px;">Plate Process :</div></div>
+          <div class="grid-col"><div class="col-val">${job.plate_process || '—'}</div></div>
+          <div class="grid-col" style="flex:0.8"><div class="col-val" style="font-size:11px;">Plate size :</div></div>
+          <div class="grid-col"><div class="col-val">${job.plate_size || '—'}</div></div>
+          <div class="grid-col" style="flex:0.5"><div class="col-val" style="font-size:11px;">SET :</div></div>
+          <div class="grid-col" style="flex:0.5"><div class="col-val">${job.set_no || 1}</div></div>
+        </div>
+        <div class="grid-row">
+           <div class="grid-col"><div class="col-header">PULLING counter</div><div class="col-val">${job.pulling || '—'}</div></div>
+           <div class="grid-col" style="flex:2"><div class="col-header">PLATE SUPPLIER</div><div class="col-val">${job.operator_name || '—'}</div></div>
+        </div>
+        <div class="remarks-box"><strong>REMARKS :</strong> ${job.job_remark || '—'}</div>
+      `;
+    }
+
+    function renderLamination(target, job) {
+      const lam = job.lam_job || {};
+      target.innerHTML = `
+        <table class="data-table">
+          <tr>
+            <td class="label">LAM. PROCESS</td>
+            <td class="val" colspan="3" style="background: #ffffcc;">${lam.process || '—'}</td>
+          </tr>
+          <tr>
+            <td class="label">SIZE</td>
+            <td class="val" style="background: #ffffcc;">${lam.size || '—'}</td>
+            <td class="label">PULLING</td>
+            <td class="val" style="background: #f0f0f0;">${lam.pulling || '—'}</td>
+          </tr>
+          <tr>
+            <td class="label">AGENCY NAME</td>
+            <td class="val" style="background: #ffffcc;">${lam.agency_name || '—'}</td>
+            <td class="label">SIDE</td>
+            <td class="val" style="background: #ffffcc;">${lam.side || '—'}</td>
+          </tr>
+          <tr>
+            <td class="label">OPE./AGENCY SIGN.</td>
+            <td class="val" style="background: #ffffcc;">—</td>
+            <td class="label">REMARKS</td>
+            <td class="val" style="background: #f0f0f0;">${job.job_remark || '—'}</td>
+          </tr>
+        </table>
+      `;
+    }
+
+    function renderPunching(target, job) {
+      const punch = job.punch_job || {};
+      target.innerHTML = `
+        <div class="sub-header">PUNCHING PROCESS</div>
+        <div class="grid-row">
+          <div class="grid-col" style="flex:2"><div class="col-header">DYE</div><div class="col-val">${punch.dye || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">SIZE</div><div class="col-val">${punch.size || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">GSM</div><div class="col-val">${punch.gsm || '—'}</div></div>
+          <div class="grid-col"><div class="col-header">QTY</div><div class="col-val">${punch.qty || 0}</div></div>
+          <div class="grid-col" style="flex:1.5"><div class="col-header">AGENCY</div><div class="col-val">${punch.agency || '—'}</div></div>
+        </div>
+        <div class="remarks-box"><strong>REMARKS :</strong> ${job.job_remark || '—'}</div>
+      `;
+    }
+
+    fetchJob();
+  </script>
+</body>
+</html>

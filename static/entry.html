@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - New Job</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+    </div>
+    <div class="topbar-center uppercase">New Job Entry</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="menu-items">
+    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
+
+      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
+      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
+      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    
+    <div id="form-container">
+      <div style="font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 20px; font-family: var(--font);">New Job Entry</div>
+
+      <form id="job-form">
+
+        <!-- Section 1: Basic Info (Always Open) -->
+        <div class="section-card">
+          <div class="section-header active" onclick="toggleSection('sec-basic')">
+            <div class="section-title">━━ BASIC INFO</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-basic">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">DATE</label>
+                <input type="date" class="form-control" id="f-date" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">BILL NO.</label>
+                <input type="text" class="form-control" id="f-billno" placeholder="Optional">
+              </div>
+            </div>
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">PARTY CODE <span style="font-size: 9px; color: var(--primary);">(Type or Scroll)</span></label>
+                <div style="position: relative;">
+                  <input type="text" list="party-code-list" class="form-control" id="f-party-code" placeholder="SEARCH CODE..." required>
+                  <datalist id="party-code-list"></datalist>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PARTY NAME</label>
+                <input type="text" class="form-control" id="f-party-name-display" readonly placeholder="Auto-filled from code">
+                <input type="hidden" id="f-party-name" required>
+                <input type="hidden" id="f-party" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">JOB NAME</label>
+              <input type="text" class="form-control" id="f-jobname" placeholder="Enter job name" required>
+            </div>
+            
+          </div>
+        </div>
+
+        <!-- Section 2: Paper Details (Always Open) -->
+        <div class="section-card">
+          <div class="section-header active" onclick="toggleSection('sec-paper')">
+            <div class="section-title">━━ PAPER DETAILS</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-paper">
+            <div class="form-label">PAPER SOURCE</div>
+            <div class="source-toggle" id="source-toggle" style="margin-bottom: 12px;">
+              <div class="source-option active-party" id="src-party" onclick="setSource('party')">PARTY STOCK</div>
+              <div class="source-option" id="src-company" onclick="setSource('company')">COMPANY STOCK</div>
+            </div>
+            <label class="form-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer; margin-bottom: 20px;">
+              <input type="checkbox" id="j-waiting" style="width: 18px; height: 18px;">
+              <span style="font-size: 13px;">MARK AS WAITING FOR PAPER</span>
+            </label>
+            <input type="hidden" id="f-source" value="party">
+
+            <div class="form-row form-row-2" style="margin-top: 16px;">
+              <div class="form-group">
+                <label class="form-label">PAPER CODE <span style="font-size: 9px; color: var(--primary);">(Type or Scroll)</span></label>
+                <input type="text" list="paper-code-list" class="form-control" id="f-papercode" placeholder="SEARCH PAPER..." required>
+                <datalist id="paper-code-list"></datalist>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PAPER SIZE</label>
+                <input type="text" class="form-control" id="f-papersize" placeholder="e.g. 28x40" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">GSM DESCRIPTION</label>
+              <input type="text" class="form-control" id="f-gsm" readonly placeholder="Auto-fills from code">
+            </div>
+
+            <!-- Available Stock Panel -->
+            <div id="stock-panel" style="display: none;">
+              <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                <div style="font-size:11px; font-weight:700; color:var(--text2); letter-spacing:0.08em;" class="uppercase" id="stock-panel-title">AVAILABLE STOCK</div>
+                <div style="font-size:11px; color:var(--text3);" id="stock-panel-count"></div>
+              </div>
+              <div id="stock-panel-body" style="max-height:220px; overflow-y:auto; border-radius:var(--radius-sm); margin-bottom:12px;">
+                <div class="stock-check loading"><div class="sc-dot"></div><div>Loading stock...</div></div>
+              </div>
+            </div>
+
+            <!-- Current Selection Stock Check -->
+            <div id="stock-widget-container" style="display: none;">
+              <div class="stock-check loading" id="stock-widget">
+                <div class="sc-dot"></div>
+                <div id="stock-msg">Checking availability...</div>
+              </div>
+            </div>
+
+            <div class="form-row form-row-4">
+              <div class="form-group">
+                <label class="form-label">REAM</label>
+                <input type="text" class="form-control calc-input" id="f-ream" min="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">SHEET/REAM</label>
+                <input type="text" class="form-control calc-input" id="f-spr" min="0" value="100" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">LOOSE</label>
+                <input type="text" class="form-control calc-input" id="f-loose" min="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label text-orange">TOTAL</label>
+                <input type="text" class="form-control text-orange" id="f-total" readonly>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Section: Log Inward Stock -->
+        <div class="section-card" id="inward-section" style="border-left: 5px solid var(--green); background: rgba(0,255,0,0.02);">
+          <div class="section-header" onclick="toggleInwardSection(event)">
+            <div class="section-title">
+              <input type="checkbox" id="f-has-inward" onclick="event.stopPropagation(); toggleInwardSection(event)"> 
+              <span style="color: var(--green); font-weight: 800;">📦 LOG NEW PAPER ARRIVAL</span>
+            </div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content" id="sec-inward">
+            <div style="font-size:12px; color:var(--text3); margin-bottom:14px; line-height:1.5;">
+              📦 Log new paper arrival along with this job. An inward entry will be created automatically when you save.
+            </div>
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">SUPPLIER NAME</label>
+                <input type="text" class="form-control" id="iw-supplier" placeholder="e.g. Mansi Paper">
+              </div>
+              <div class="form-group">
+                <label class="form-label">DC NO.</label>
+                <input type="text" class="form-control" id="iw-dcno" placeholder="Delivery challan no.">
+              </div>
+            </div>
+            <div class="form-row form-row-4">
+              <div class="form-group">
+                <label class="form-label">REAM</label>
+                <input type="text" class="form-control calc-inward" id="iw-ream" min="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">SHEET/REAM</label>
+                <input type="text" class="form-control calc-inward" id="iw-spr" min="0" value="100" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">LOOSE</label>
+                <input type="text" class="form-control calc-inward" id="iw-loose" min="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label text-green" style="color:var(--green);">INWARD TOTAL</label>
+                <input type="text" class="form-control" id="iw-total" readonly style="color:var(--green); font-weight:700;">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">NOTES</label>
+              <input type="text" class="form-control" id="iw-notes" placeholder="Optional notes about this paper delivery">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Cutting Details -->
+        <div class="section-card">
+          <div class="section-header active" onclick="toggleSection('sec-cutting')">
+            <div class="section-title">━━ CUTTING DETAILS</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-cutting">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">CUT PART</label>
+                <select class="form-control" id="f-cutpart" required>
+                  <option value="1">1 (Same Size)</option>
+                  <option value="2">2 (Bigger ÷ 2)</option>
+                  <option value="3">3 (Bigger ÷ 3)</option>
+                  <option value="4">4 (Both ÷ 2)</option>
+                  <option value="manual">Manual</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">CUT SIZE (INPUT)</label>
+                <input type="text" class="form-control" id="f-cutsize" placeholder="e.g. 25x36" required>
+              </div>
+              <div class="form-group">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                  <label class="form-label text-orange" style="margin-bottom: 0;">RESULT SIZE</label>
+                  <label style="display: flex; align-items: center; gap: 4px; color: var(--text3); font-size: 10px; cursor: pointer;">
+                    <input type="checkbox" id="chk-manual-size" style="width:12px; height:12px;"> MANUAL
+                  </label>
+                </div>
+                <input type="text" class="form-control text-orange" id="f-result-size" readonly placeholder="Auto-calculated">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Printing Machine -->
+        <div class="section-card">
+          <div class="section-header active" onclick="toggleSection('sec-print')">
+            <div class="section-title">━━ PRINTING MACHINE</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-print">
+            <div class="form-group" style="margin-bottom: 16px;">
+              <label class="form-label text-orange">QTY (SHEETS) - FROM CUTTING</label>
+              <input type="text" class="form-control text-orange" id="f-cutqty" readonly placeholder="Total pieces">
+            </div>
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">PLATE SIZE</label>
+                <select class="form-control" id="f-platesize" required>
+                  <option value="635x775">635x775 — Big Machine</option>
+                  <option value="550x670">550x670 — Small Machine</option>
+                  <option value="560x670">560x670 — Small Machine</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PAPER</label>
+                <select class="form-control" id="f-printing-paper" required>
+                  <option value="party">Party</option>
+                  <option value="self">Self</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PULLING (RUN TYPE)</label>
+                <select class="form-control" id="f-sides" required>
+                  <option value="S/S">S/S — Single Side</option>
+                  <option value="F/B">F/B — Front & Back (1 Plate)</option>
+                  <option value="F+B">F+B — Front + Back (2 Plates)</option>
+                  <option value="G/P">G/P — Gape/P</option>
+                  <option value="B/S">B/S</option>
+                  <option value="F/S">F/S</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PLATE PROCESS</label>
+                <select class="form-control" id="f-plateprocess">
+                  <option value="Tharmal">Thermal</option>
+                  <option value="CTCP">CTCP</option>
+                  <option value="CTP">CTP</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PLATE SUPPLIER</label>
+                <select class="form-control" id="f-operator" required>
+                  <option value="">Select Supplier...</option>
+                  <option value="Shantaram">Shantaram</option>
+                  <option value="Parth">Parth</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label text-orange">PLATES (AUTO)</label>
+                <input type="text" class="form-control text-orange" id="f-plates" value="1" readonly>
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label text-amber">PLANNED PULLING (AUTO)</label>
+                <input type="text" class="form-control text-amber" id="f-pulling" placeholder="Auto-calculated" readonly>
+              </div>
+              <div class="form-group">
+                <label class="form-label text-green">ACTUAL PULLING (MANUAL)</label>
+                <input type="text" class="form-control text-green" id="f-pulling-actual" placeholder="Fill after job runs">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Lamination (Compulsory) -->
+        <div class="section-card" style="border-left: 4px solid var(--amber);">
+          <div class="section-header active" onclick="toggleSection('sec-lam')">
+            <div class="section-title">━━ LAMINATION DETAILS</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-lam">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">PROCESS</label>
+                <select class="form-control" id="l-process">
+                  <option value="">Select Process...</option>
+                  <option value="Gloss">Gloss</option>
+                  <option value="Matt">Matt</option>
+                  <option value="UV">UV</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">LAMINATION SIZE</label>
+                <input type="text" class="form-control" id="l-size" placeholder="e.g. 13x26">
+              </div>
+              <div class="form-group">
+                <label class="form-label">SIDE</label>
+                <select class="form-control" id="l-side">
+                  <option value="S/S">S/S</option>
+                  <option value="F/B">F/B</option>
+                  <option value="Both">Both</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">AGENCY NAME</label>
+                <input type="text" class="form-control" id="l-agency" placeholder="Who will laminate?">
+              </div>
+              <div class="form-group">
+                <label class="form-label">PULLING / COPIES</label>
+                <input type="text" class="form-control" id="l-pulling" placeholder="Total copies" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Punching (Optional Checkbox) -->
+        <div class="section-card" style="border-left: 4px solid var(--blue);">
+          <div class="section-header" onclick="togglePunchSection(event)">
+            <div class="section-title">
+              <input type="checkbox" id="f-has-punch" onclick="event.stopPropagation(); togglePunchSection(event)">
+              <span style="color: var(--blue); font-weight: 800;">🔧 PUNCHING / DIE-CUTTING</span>
+              <span style="font-size:11px; color:var(--text3); margin-left:8px; font-weight:400;">(optional)</span>
+            </div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content" id="sec-punch">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">DYE DETAILS</label>
+                <input type="text" class="form-control" id="p-dye" placeholder="Dye code or description">
+              </div>
+              <div class="form-group">
+                <label class="form-label">PUNCH SIZE</label>
+                <input type="text" class="form-control" id="p-size" placeholder="e.g. 10x12">
+              </div>
+              <div class="form-group">
+                <label class="form-label">QTY</label>
+                <input type="text" class="form-control" id="p-qty" placeholder="Total pieces" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">AGENCY / SUPPLIER</label>
+                <input type="text" class="form-control" id="p-agency" placeholder="Punching agency">
+              </div>
+              <div class="form-group">
+                <label class="form-label">DYE GSM</label>
+                <input type="text" class="form-control" id="p-gsm" placeholder="Paper GSM for dye">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 7: Remarks -->
+        <div class="section-card">
+          <div class="section-header active" onclick="toggleSection('sec-remarks')">
+            <div class="section-title">━━ GENERAL REMARKS</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-remarks">
+            <div class="form-group" style="margin-bottom: 0;">
+              <textarea class="form-control" id="f-remarks" rows="3" placeholder="e.g. Wiro Binding, centre pin binding, special packing instructions..." required></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-bottom">
+          <button type="submit" class="btn btn-primary btn-block" style="height: 50px;" id="save-btn">SAVE JOB</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Success State -->
+    <div id="success-container" style="display: none; padding-top: 40px;">
+      <div class="save-success">
+        <div class="save-success-icon">✓</div>
+        <div style="font-family: var(--mono); font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 8px;" id="succ-job-no"></div>
+        <div style="font-size: 14px; color: var(--text2); margin-bottom: 24px;" id="succ-party"></div>
+        
+        <div class="form-row form-row-2">
+          <button class="btn btn-primary" id="btn-print-card">PRINT JOB CARD</button>
+          <button class="btn btn-secondary" id="btn-new-job">NEW JOB</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item active">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <script>
+    console.log("Entry script initializing...");
+    // Set date
+    document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+
+    // Menu logic
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const sideMenu = document.getElementById('side-menu');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+
+    function toggleMenu() {
+      menuOverlay.classList.toggle('open');
+      sideMenu.classList.toggle('open');
+    }
+
+    hamburgerBtn.addEventListener('click', toggleMenu);
+    menuCloseBtn    // Section toggle
+    function toggleSection(id) {
+      const content = document.getElementById(id);
+      const header = content.previousElementSibling;
+      if (content.classList.contains('open')) {
+        content.classList.remove('open');
+        header.classList.remove('active');
+      } else {
+        content.classList.add('open');
+        header.classList.add('active');
+      }
+    }
+
+    function toggleInwardSection(e) {
+      const chk = document.getElementById('f-has-inward');
+      if (e.target.tagName !== 'INPUT') {
+        chk.checked = !chk.checked;
+      }
+      const content = document.getElementById('sec-inward');
+      const header = content.previousElementSibling;
+      if (chk.checked) {
+        content.classList.add('open');
+        header.classList.add('active');
+      } else {
+        content.classList.remove('open');
+        header.classList.remove('active');
+      }
+    }
+
+    function togglePunchSection(e) {
+      const chk = document.getElementById('f-has-punch');
+      if (e.target.tagName !== 'INPUT') {
+        chk.checked = !chk.checked;
+      }
+      const content = document.getElementById('sec-punch');
+      const header = content.previousElementSibling;
+      if (chk.checked) {
+        content.classList.add('open');
+        header.classList.add('active');
+      } else {
+        content.classList.remove('open');
+        header.classList.remove('active');
+      }
+    }
+
+    function toggleRemark(id) {
+      const box = document.getElementById(id);
+      box.classList.toggle('open');
+    }
+
+    const API_BASE = '/api';
+    let papersData = [];
+    let partiesData = [];
+    const fSource = document.getElementById('f-source');
+    const fPartyCode = document.getElementById('f-party-code');
+    const fParty = document.getElementById('f-party');
+    const fPartyName = document.getElementById('f-party-name');
+    const fPartyNameDisplay = document.getElementById('f-party-name-display');
+
+    // Form logic
+    async function initForm() {
+      console.log("initForm started");
+      try {
+        // Load parties
+        console.log("Fetching parties...");
+        const pRes = await fetch(`${API_BASE}/parties`);
+        if (pRes.ok) {
+          partiesData = await pRes.json();
+          console.log(`Loaded ${partiesData.length} parties`);
+          const pCodeList = document.getElementById('party-code-list');
+          pCodeList.innerHTML = ''; // Clear first
+          partiesData.forEach(p => {
+            const codeOpt = document.createElement('option');
+            codeOpt.value = p.party_code;
+            codeOpt.textContent = p.party_name;
+            pCodeList.appendChild(codeOpt);
+          });
+        }
+
+        // Load papers
+        console.log("Fetching papers...");
+        const paperRes = await fetch(`${API_BASE}/papers`);
+        if (paperRes.ok) {
+          papersData = await paperRes.json();
+          console.log(`Loaded ${papersData.length} papers`);
+          const paperList = document.getElementById('paper-code-list');
+          paperList.innerHTML = ''; // Clear first
+          papersData.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.paper_code;
+            opt.textContent = p.description;
+            paperList.appendChild(opt);
+          });
+        }
+
+        // Operators fetch removed since they are static options now
+      } catch (err) {
+        console.error("Failed to load form dependencies", err);
+      }
+    }
+
+    // Sync Party Code and Party Name
+    fPartyCode.addEventListener('input', (e) => {
+      const code = e.target.value.trim().toLowerCase();
+      const party = partiesData.find(p => p.party_code.toLowerCase() === code);
+      if (party) {
+        fPartyName.value = party.party_name;
+        fPartyNameDisplay.value = party.party_name;
+        fParty.value = party.party_code;
+      } else {
+        fPartyName.value = '';
+        fPartyNameDisplay.value = '';
+        fParty.value = code;
+      }
+      loadAvailableStock();
+      triggerStockCheck();
+    });
+
+    // Auto-fill GSM Description
+    document.getElementById('f-papercode').addEventListener('input', (e) => {
+      const code = e.target.value;
+      const paper = papersData.find(p => p.paper_code === code);
+      if (paper) {
+        document.getElementById('f-gsm').value = paper.description || '';
+      } else {
+        document.getElementById('f-gsm').value = '';
+      }
+      triggerStockCheck();
+    });
+
+    // Paper Source Toggle
+    function setSource(src) {
+      const tParty = document.getElementById('src-party');
+      const tCompany = document.getElementById('src-company');
+      
+      selectedSource = src;
+      fSource.value = src;
+      
+      if (src === 'party') {
+        tParty.classList.add('active-party');
+        tCompany.classList.remove('active-company');
+      } else {
+        tCompany.classList.add('active-company');
+        tParty.classList.remove('active-party');
+      }
+      loadAvailableStock();
+      triggerStockCheck();
+    }
+
+    // ── AUTO-CALC: Total Sheets = (Ream × S/R) + Loose ────────────────────────
+    function calcTotalSheets() {
+      const ream  = parseInt(document.getElementById('f-ream').value)  || 0;
+      const spr   = parseInt(document.getElementById('f-spr').value)   || 0;
+      const loose = parseInt(document.getElementById('f-loose').value) || 0;
+      const total = (ream * spr) + loose;
+      document.getElementById('f-total').value = total;
+      
+      // Cascade to cutting
+      calculateResultSize();
+      triggerStockCheck();
+    }
+    document.querySelectorAll('.calc-input').forEach(el => el.addEventListener('input', calcTotalSheets));
+
+    // ── CUTTING LOGIC ────────────────────────────────────────────────────────
+    function parseSize(s) {
+      if (!s) return null;
+      const m = s.toLowerCase().match(/(\d+\.?\d*)\s*x\s*(\d+\.?\d*)/);
+      if (!m) return null;
+      const w = parseFloat(m[1]);
+      const h = parseFloat(m[2]);
+      return { a: Math.min(w, h), b: Math.max(w, h) };
+    }
+
+    function calculateResultSize() {
+      const cutPartStr = document.getElementById('f-cutpart').value;
+      const cutSizeStr = document.getElementById('f-cutsize').value;
+      const p = parseSize(cutSizeStr);
+      
+      let resStr = cutSizeStr;
+      let multiplier = 1;
+
+      if (p) {
+        if (cutPartStr === '1') {
+          resStr = `${p.a}X${p.b}`;
+          multiplier = 1;
+        } else if (cutPartStr === '2') {
+          const newB = p.b / 2;
+          const sides = [p.a, newB].sort((x, y) => x - y);
+          resStr = `${sides[0]}X${sides[1]}`;
+          multiplier = 2;
+        } else if (cutPartStr === '3') {
+          const newB = p.b / 3;
+          const sides = [p.a, newB].sort((x, y) => x - y);
+          resStr = `${sides[0]}X${sides[1]}`;
+          multiplier = 3;
+        } else if (cutPartStr === '4') {
+          const newA = p.a / 2;
+          const newB = p.b / 2;
+          const sides = [newA, newB].sort((x, y) => x - y);
+          resStr = `${sides[0]}X${sides[1]}`;
+          multiplier = 4;
+        } else {
+          // Manual or fallback
+          multiplier = parseInt(cutPartStr) || 1;
+        }
+      }
+
+      const isManual = document.getElementById('chk-manual-size') && document.getElementById('chk-manual-size').checked;
+      if (!isManual) {
+        document.getElementById('f-result-size').value = resStr;
+      }
+      
+      // ── FORMULA 1: QTY = TOTAL * CutPart ─────────────────────────────────────
+      const rawTotal = parseInt(document.getElementById('f-total').value) || 0;
+      const finalQty = rawTotal * multiplier;
+      document.getElementById('f-cutqty').value = finalQty;
+
+      // Sync Printing Section Paper Source
+      document.getElementById('f-printing-paper').value = fSource.value;
+
+      updatePrintingInfo();
+    }
+
+    function updatePrintingInfo() {
+      const qty = parseInt(document.getElementById('f-cutqty').value) || 0;
+      const type = document.getElementById('f-sides').value; // S/S, F/B, F+B, G/P
+      
+      let plates = 1;
+      let planned = qty;
+
+      if (type === 'S/S') {
+        plates = 1; planned = qty * 1;
+      } else if (type === 'F/B' || type === 'G/P') {
+        plates = 1; planned = qty * 2;
+      } else if (type === 'F+B') {
+        plates = 2; planned = qty * 2;
+      } else if (type === 'B/S' || type === 'F/S') {
+        plates = 1; planned = qty * 1;
+      }
+
+      document.getElementById('f-plates').value = plates;
+      document.getElementById('f-pulling').value = planned;
+    }
+
+    // Listeners
+    document.getElementById('f-papersize').addEventListener('input', (e) => {
+      document.getElementById('f-cutsize').value = e.target.value;
+      calculateResultSize();
+    });
+    document.getElementById('f-cutsize').addEventListener('input', calculateResultSize);
+    document.getElementById('f-cutpart').addEventListener('change', calculateResultSize);
+    document.getElementById('f-sides').addEventListener('change', (e) => {
+      calculateResultSize();
+    });
+
+    document.getElementById('chk-manual-size').addEventListener('change', (e) => {
+      const resultInput = document.getElementById('f-result-size');
+      if (e.target.checked) {
+        resultInput.removeAttribute('readonly');
+        resultInput.focus();
+      } else {
+        resultInput.setAttribute('readonly', 'true');
+        calculateResultSize();
+      }
+    });
+
+    // Sync printing paper when source changes
+    function setSource(src) {
+      const tParty = document.getElementById('src-party');
+      const tCompany = document.getElementById('src-company');
+      selectedSource = src;
+      fSource.value = src;
+      if (src === 'party') {
+        tParty.classList.add('active-party');
+        tCompany.classList.remove('active-company');
+      } else {
+        tCompany.classList.add('active-company');
+        tParty.classList.remove('active-party');
+      }
+      document.getElementById('f-printing-paper').value = src;
+      loadAvailableStock();
+      triggerStockCheck();
+    }
+
+    // ── INWARD SECTION LOGIC ──────────────────────────────────────────────────
+    document.getElementById('f-has-inward').addEventListener('change', (e) => {
+      const content = document.getElementById('sec-inward');
+      const header = content.previousElementSibling;
+      if (e.target.checked && !content.classList.contains('open')) {
+        content.classList.add('open');
+        header.classList.add('active');
+      }
+      if (e.target.checked) {
+        wContainer.style.display = 'none';
+      } else {
+        triggerStockCheck();
+      }
+    });
+
+    // Calc Inward Total
+    document.querySelectorAll('.calc-inward').forEach(input => {
+      input.addEventListener('input', () => {
+        const ream = parseInt(document.getElementById('iw-ream').value) || 0;
+        const spr = parseInt(document.getElementById('iw-spr').value) || 0;
+        const loose = parseInt(document.getElementById('iw-loose').value) || 0;
+        document.getElementById('iw-total').value = (ream * spr) + loose;
+      });
+    });
+
+    // ── AVAILABLE STOCK PANEL ─────────────────────────────────────────────────
+    const stockPanel = document.getElementById('stock-panel');
+    const stockPanelBody = document.getElementById('stock-panel-body');
+    const stockPanelCount = document.getElementById('stock-panel-count');
+    const stockPanelTitle = document.getElementById('stock-panel-title');
+    let cachedStockRows = [];
+
+    async function loadAvailableStock() {
+      const source = fSource.value;
+      const party = document.getElementById('f-party').value;
+
+      if (source === 'party' && !party) {
+        stockPanel.style.display = 'none';
+        cachedStockRows = [];
+        return;
+      }
+
+      stockPanel.style.display = 'block';
+      stockPanelTitle.textContent = source === 'party' ? 'STOCK FOR THIS PARTY' : 'COMPANY STOCK AVAILABLE';
+      stockPanelBody.innerHTML = '<div class="stock-check loading"><div class="sc-dot"></div><div>Loading stock...</div></div>';
+
+      try {
+        const qs = new URLSearchParams({ stock_type: source });
+        if (source === 'party' && party) qs.set('party_code', party);
+
+        const res = await fetch(`${API_BASE}/stock/available?${qs}`);
+        if (!res.ok) throw new Error();
+        cachedStockRows = await res.json();
+
+        if (cachedStockRows.length === 0) {
+          stockPanelCount.textContent = '';
+          const ledgerUrl = source === 'party' ? `ledger.html?party=${party}` : `stock.html`;
+          stockPanelBody.innerHTML = `
+            <div style="text-align:center; padding:20px 16px; color:var(--text3); font-size:13px;">
+              <div style="font-size:24px; margin-bottom:8px;">📦</div>
+              <div style="font-weight:600; color:var(--text2); margin-bottom:4px;">No paper in stock</div>
+              <div style="margin-bottom:12px;">No previously received paper found for this ${source === 'party' ? 'party' : 'company'}.</div>
+              <a href="${ledgerUrl}" target="_blank" class="btn btn-secondary btn-sm" style="display:inline-block; text-decoration:none; padding: 6px 12px; font-size: 11px;">Check Detailed Ledger ↗</a>
+            </div>`;
+          return;
+        }
+
+        stockPanelCount.textContent = `${cachedStockRows.length} paper type${cachedStockRows.length > 1 ? 's' : ''}`;
+
+        let html = '<div style="display:flex; flex-direction:column; gap:6px;">';
+        cachedStockRows.forEach((row, idx) => {
+          const desc = row.paper_desc || row.paper_code || 'Unknown';
+          const size = row.paper_size || '—';
+          const bal = row.balance.toLocaleString();
+          html += `
+            <div class="stock-row" data-idx="${idx}" onclick="useStockRow(${idx})">
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:13px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${desc}</div>
+                <div style="font-size:11px; color:var(--text3); margin-top:4px;">SIZE: ${size}</div>
+              </div>
+              <div style="text-align:right; flex-shrink:0;">
+                <div style="font-family:var(--mono); font-size:16px; font-weight:800; color:var(--green);">${bal}</div>
+                <div style="font-size:9px; font-weight:700; color:var(--text3); letter-spacing:0.05em;">SHEETS</div>
+              </div>
+            </div>`;
+        });
+        html += '</div>';
+
+        const ledgerUrl = source === 'party' ? `ledger.html?party=${party}` : `stock.html`;
+        html += `
+          <div style="text-align:center; margin-top:12px; padding-top:12px; border-top:1px dashed var(--border);">
+            <a href="${ledgerUrl}" target="_blank" style="font-size:12px; color:var(--primary); text-decoration:none; font-weight:600;">Check Detailed Ledger ↗</a>
+          </div>
+        `;
+
+        stockPanelBody.innerHTML = html;
+      } catch (e) {
+        stockPanelBody.innerHTML = '<div class="stock-check danger"><div class="sc-dot"></div><div>Could not load stock</div></div>';
+        cachedStockRows = [];
+      }
+    }
+
+    function useStockRow(idx) {
+      const row = cachedStockRows[idx];
+      if (!row) return;
+
+      const paperSelect = document.getElementById('f-papercode');
+      if (row.paper_code) {
+        paperSelect.value = row.paper_code;
+        const paper = papersData.find(p => p.paper_code === row.paper_code);
+        if (paper) {
+          document.getElementById('f-gsm').value = paper.description || row.paper_desc || '';
+        } else {
+          document.getElementById('f-gsm').value = row.paper_desc || '';
+        }
+      }
+
+      if (row.paper_size) {
+        const ps = document.getElementById('f-papersize');
+        ps.value = row.paper_size;
+        ps.dispatchEvent(new Event('input')); // Trigger auto-fill and calc
+      }
+
+      stockPanelBody.querySelectorAll('.stock-row').forEach(el => {
+        el.classList.remove('selected');
+      });
+      const selectedEl = stockPanelBody.querySelector(`[data-idx="${idx}"]`);
+      if (selectedEl) {
+        selectedEl.classList.add('selected');
+      }
+
+      showToast(`✓ Paper selected: ${row.paper_desc || row.paper_code}`, 'success');
+      triggerStockCheck();
+      calculateResultSize(); // Trigger detection when size is filled from stock
+    }
+
+    function showToast(msg, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = msg;
+      container.appendChild(toast);
+      setTimeout(() => { toast.classList.add('toast-out'); setTimeout(() => toast.remove(), 300); }, 2500);
+    }
+
+    // ── SPECIFIC STOCK CHECK ──────────────────────────────────────────────────
+    let stockTimeout;
+    const wContainer = document.getElementById('stock-widget-container');
+    const widget = document.getElementById('stock-widget');
+    const wMsg = document.getElementById('stock-msg');
+
+    function triggerStockCheck() {
+      clearTimeout(stockTimeout);
+      
+      const source = fSource.value;
+      const party = document.getElementById('f-party').value;
+      const paperCode = document.getElementById('f-papercode').value;
+      const paperSize = document.getElementById('f-papersize').value;
+      const total = parseInt(document.getElementById('f-total').value) || 0;
+
+      if (!paperCode || !paperSize || (source === 'party' && !party)) {
+        wContainer.style.display = 'none';
+        return;
+      }
+
+      wContainer.style.display = 'block';
+      widget.className = 'stock-check loading';
+      wMsg.textContent = 'Checking availability...';
+
+      stockTimeout = setTimeout(async () => {
+        try {
+          const qs = new URLSearchParams({
+            paper_code: paperCode,
+            paper_size: paperSize,
+            stock_type: source,
+            qty: total || 1,
+            party_code: party || ''
+          });
+          const res = await fetch(`${API_BASE}/stock/check?${qs}`);
+          if (!res.ok) throw new Error();
+          const data = await res.json();
+
+          const ledgerUrl = source === 'party' ? `ledger.html?party=${party}` : `stock.html`;
+          const ledgerLink = `<a href="${ledgerUrl}" target="_blank" style="margin-left:8px; font-size:11px; color:inherit; text-decoration:underline; font-weight:600; white-space:nowrap;">Detailed Ledger ↗</a>`;
+
+          if (data.sufficient) {
+            widget.className = 'stock-check ok';
+            wMsg.innerHTML = `<span>${data.message}</span>`;
+          } else if (data.balance > 0) {
+            widget.className = 'stock-check warning';
+            wMsg.innerHTML = `<span>${data.message}</span> ${ledgerLink}`;
+          } else {
+            widget.className = 'stock-check danger';
+            wMsg.innerHTML = `<span>${data.message}</span> ${ledgerLink}`;
+          }
+        } catch (e) {
+          widget.className = 'stock-check danger';
+          wMsg.textContent = 'Could not verify stock.';
+        }
+      }, 600);
+    }
+
+    document.getElementById('f-party-code').addEventListener('change', () => {
+      loadAvailableStock();
+      triggerStockCheck();
+    });
+    document.getElementById('f-papersize').addEventListener('input', triggerStockCheck);
+
+    // Save job
+    document.getElementById('job-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const saveBtn = document.getElementById('save-btn');
+      saveBtn.innerHTML = '<div class="spinner" style="border-top-color:#000; border-right-color:transparent; border-bottom-color:transparent; border-left-color:transparent"></div> SAVING...';
+      saveBtn.disabled = true;
+
+      // Aggregating Remarks
+      const combinedRemark = document.getElementById('f-remarks').value.trim();
+
+      // Pulling Logic: "PLANNED: ... | ACTUAL: ... | CHARGE: ..."
+      const plannedPulling = document.getElementById('f-pulling').value;
+      const actualPulling = document.getElementById('f-pulling-actual').value.trim();
+      const chargeEl = document.getElementById('f-pulling-charge');
+      const charge = chargeEl ? chargeEl.value.trim() : '';
+      
+      let combinedPulling = `PLANNED:${plannedPulling}`;
+      if (actualPulling) combinedPulling += ` | ACTUAL:${actualPulling}`;
+      if (charge) combinedPulling += ` | CHARGE:${charge}`;
+
+      // Build payload
+      const payload = {
+        date: document.getElementById('f-date').value,
+        party_code: document.getElementById('f-party').value,
+        party_name: document.getElementById('f-party-name').value,
+        bill_no: document.getElementById('f-billno').value,
+        job_name: document.getElementById('f-jobname').value,
+        paper_source: document.getElementById('f-source').value,
+        paper_code: document.getElementById('f-papercode').value,
+        paper_size: document.getElementById('f-papersize').value,
+        gsm_desc: document.getElementById('f-gsm').value,
+        ream: parseInt(document.getElementById('f-ream').value) || null,
+        sheet_per_ream: parseInt(document.getElementById('f-spr').value) || null,
+        loose_sheets: parseInt(document.getElementById('f-loose').value) || 0,
+        total_sheets: parseInt(document.getElementById('f-total').value) || 0,
+        cut_size: document.getElementById('f-cutsize').value,
+        qty: parseInt(document.getElementById('f-cutqty').value) || 0,
+        cut_part: parseInt(document.getElementById('f-cutpart').value) || null,
+        printing: document.getElementById('f-sides').value, 
+        plate_size: document.getElementById('f-platesize').value,
+        plate_process: document.getElementById('f-plateprocess').value,
+        operator_name: document.getElementById('f-operator').value,
+        set_no: 1, // Defaulting to 1 as field is removed
+        pulling: combinedPulling,
+        job_remark: combinedRemark,
+        is_waiting_for_paper: document.getElementById('j-waiting').checked
+      };
+
+      // Lamination (Optional)
+      const lamProcess = document.getElementById('l-process').value;
+      if (lamProcess) {
+        payload.lam_job = {
+          process: lamProcess,
+          size: document.getElementById('l-size').value,
+          side: document.getElementById('l-side').value,
+          agency_name: document.getElementById('l-agency').value,
+          pulling: parseInt(document.getElementById('l-pulling').value) || 0
+        };
+      } else {
+        payload.lam_job = null;
+      }
+
+      // Punching (Optional)
+      if (document.getElementById('f-has-punch').checked) {
+        payload.punch_job = {
+          dye: document.getElementById('p-dye').value,
+          size: document.getElementById('p-size').value,
+          qty: parseInt(document.getElementById('p-qty').value) || 0,
+          agency: document.getElementById('p-agency').value,
+          gsm: document.getElementById('p-gsm').value
+        };
+      }
+
+      // Inward entry
+      if (document.getElementById('f-has-inward').checked) {
+        const iwTotal = parseInt(document.getElementById('iw-total').value) || 0;
+        if (iwTotal > 0) {
+          payload.inward_entry = {
+            date: payload.date,
+            stock_type: payload.paper_source,
+            party_code: payload.party_code || null,
+            supplier_name: document.getElementById('iw-supplier').value || null,
+            dch_no: document.getElementById('iw-dcno').value || null,
+            paper_code: payload.paper_code || null,
+            paper_desc: document.getElementById('f-gsm').value || null,
+            paper_size: payload.paper_size || null,
+            ream: parseInt(document.getElementById('iw-ream').value) || 0,
+            sheet_per_ream: parseInt(document.getElementById('iw-spr').value) || 0,
+            loose_sheets: parseInt(document.getElementById('iw-loose').value) || 0,
+            total_sheets: iwTotal,
+            notes: document.getElementById('iw-notes').value || null
+          };
+        }
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/jobs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          let msg = errData.detail;
+          if (Array.isArray(msg)) {
+            msg = msg.map(e => `${e.loc.join('.')}: ${e.msg}`).join('<br>');
+          }
+          throw new Error(msg || 'Failed to save job');
+        }
+
+        const data = await res.json();
+        document.getElementById('form-container').style.display = 'none';
+        document.getElementById('success-container').style.display = 'block';
+        document.getElementById('succ-job-no').textContent = `JOB #${data.id || data.job_id} SAVED`;
+        document.getElementById('succ-party').textContent = data.party_name || '';
+
+        document.getElementById('btn-print-card').onclick = () => {
+          window.open(`print.html?job=${data.id || data.job_id}`, '_blank');
+        };
+        
+        document.getElementById('btn-new-job').onclick = () => {
+          document.getElementById('job-form').reset();
+          document.getElementById('form-container').style.display = 'block';
+          document.getElementById('success-container').style.display = 'none';
+          document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+          wContainer.style.display = 'none';
+          window.scrollTo(0, 0);
+        };
+      } catch (err) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = `toast toast-error`;
+        toast.innerHTML = `⚠ ${err.message}`;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+      } finally {
+        saveBtn.innerHTML = 'SAVE JOB';
+        saveBtn.disabled = false;
+      }
+    });
+
+    // Make sure hidden required fields expand their section when validating
+    document.querySelectorAll('#job-form [required]').forEach(el => {
+      el.addEventListener('invalid', (e) => {
+        const content = e.target.closest('.section-content');
+        if (content && !content.classList.contains('open')) {
+          content.classList.add('open');
+          if (content.previousElementSibling) {
+            content.previousElementSibling.classList.add('active');
+          }
+        }
+      });
+    });
+
+    let selectedSource = 'party';
+    initForm();
+  </script>
+</body>
+</html>

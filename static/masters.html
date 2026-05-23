@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - Master Data</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+    </div>
+    <div class="topbar-center uppercase">Master Data</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="menu-items">
+    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
+
+      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
+      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
+      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
+      <div class="menu-divider"></div>
+      
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="tab-switcher" style="margin-bottom: 24px;">
+      <button class="tab-btn active" id="tab-btn-parties" onclick="switchTab('parties')">PARTIES</button>
+      <button class="tab-btn" id="tab-btn-papers" onclick="switchTab('papers')">PAPER CODES</button>
+      <button class="tab-btn" id="tab-btn-operators" onclick="switchTab('operators')">OPERATORS</button>
+    </div>
+
+    <!-- Parties Tab -->
+    <div id="section-parties" class="master-section">
+      <div class="filter-bar" style="margin-bottom: 20px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);">
+        <div style="font-size: 11px; font-weight: 700; color: var(--text3); margin-bottom: 12px;">ADD PARTY</div>
+        <div class="form-row form-row-3" style="margin-bottom: 0; align-items: end;">
+          <div class="form-group"><input type="text" id="add-party-code" class="form-control" placeholder="CODE"></div>
+          <div class="form-group"><input type="text" id="add-party-name" class="form-control" placeholder="FULL NAME"></div>
+          <button class="btn btn-primary btn-block" onclick="addParty()">ADD</button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>CODE</th>
+              <th>NAME</th>
+              <th class="td-right">ACTION</th>
+            </tr>
+          </thead>
+          <tbody id="parties-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Papers Tab -->
+    <div id="section-papers" class="master-section" style="display: none;">
+      <div class="filter-bar" style="margin-bottom: 20px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);">
+        <div style="font-size: 11px; font-weight: 700; color: var(--text3); margin-bottom: 12px;">ADD PAPER</div>
+        <div class="form-row form-row-4" style="margin-bottom: 0; align-items: end;">
+          <div class="form-group"><input type="text" id="add-paper-code" class="form-control" placeholder="CODE"></div>
+          <div class="form-group"><input type="text" id="add-paper-desc" class="form-control" placeholder="DESC"></div>
+          <div class="form-group"><input type="text" id="add-paper-gsm" class="form-control" placeholder="GSM" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')"></div>
+          <button class="btn btn-primary btn-block" onclick="addPaper()">ADD</button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>CODE</th>
+              <th>DESC</th>
+              <th>GSM</th>
+            </tr>
+          </thead>
+          <tbody id="papers-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Operators Tab -->
+    <div id="section-operators" class="master-section" style="display: none;">
+      <div class="filter-bar" style="margin-bottom: 20px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);">
+        <div style="font-size: 11px; font-weight: 700; color: var(--text3); margin-bottom: 12px;">ADD OPERATOR</div>
+        <div class="form-row form-row-3" style="margin-bottom: 0; align-items: end;">
+          <div class="form-group"><input type="text" id="add-op-name" class="form-control" placeholder="NAME"></div>
+          <div class="form-group"><input type="text" id="add-op-role" class="form-control" placeholder="ROLE"></div>
+          <button class="btn btn-primary btn-block" onclick="addOperator()">ADD</button>
+        </div>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>NAME</th>
+              <th>ROLE</th>
+            </tr>
+          </thead>
+          <tbody id="operators-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <script>
+    const API_BASE = '/api';
+
+    // Hamburger Menu Logic
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const sideMenu = document.getElementById('side-menu');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+
+    function toggleMenu() {
+      menuOverlay.classList.toggle('open');
+      sideMenu.classList.toggle('open');
+    }
+
+    hamburgerBtn.addEventListener('click', toggleMenu);
+    menuCloseBtn.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`tab-btn-${tab}`).classList.add('active');
+      document.querySelectorAll('.master-section').forEach(s => s.style.display = 'none');
+      document.getElementById(`section-${tab}`).style.display = 'block';
+      if (tab === 'parties') loadParties();
+      if (tab === 'papers') loadPapers();
+      if (tab === 'operators') loadOperators();
+    }
+
+    async function loadParties() {
+      const tbody = document.getElementById('parties-body');
+      try {
+        const res = await fetch(`${API_BASE}/parties`);
+        const data = await res.json();
+        tbody.innerHTML = data.map(p => `
+          <tr class="fade-up">
+            <td data-label="CODE" style="font-family: var(--mono); color: var(--blue); font-weight: 600;">${p.party_code}</td>
+            <td data-label="NAME" style="font-weight: 600;">${p.party_name}</td>
+            <td data-label="ACTION" class="td-right"><button class="btn btn-secondary btn-sm" style="min-height:32px; padding:4px 12px;">✏️ EDIT</button></td>
+          </tr>
+        `).join('');
+      } catch (err) { tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">Error</div></td></tr>'; }
+    }
+
+    async function loadPapers() {
+      const tbody = document.getElementById('papers-body');
+      try {
+        const res = await fetch(`${API_BASE}/papers`);
+        const data = await res.json();
+        tbody.innerHTML = data.map(p => `
+          <tr class="fade-up">
+            <td data-label="CODE" style="font-family: var(--mono); color: var(--blue); font-weight: 600;">${p.paper_code}</td>
+            <td data-label="DESC">${p.description}</td>
+            <td data-label="GSM">${p.gsm || '—'}</td>
+          </tr>
+        `).join('');
+      } catch (err) { tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">Error</div></td></tr>'; }
+    }
+
+    async function loadOperators() {
+      const tbody = document.getElementById('operators-body');
+      try {
+        const res = await fetch(`${API_BASE}/operators`);
+        const data = await res.json();
+        tbody.innerHTML = data.map(op => `
+          <tr class="fade-up">
+            <td data-label="NAME" style="font-weight: 600;">${op.name}</td>
+            <td data-label="ROLE" style="color: var(--text3);">${op.role || 'Operator'}</td>
+          </tr>
+        `).join('');
+      } catch (err) { tbody.innerHTML = '<tr><td colspan="2"><div class="empty-state">Error</div></td></tr>'; }
+    }
+
+    async function addParty() {
+      const code = document.getElementById('add-party-code').value.trim();
+      const name = document.getElementById('add-party-name').value.trim();
+      if (!code || !name) return;
+      await fetch(`${API_BASE}/parties`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ party_code: code, party_name: name })
+      });
+      document.getElementById('add-party-code').value = '';
+      document.getElementById('add-party-name').value = '';
+      loadParties();
+    }
+
+    async function addPaper() {
+      const code = document.getElementById('add-paper-code').value.trim();
+      const desc = document.getElementById('add-paper-desc').value.trim();
+      const gsm = parseInt(document.getElementById('add-paper-gsm').value) || null;
+      if (!code || !desc) return;
+      await fetch(`${API_BASE}/papers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ paper_code: code, description: desc, gsm: gsm })
+      });
+      document.getElementById('add-paper-code').value = '';
+      document.getElementById('add-paper-desc').value = '';
+      document.getElementById('add-paper-gsm').value = '';
+      loadPapers();
+    }
+
+    async function addOperator() {
+      const name = document.getElementById('add-op-name').value.trim();
+      const role = document.getElementById('add-op-role').value.trim();
+      if (!name) return;
+      await fetch(`${API_BASE}/operators`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, role })
+      });
+      document.getElementById('add-op-name').value = '';
+      document.getElementById('add-op-role').value = '';
+      loadOperators();
+    }
+
+    loadParties();
+  </script>
+
+</body>
+</html>

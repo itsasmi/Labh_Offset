@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Settings - Labh Offset</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="theme.js?v=5"></script>
+  <link rel="stylesheet" href="style.css?v=5">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+    </div>
+    <div class="topbar-center uppercase">Settings</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="menu-items">
+      <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
+      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
+      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
+      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
+      <div class="menu-divider"></div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="section-card">
+      <div class="section-header active">
+        <div class="section-title">━━ APPEARANCE</div>
+      </div>
+      <div class="section-content open" style="padding: 24px;">
+        <div class="form-group">
+          <label class="form-label">Color Theme</label>
+          <div class="form-row form-row-2">
+            <button class="btn btn-secondary" id="theme-light">
+              ⚪ White (Light)
+            </button>
+            <button class="btn btn-secondary" id="theme-dark">
+              ⚫ Black (Dark)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <div id="toast-container"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Hamburger Menu Logic
+      const hamburgerBtn = document.getElementById('hamburger-btn');
+      const menuOverlay = document.getElementById('menu-overlay');
+      const sideMenu = document.getElementById('side-menu');
+      const menuCloseBtn = document.getElementById('menu-close-btn');
+
+      function toggleMenu() {
+        menuOverlay.classList.toggle('open');
+        sideMenu.classList.toggle('open');
+      }
+
+      hamburgerBtn?.addEventListener('click', toggleMenu);
+      menuCloseBtn?.addEventListener('click', toggleMenu);
+      menuOverlay?.addEventListener('click', toggleMenu);
+
+      const lightBtn = document.getElementById('theme-light');
+      const darkBtn = document.getElementById('theme-dark');
+      
+      const updateActiveButton = (theme) => {
+        if (theme === 'dark') {
+          darkBtn.classList.remove('btn-secondary');
+          darkBtn.classList.add('btn-primary');
+          lightBtn.classList.add('btn-secondary');
+          lightBtn.classList.remove('btn-primary');
+        } else {
+          lightBtn.classList.remove('btn-secondary');
+          lightBtn.classList.add('btn-primary');
+          darkBtn.classList.add('btn-secondary');
+          darkBtn.classList.remove('btn-primary');
+        }
+      };
+
+      const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      updateActiveButton(currentTheme);
+
+      lightBtn.addEventListener('click', () => {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+        updateActiveButton('light');
+        showToast('Theme updated to White Mode', 'success');
+      });
+
+      darkBtn.addEventListener('click', () => {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+        updateActiveButton('dark');
+        showToast('Theme updated to Black Mode', 'success');
+      });
+    });
+
+    function showToast(msg, type='info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'toast ' + type;
+      toast.innerText = msg;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+  </script>
+</body>
+</html>

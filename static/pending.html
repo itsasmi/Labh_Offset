@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - Pending Work</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+    </div>
+    <div class="topbar-center uppercase">Work Queue</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="menu-items">
+    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
+
+      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
+      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
+      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
+    </div>
+  </nav>
+
+  <main class="container">
+    
+    <div class="page-header fade-up">
+      <div class="page-title">Pending Tasks</div>
+      <div id="count-badge" class="badge badge-info">0 open</div>
+    </div>
+
+    <div class="tab-switcher fade-up delay-1">
+      <button class="tab-btn active" id="tab-jobs">PENDING JOBS</button>
+      <button class="tab-btn" id="tab-waiting">WAITING PAPER</button>
+    </div>
+
+    <div id="filters-container" class="fade-up delay-2">
+      <div class="filter-bar">
+        <select class="form-control filter-select" id="filter-machine">
+          <option value="">All Machines</option>
+          <option value="635x775">635x775</option>
+          <option value="550x670">550x670</option>
+          <option value="560x670">560x670</option>
+        </select>
+        <select class="form-control filter-select" id="filter-operator">
+          <option value="">All Operators</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-container fade-up delay-3">
+      <table id="table-jobs">
+        <thead>
+          <tr>
+            <th>JOB#</th>
+            <th>DATE</th>
+            <th>PARTY</th>
+            <th>JOB NAME</th>
+            <th class="td-right">STATUS</th>
+          </tr>
+        </thead>
+        <tbody id="pending-body">
+          <tr><td colspan="5"><div class="row-spinner"><div class="spinner"></div>Loading...</div></td></tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item active">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <!-- Activation Modal (Glass UI) -->
+  <div class="modal" id="activate-modal">
+    <div class="modal-overlay" onclick="closeModal()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <div style="font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 0.1em;" class="uppercase">Activating Job</div>
+          <div id="modal-job-id" style="font-family: var(--mono); font-weight: 700; font-size: 20px; color: var(--text);">JOB #0000</div>
+        </div>
+        <button class="panel-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div id="modal-job-details" style="margin-bottom: 20px; font-size: 13px; color: var(--text2); line-height: 1.6;"></div>
+        
+        <div class="form-row form-row-2">
+          <div class="form-group">
+            <label class="form-label">SIZE TO USE</label>
+            <input type="text" class="form-control" id="act-size" placeholder="e.g. 28x40">
+          </div>
+          <div class="form-group">
+            <label class="form-label">SHEETS TO USE</label>
+            <input type="text" class="form-control" id="act-sheets" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+          </div>
+        </div>
+
+        <div style="font-size: 11px; font-weight: 700; color: var(--text3); margin-bottom: 8px;" class="uppercase">Paper Source</div>
+        <div class="source-toggle" style="margin-bottom: 16px;">
+          <div class="source-option" id="src-party" onclick="setSource('party')">PARTY</div>
+          <div class="source-option" id="src-company" onclick="setSource('company')">COMPANY</div>
+        </div>
+
+        <div class="stock-check" id="act-stock-feedback">
+          <div class="sc-dot"></div>
+          <span id="act-stock-msg">Enter details to check stock...</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-block" onclick="closeModal()">CANCEL</button>
+        <button class="btn btn-primary btn-block" id="btn-confirm-activate" onclick="confirmActivation()" disabled>START JOB</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container"></div>
+
+  <script>
+    const API_BASE = '/api';
+    let currentTab = 'jobs';
+
+    // UI elements
+    const tabJobs = document.getElementById('tab-jobs');
+    const tabWaiting = document.getElementById('tab-waiting');
+    const tableJobs = document.getElementById('table-jobs');
+    const filters = document.getElementById('filters-container');
+    const filterMachine = document.getElementById('filter-machine');
+    const filterOperator = document.getElementById('filter-operator');
+
+    // Menu logic
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const sideMenu = document.getElementById('side-menu');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+
+    function toggleMenu() {
+      menuOverlay.classList.toggle('open');
+      sideMenu.classList.toggle('open');
+    }
+    hamburgerBtn.onclick = toggleMenu;
+    menuCloseBtn.onclick = toggleMenu;
+    menuOverlay.onclick = toggleMenu;
+
+    // Tabs
+    tabJobs.onclick = () => switchTab('jobs');
+    tabWaiting.onclick = () => switchTab('waiting');
+
+    function switchTab(type) {
+      currentTab = type;
+      tabJobs.classList.toggle('active', type === 'jobs');
+      tabWaiting.classList.toggle('active', type === 'waiting');
+      tableJobs.style.display = 'table';
+      filters.style.display = 'block';
+
+      fetchPending();
+    }
+
+    filterMachine.onchange = fetchPending;
+    filterOperator.onchange = fetchPending;
+
+    async function fetchPending() {
+      const tbody = document.getElementById('pending-body');
+      tbody.innerHTML = `<tr><td colspan="5"><div class="row-spinner"><div class="spinner"></div>Loading...</div></td></tr>`;
+      
+      let url = `${API_BASE}/pending?`;
+      if (filterMachine.value) url += `plate_size=${encodeURIComponent(filterMachine.value)}&`;
+      if (currentTab === 'waiting') url += `waiting_only=true&`;
+      
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error();
+        let data = await res.json();
+        
+        if (filterOperator.value) {
+          data = data.filter(j => j.operator_name === filterOperator.value);
+        }
+
+        document.getElementById('count-badge').textContent = `${data.length} open`;
+
+        tbody.innerHTML = '';
+        if (data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">No pending items found.</div></td></tr>`;
+          return;
+        }
+
+        data.forEach(job => {
+          const tr = document.createElement('tr');
+          tr.id = `row-${job.id || job.job_id}`;
+          
+          let statusHtml = '';
+          if (job.status === 'pending') {
+            if (currentTab === 'waiting' || job.is_waiting_for_paper) {
+              statusHtml = `<button class="btn-process" onclick="openInwardEntry(${job.id || job.job_id})">INWARD ENTRY</button>`;
+            } else {
+              statusHtml = `<button class="btn-process" onclick='openActivateModal(${JSON.stringify(job)})'>PROCESS</button>`;
+            }
+          } else {
+            statusHtml = `
+              <select class="form-control" style="padding: 4px 8px; font-size: 11px; height: 28px;" onchange="updateStatus(${job.id || job.job_id}, this.value, this)">
+                <option value="in_progress" selected>IN PROGRESS</option>
+                <option value="done">MARK DONE</option>
+              </select>
+            `;
+          }
+
+          const waitingBadge = job.is_waiting_for_paper ? '<span class="badge badge-pending" style="margin-left:8px">WAITING PAPER</span>' : '';
+
+          tr.innerHTML = `
+            <td class="td-mono" data-label="JOB#"><a href="jobcard.html?job=${job.id || job.job_id}">${job.id || job.job_id}</a></td>
+            <td class="td-mono" data-label="DATE">${job.date}</td>
+            <td data-label="PARTY">${job.party_name}</td>
+            <td data-label="JOB NAME">${job.job_name}${waitingBadge}</td>
+            <td class="td-right" data-label="ACTION">${statusHtml}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-red">Error loading list</td></tr>`;
+      }
+    }
+
+    function openInwardEntry(jobId) {
+      location.href = `inward.html?job=${encodeURIComponent(jobId)}`;
+    }
+
+    async function fetchPendingStock() {
+      const tbody = document.getElementById('pending-stock-body');
+      tbody.innerHTML = `<tr><td colspan="5"><div class="row-spinner"><div class="spinner"></div>Loading...</div></td></tr>`;
+      try {
+        const res = await fetch(`${API_BASE}/stock/pending`);
+        const data = await res.json();
+        tbody.innerHTML = '';
+        if (data.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">No upcoming stock deliveries.</div></td></tr>`;
+          return;
+        }
+        data.forEach(item => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td class="td-mono">${item.date}</td>
+            <td>${item.party_name || item.supplier_name || '—'}</td>
+            <td>${item.paper_desc || item.paper_code} <br><small class="text-muted">${item.paper_size}</small></td>
+            <td class="td-right td-mono">${item.total_sheets.toLocaleString()}</td>
+            <td class="td-right">
+              <button class="btn btn-primary btn-sm" onclick="markReceived(${item.id})">RECEIVE</button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-red">Error loading stock</td></tr>`;
+      }
+    }
+
+    async function markReceived(id) {
+      if (!confirm('Mark as received?')) return;
+      await fetch(`${API_BASE}/inward/${id}/status?status=received`, { method: 'PATCH' });
+      fetchPendingStock();
+    }
+
+    async function updateStatus(id, newStatus, selectEl) {
+      if (newStatus === 'done' && !confirm('Mark job as DONE?')) {
+        selectEl.value = 'in_progress';
+        return;
+      }
+      const res = await fetch(`${API_BASE}/jobs/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      if (res.ok && newStatus === 'done') {
+        document.getElementById(`row-${id}`).remove();
+      }
+    }
+
+    // Modal & Activation (same as before but styled)
+    let currentJob = null;
+    let selectedSource = 'party';
+    function openActivateModal(job) {
+      currentJob = job;
+      selectedSource = job.paper_source || 'party';
+      document.getElementById('modal-job-id').textContent = `JOB #${job.id || job.job_id}`;
+      document.getElementById('modal-job-details').innerHTML = `
+        <strong>${job.job_name}</strong><br>
+        Party: ${job.party_name}<br>
+        Paper: ${job.paper_code || '—'} (${job.total_sheets || 0} sheets)
+      `;
+      document.getElementById('act-size').value = job.paper_size || '';
+      document.getElementById('act-sheets').value = job.total_sheets || '';
+      setSource(selectedSource);
+      document.getElementById('activate-modal').classList.add('open');
+    }
+    function closeModal() { document.getElementById('activate-modal').classList.remove('open'); }
+    function setSource(src) {
+      selectedSource = src;
+      document.getElementById('src-party').className = 'source-option' + (src === 'party' ? ' active-party' : '');
+      document.getElementById('src-company').className = 'source-option' + (src === 'company' ? ' active-company' : '');
+      checkStockFeedback();
+    }
+
+    async function checkStockFeedback() {
+      if (!currentJob) return;
+      const paperCode = currentJob.paper_code;
+      const paperSize = document.getElementById('act-size').value;
+      const qty = parseInt(document.getElementById('act-sheets').value) || 0;
+      const partyCode = currentJob.party_code;
+      const stockFeedback = document.getElementById('act-stock-feedback');
+      const stockMsg = document.getElementById('act-stock-msg');
+      const btnConfirm = document.getElementById('btn-confirm-activate');
+
+      if (!paperSize || qty <= 0) {
+        stockFeedback.className = 'stock-check';
+        stockMsg.textContent = 'Enter details to check stock...';
+        btnConfirm.disabled = true;
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/stock/check?paper_code=${encodeURIComponent(paperCode)}&paper_size=${encodeURIComponent(paperSize)}&stock_type=${encodeURIComponent(selectedSource)}&qty=${qty}&party_code=${encodeURIComponent(partyCode || '')}`);
+        const data = await res.json();
+        
+        stockMsg.textContent = data.msg;
+        if (data.sufficient) {
+          stockFeedback.className = 'stock-check success';
+          btnConfirm.disabled = false;
+        } else {
+          stockFeedback.className = 'stock-check error';
+          btnConfirm.disabled = true;
+        }
+      } catch (e) {
+        stockFeedback.className = 'stock-check error';
+        stockMsg.textContent = 'Error checking stock availability';
+        btnConfirm.disabled = true;
+      }
+    }
+
+    // Attach listeners
+    document.getElementById('act-size').addEventListener('input', checkStockFeedback);
+    document.getElementById('act-sheets').addEventListener('input', checkStockFeedback);
+
+    async function confirmActivation() {
+      const btn = document.getElementById('btn-confirm-activate');
+      btn.disabled = true;
+      btn.textContent = 'STARTING...';
+      
+      const payload = {
+        paper_size: document.getElementById('act-size').value,
+        total_sheets: parseInt(document.getElementById('act-sheets').value) || 0,
+        paper_source: selectedSource
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/jobs/${currentJob.id || currentJob.job_id}/activate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          closeModal();
+          showToast("Job activated successfully!", "success");
+          fetchPending();
+        } else {
+          const err = await res.json();
+          alert("Failed to activate job: " + (err.detail || "Unknown error"));
+          btn.disabled = false;
+          btn.textContent = 'START JOB';
+        }
+      } catch (e) {
+        alert("Failed to activate job: " + e.message);
+        btn.disabled = false;
+        btn.textContent = 'START JOB';
+      }
+    }
+
+    function showToast(m, t='info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${t}`;
+      toast.textContent = m;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    async function init() {
+      try {
+        const opRes = await fetch(`${API_BASE}/operators`);
+        const ops = await opRes.json();
+        ops.forEach(op => {
+          const opt = document.createElement('option');
+          opt.value = op.name; opt.textContent = op.name;
+          filterOperator.appendChild(opt);
+        });
+      } catch (e) {}
+      fetchPending();
+    }
+    init();
+  </script>
+
+  <style>
+    .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .page-title { font-size: 24px; font-weight: 700; color: var(--text); }
+    .empty-state { padding: 40px; text-align: center; color: var(--text3); font-size: 14px; }
+    .btn-process {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: none; z-index: 1000; align-items: center; justify-content: center; padding: 20px; }
+    .modal.open { display: flex; }
+    .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); }
+    .modal-content { position: relative; background: var(--surface); border: 1px solid var(--border3); border-radius: var(--radius-lg); width: 100%; max-width: 440px; padding: 24px; box-shadow: var(--shadow-lg); }
+    .modal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  </style>
+
+</body>
+</html>

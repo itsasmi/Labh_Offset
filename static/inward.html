@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - Inward Register</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+    </div>
+    <div class="topbar-center uppercase">Inward Entry</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="menu-items">
+    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
+
+      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
+      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
+      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
+      <div class="menu-divider"></div>
+      
+    </div>
+  </nav>
+
+  <main class="container">
+    <div id="form-container">
+      <div style="font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 20px;">Receive New Paper</div>
+
+      <form id="inward-form">
+        <!-- Section 1: Source -->
+        <div class="section-card">
+          <div class="section-header active">
+            <div class="section-title">━━ STOCK SOURCE</div>
+          </div>
+          <div class="section-content open">
+            <div class="form-group">
+              <label class="form-label">OWNER / TYPE</label>
+              <select class="form-control" id="i-source" required>
+                <option value="party">Party Stock</option>
+                <option value="company">Company Stock</option>
+              </select>
+            </div>
+            
+            <div id="party-fields">
+              <div class="form-row form-row-2">
+                <div class="form-group">
+                  <label class="form-label">PARTY CODE</label>
+                  <input type="text" class="form-control mono" id="i-party-code" list="party-list" placeholder="Enter Code">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">PARTY NAME</label>
+                  <input type="text" class="form-control" id="i-party-name" readonly style="opacity: 0.7;" placeholder="Auto-filled">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Paper -->
+        <div class="section-card">
+          <div class="section-header active">
+            <div class="section-title">━━ PAPER & SUPPLIER</div>
+          </div>
+          <div class="section-content open">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">PAPER CODE</label>
+                <input type="text" class="form-control mono" id="i-paper-code" list="paper-list" placeholder="Enter Code" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">SIZE</label>
+                <input type="text" class="form-control" id="i-size" placeholder="e.g. 13x26" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">DESCRIPTION (GSM / NAME)</label>
+              <input type="text" class="form-control" id="i-desc" placeholder="Auto-filled from code">
+            </div>
+            <div class="form-group">
+              <label class="form-label">SUPPLIER NAME</label>
+              <input type="text" class="form-control" id="i-supplier" list="supplier-list" placeholder="Search or enter name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">DC / CHALLAN NO.</label>
+              <input type="text" class="form-control" id="i-dcno" placeholder="Optional">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Quantity -->
+        <div class="section-card">
+          <div class="section-header active">
+            <div class="section-title">━━ QUANTITY RECEIVED</div>
+          </div>
+          <div class="section-content open">
+            <div class="form-row form-row-3">
+              <div class="form-group">
+                <label class="form-label">REAM</label>
+                <input type="text" class="form-control calc-input" id="i-ream" min="0" value="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">SHEET/REAM</label>
+                <input type="text" class="form-control calc-input" id="i-spr" min="0" value="100" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">LOOSE</label>
+                <input type="text" class="form-control calc-input" id="i-loose" min="0" value="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label text-green" style="color: var(--green);">TOTAL RECEIVED SHEETS</label>
+              <input type="text" class="form-control" id="i-total" readonly style="color: var(--green); font-weight: 800; font-size: 18px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="sticky-bottom">
+          <button type="submit" class="btn btn-primary btn-block" style="height: 50px;" id="save-btn">SAVE INWARD ENTRY</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Live Balance Verification Section -->
+    <div style="margin-top: 40px; margin-bottom: 80px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="font-size: 10px; font-weight: 700; color: var(--text3); letter-spacing: 0.1em;" class="uppercase">Previous Arrivals & Balance</div>
+        <button class="btn btn-secondary btn-sm" onclick="loadInwardHistory()">↻ REFRESH</button>
+      </div>
+    </div>
+
+    <!-- Job Update Modal (Glass UI) -->
+    <div class="modal-overlay" id="update-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div>
+            <div style="font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 0.1em;" class="uppercase">⚠️ Paper Mismatch Detected</div>
+            <div style="font-weight: 700; font-size: 18px; color: var(--text); margin-top: 4px;">Update Job Entry?</div>
+          </div>
+          <button class="panel-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" style="font-size: 13px; color: var(--text2); line-height: 1.6;">
+          The paper type or size you entered is different from <strong id="mismatch-job-title">Job</strong>:
+          <div style="background: var(--surface2); border: 1px solid var(--border2); padding: 12px; border-radius: var(--radius-sm); margin: 12px 0;">
+            <div style="display: grid; grid-template-columns: 80px 1fr; gap: 8px;">
+              <span style="font-weight:700;">Job Paper:</span> <span id="mismatch-job-paper"></span>
+              <span style="font-weight:700;">Inward:</span> <span id="mismatch-inward-paper"></span>
+            </div>
+          </div>
+          Do you want to update the job entry with this paper size and type, or make this a new inward entry for this party?
+        </div>
+        <div class="modal-footer" style="padding: 16px 20px; border-top: 1px solid var(--border); display: flex; gap: 12px;">
+          <button class="btn btn-secondary btn-block" onclick="saveInwardKeepSeparate()" style="flex: 1; min-height: 44px;">NEW INWARD ENTRY</button>
+          <button class="btn btn-primary btn-block" onclick="updateJobAndSaveInward()" style="flex: 1; background: var(--green); border-color: var(--green); min-height: 44px;">UPDATE JOB ENTRY</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <!-- Datalists for Autocomplete -->
+  <datalist id="party-list"></datalist>
+  <datalist id="paper-list"></datalist>
+  <datalist id="supplier-list">
+    <option value="Mansi Paper">
+    <option value="Labh Paper">
+    <option value="Sagar Paper">
+    <option value="Raj Offset">
+  </datalist>
+
+  <script>
+    const API_BASE = '/api';
+    let jobData = null;
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobId = urlParams.get('job_id') || urlParams.get('job');
+
+    // Hamburger Menu Logic
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const sideMenu = document.getElementById('side-menu');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+
+    function toggleMenu() {
+      menuOverlay.classList.toggle('open');
+      sideMenu.classList.toggle('open');
+    }
+
+    hamburgerBtn.addEventListener('click', toggleMenu);
+    menuCloseBtn.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+    let parties = [];
+    let papers = [];
+
+    async function init() {
+      try {
+        const [pRes, paRes] = await Promise.all([
+          fetch(`${API_BASE}/parties`),
+          fetch(`${API_BASE}/papers`)
+        ]);
+        parties = await pRes.json();
+        papers = await paRes.json();
+
+        const partyList = document.getElementById('party-list');
+        parties.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.party_code;
+          opt.textContent = p.party_name;
+          partyList.appendChild(opt);
+        });
+
+        const paperList = document.getElementById('paper-list');
+        papers.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.paper_code;
+          opt.textContent = p.description;
+          paperList.appendChild(opt);
+        });
+
+        // Pre-fill job details if job_id is passed in the URL parameters
+        if (jobId) {
+          const res = await fetch(`${API_BASE}/jobs/${jobId}`);
+          if (res.ok) {
+            jobData = await res.json();
+            
+            document.getElementById('i-source').value = jobData.paper_source || 'party';
+            document.getElementById('i-source').dispatchEvent(new Event('change'));
+            
+            document.getElementById('i-party-code').value = jobData.party_code || '';
+            document.getElementById('i-party-code').dispatchEvent(new Event('input'));
+            document.getElementById('i-party-name').value = jobData.party_name || document.getElementById('i-party-name').value;
+            
+            document.getElementById('i-paper-code').value = jobData.paper_code || '';
+            document.getElementById('i-paper-code').dispatchEvent(new Event('input'));
+            if (!document.getElementById('i-desc').value) {
+              document.getElementById('i-desc').value = jobData.gsm_desc || '';
+            }
+            
+            document.getElementById('i-size').value = jobData.paper_size || '';
+
+            document.getElementById('i-ream').value = 0;
+            document.getElementById('i-spr').value = jobData.sheet_per_ream || 100;
+            document.getElementById('i-loose').value = 0;
+            document.getElementById('i-supplier').value = '';
+            document.getElementById('i-dcno').value = '';
+            document.getElementById('i-ream').dispatchEvent(new Event('input'));
+          }
+        }
+      } catch (e) { console.error(e); }
+    }
+
+    // Party Code Sync
+    document.getElementById('i-party-code').oninput = (e) => {
+      const code = e.target.value.toLowerCase();
+      const p = parties.find(x => x.party_code.toLowerCase() === code);
+      document.getElementById('i-party-name').value = p ? p.party_name : '';
+    };
+
+    // Paper Code Sync
+    document.getElementById('i-paper-code').oninput = (e) => {
+      const code = e.target.value.toLowerCase();
+      const p = papers.find(x => x.paper_code.toLowerCase() === code);
+      document.getElementById('i-desc').value = p ? p.description : '';
+    };
+
+    // Source Toggle
+    document.getElementById('i-source').onchange = (e) => {
+      document.getElementById('party-fields').style.display = e.target.value === 'party' ? 'block' : 'none';
+      if (e.target.value === 'company') {
+        document.getElementById('i-party-code').value = '';
+        document.getElementById('i-party-name').value = '';
+      }
+    };
+
+    // Calculation
+    document.querySelectorAll('.calc-input').forEach(input => {
+      input.oninput = () => {
+        const r = parseInt(document.getElementById('i-ream').value) || 0;
+        const s = parseInt(document.getElementById('i-spr').value) || 0;
+        const l = parseInt(document.getElementById('i-loose').value) || 0;
+        document.getElementById('i-total').value = (r * s) + l;
+      };
+    });
+
+    function closeModal() {
+      document.getElementById('update-modal').classList.remove('open');
+    }
+
+    async function saveInwardKeepSeparate() {
+      closeModal();
+      await submitInwardPayload();
+    }
+
+    async function updateJobAndSaveInward() {
+      const btn = document.getElementById('save-btn');
+      btn.disabled = true; btn.textContent = 'UPDATING JOB...';
+      closeModal();
+      try {
+        const res = await fetch(`${API_BASE}/jobs/${jobId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            paper_code: document.getElementById('i-paper-code').value,
+            paper_size: document.getElementById('i-size').value,
+            gsm_desc: document.getElementById('i-desc').value
+          })
+        });
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(errText || "Failed to update job details");
+        }
+        await submitInwardPayload();
+      } catch (e) {
+        alert('Failed to update job details: ' + e.message);
+        btn.disabled = false; btn.textContent = 'SAVE INWARD ENTRY';
+      }
+    }
+
+    async function submitInwardPayload() {
+      const btn = document.getElementById('save-btn');
+      btn.disabled = true; btn.textContent = 'SAVING...';
+
+      const payload = {
+        date: new Date().toISOString().split('T')[0],
+        stock_type: document.getElementById('i-source').value,
+        party_code: document.getElementById('i-party-code').value || null,
+        supplier_name: document.getElementById('i-supplier').value,
+        dch_no: document.getElementById('i-dcno').value || null,
+        paper_code: document.getElementById('i-paper-code').value,
+        paper_desc: document.getElementById('i-desc').value,
+        paper_size: document.getElementById('i-size').value,
+        ream: parseInt(document.getElementById('i-ream').value) || 0,
+        sheet_per_ream: parseInt(document.getElementById('i-spr').value) || 0,
+        loose_sheets: parseInt(document.getElementById('i-loose').value) || 0,
+        total_sheets: parseInt(document.getElementById('i-total').value) || 0,
+        notes: jobId ? `Linked to Job #${jobId}` : '',
+        status: 'received'
+      };
+
+      try {
+        const res = await fetch(`${API_BASE}/inward`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const errText = await res.text();
+          throw new Error(errText || "Unknown error");
+        }
+        alert("Inward entry saved successfully!");
+        location.href = 'stock.html';
+      } catch (err) {
+        alert("Failed to save entry: " + err.message);
+        btn.disabled = false; btn.textContent = 'SAVE INWARD ENTRY';
+      }
+    }
+
+    document.getElementById('inward-form').onsubmit = async (e) => {
+      e.preventDefault();
+      
+      if (jobData) {
+        const currentPaperCode = document.getElementById('i-paper-code').value.trim().toLowerCase();
+        const currentPaperSize = document.getElementById('i-size').value.trim().toLowerCase().replace(/\s/g, '');
+        const originalPaperCode = (jobData.paper_code || '').trim().toLowerCase();
+        const originalPaperSize = (jobData.paper_size || '').trim().toLowerCase().replace(/\s/g, '');
+        
+        if (currentPaperCode !== originalPaperCode || currentPaperSize !== originalPaperSize) {
+          // Show mismatch warning modal!
+          document.getElementById('mismatch-job-title').textContent = `Job #${jobId} (${jobData.job_name})`;
+          document.getElementById('mismatch-job-paper').textContent = `${originalPaperCode.toUpperCase()} (${originalPaperSize})`;
+          document.getElementById('mismatch-inward-paper').textContent = `${currentPaperCode.toUpperCase()} (${currentPaperSize})`;
+          document.getElementById('update-modal').classList.add('open');
+          return;
+        }
+      }
+      
+      await submitInwardPayload();
+    };
+
+    async function loadInwardHistory() {
+      const container = document.getElementById('inward-history-container');
+      try {
+        const res = await fetch(`${API_BASE}/stock/inward_register`);
+        const data = await res.json();
+        
+        // Show only last 20 for performance
+        const recent = data.slice(-20).reverse();
+
+        if (recent.length === 0) {
+          container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text3);">No arrivals logged yet.</div>';
+          return;
+        }
+
+        container.innerHTML = recent.map(row => {
+          const isFinished = row.remaining <= 0;
+          return `
+            <div class="section-card" style="margin-bottom: 8px; opacity: ${isFinished ? '0.6' : '1'};">
+              <div style="padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-size: 11px; color: var(--text3);">${row.date} | ${row.supplier || 'N/A'}</div>
+                  <div style="font-weight: 700; color: var(--text);">${row.paper_code} (${row.paper_size})</div>
+                  <div style="font-size: 10px; color: var(--blue); font-weight: 600;">${row.party_code ? `PARTY: ${row.party_code.toUpperCase()}` : 'COMPANY STOCK'}</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 16px; font-weight: 800; color: ${isFinished ? 'var(--text3)' : 'var(--green)'};">
+                    ${row.remaining.toLocaleString()} <span style="font-size: 9px; font-weight: 400; color: var(--text3);">LEFT</span>
+                  </div>
+                  <div style="font-size: 9px; color: var(--text3);">of ${row.total_sheets.toLocaleString()} sheets</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        container.innerHTML = '<div style="color:var(--red); font-size:12px;">Failed to load history</div>';
+      }
+    }
+
+    init();
+    loadInwardHistory();
+  </script>
+
+
+</body>
+</html>

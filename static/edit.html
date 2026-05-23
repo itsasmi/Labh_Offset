@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - Edit Job</title>
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+    </div>
+    <div class="topbar-center uppercase">Edit Job Record</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+    </div>
+    <div class="menu-items">
+    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
+
+      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
+      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
+      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
+      <div class="menu-divider"></div>
+      
+    </div>
+  </nav>
+
+  <main class="container">
+    <div id="form-container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div style="font-size: 20px; font-weight: 600; color: var(--text);">Modify Job Details</div>
+        <div id="job-id-display" class="badge badge-info" style="font-family: var(--mono);">#0000</div>
+      </div>
+
+      <form id="job-form">
+        <!-- Section 1: Basic Info -->
+        <div class="section-card">
+          <div class="section-header active" onclick="toggleSection('sec-basic')">
+            <div class="section-title">━━ BASIC INFO</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-basic">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">DATE</label>
+                <input type="date" class="form-control" id="f-date" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">BILL NO.</label>
+                <input type="text" class="form-control" id="f-billno" placeholder="Optional">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">PARTY</label>
+              <input type="text" class="form-control" id="f-party-name" readonly style="opacity: 0.7;">
+            </div>
+            <div class="form-group">
+              <label class="form-label">JOB NAME</label>
+              <input type="text" class="form-control" id="f-jobname" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Paper Details -->
+        <div class="section-card">
+          <div class="section-header active" onclick="toggleSection('sec-paper')">
+            <div class="section-title">━━ PAPER DETAILS</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-paper">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">PAPER CODE</label>
+                <select class="form-control" id="f-papercode" required></select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PAPER SIZE</label>
+                <input type="text" class="form-control" id="f-papersize" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">GSM / DESCRIPTION</label>
+              <input type="text" class="form-control" id="f-gsm">
+            </div>
+            <div class="form-row form-row-4">
+              <div class="form-group">
+                <label class="form-label">REAM</label>
+                <input type="text" class="form-control calc-input" id="f-ream" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">S/REAM</label>
+                <input type="text" class="form-control calc-input" id="f-spr" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">LOOSE</label>
+                <input type="text" class="form-control calc-input" id="f-loose" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label text-orange">TOTAL</label>
+                <input type="text" class="form-control text-orange" id="f-total" readonly>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                <input type="checkbox" id="f-waiting" style="width: 18px; height: 18px;">
+                <span style="font-size: 13px;">MARK AS WAITING FOR PAPER</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3: Cutting & Printing -->
+        <div class="section-card">
+          <div class="section-header active" onclick="toggleSection('sec-cutting')">
+            <div class="section-title">━━ CUTTING & PRINTING</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-cutting">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">CUT PART</label>
+                <select class="form-control" id="f-cutpart" required>
+                  <option value="1">1 (Same Size)</option>
+                  <option value="2">2 (Bigger ÷ 2)</option>
+                  <option value="3">3 (Bigger ÷ 3)</option>
+                  <option value="4">4 (Both ÷ 2)</option>
+                  <option value="manual">Manual</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">CUT SIZE (INPUT)</label>
+                <input type="text" class="form-control" id="f-cutsize" placeholder="e.g. 28x40" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label text-orange">RESULT SIZE (AUTO)</label>
+                <input type="text" class="form-control text-orange" id="f-result-size" readonly placeholder="Auto-calculated">
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label text-orange">QTY (SHEETS) - FROM CUTTING</label>
+                <input type="text" class="form-control text-orange" id="f-cutqty" readonly placeholder="Total pieces">
+              </div>
+              <div class="form-group">
+                <label class="form-label">PRINTING RUN TYPE</label>
+                <select class="form-control" id="f-sides" required>
+                  <option value="S/S">S/S — Single Side</option>
+                  <option value="F/B">F/B — Front & Back (1 Plate)</option>
+                  <option value="F+B">F+B — Front + Back (2 Plates)</option>
+                  <option value="G/P">G/P — Gape/P</option>
+                  <option value="B/S">B/S</option>
+                  <option value="F/S">F/S</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PLATE SUPPLIER</label>
+                <select class="form-control" id="f-operator" required>
+                  <option value="">Select Supplier...</option>
+                  <option value="Shantaram">Shantaram</option>
+                  <option value="Parth">Parth</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">PLATE SIZE</label>
+                <select class="form-control" id="f-platesize" required>
+                  <option value="635x775">635x775 — Big Machine</option>
+                  <option value="550x670">550x670 — Small Machine</option>
+                  <option value="560x670">560x670 — Small Machine</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label text-orange">PLATES (AUTO)</label>
+                <input type="text" class="form-control text-orange" id="f-plates" value="1" readonly>
+              </div>
+              <div class="form-group">
+                <label class="form-label text-amber">PLANNED PULLING (AUTO)</label>
+                <input type="text" class="form-control text-amber" id="f-pulling" placeholder="Auto-calculated" readonly>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Lamination (Compulsory) -->
+        <div class="section-card" style="border-left: 4px solid var(--amber);">
+          <div class="section-header active" onclick="toggleSection('sec-lam')">
+            <div class="section-title">━━ LAMINATION DETAILS</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-lam">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">PROCESS</label>
+                <select class="form-control" id="l-process">
+                  <option value="">Select Process...</option>
+                  <option value="Gloss">Gloss</option>
+                  <option value="Matt">Matt</option>
+                  <option value="UV">UV</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">SIZE</label>
+                <input type="text" class="form-control" id="l-size">
+              </div>
+              <div class="form-group">
+                <label class="form-label">SIDE</label>
+                <select class="form-control" id="l-side">
+                  <option value="S/S">S/S</option>
+                  <option value="F/B">F/B</option>
+                  <option value="Both">Both</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">AGENCY</label>
+                <input type="text" class="form-control" id="l-agency">
+              </div>
+              <div class="form-group">
+                <label class="form-label">PULLING / COPIES</label>
+                <input type="text" class="form-control" id="l-pulling" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 5: Punching (Optional) -->
+        <div class="section-card" style="border-left: 4px solid var(--primary);">
+          <div class="section-header active" onclick="toggleSection('sec-punch')">
+            <div class="section-title">PUNCHING / DIE <span class="text-muted" style="font-size: 11px; font-weight: 600;">OPTIONAL</span></div>
+            <div class="section-arrow">v</div>
+            <div style="display: none;">
+            <div class="section-title">━━ PUNCHING / DIE</div>
+          </div>
+          </div>
+          <div class="section-content open" id="sec-punch">
+            <div class="form-row form-row-2">
+              <div class="form-group">
+                <label class="form-label">DYE</label>
+                <input type="text" class="form-control" id="p-dye">
+              </div>
+              <div class="form-group">
+                <label class="form-label">SIZE</label>
+                <input type="text" class="form-control" id="p-size">
+              </div>
+              <div class="form-group">
+                <label class="form-label">QTY</label>
+                <input type="text" class="form-control" id="p-qty" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+              </div>
+              <div class="form-group">
+                <label class="form-label">AGENCY / SUPPLIER</label>
+                <input type="text" class="form-control" id="p-agency">
+              </div>
+              <div class="form-group">
+                <label class="form-label">DYE GSM</label>
+                <input type="text" class="form-control" id="p-gsm">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remarks -->
+        <div class="section-card">
+          <div class="section-header active" onclick="toggleSection('sec-remarks')">
+            <div class="section-title">━━ REMARKS</div>
+            <div class="section-arrow">▾</div>
+          </div>
+          <div class="section-content open" id="sec-remarks">
+            <textarea class="form-control" id="f-remarks" rows="2"></textarea>
+          </div>
+        </div>
+
+        <div class="sticky-bottom" style="display: flex; gap: 12px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="history.back()">CANCEL</button>
+          <button type="submit" class="btn btn-primary" style="flex: 2;" id="save-btn">UPDATE JOB RECORD</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="update-modal" aria-hidden="true">
+    <div class="modal-card update-modal-card" role="dialog" aria-modal="true" aria-labelledby="update-modal-title">
+      <div class="modal-header">
+        <div>
+          <div id="update-modal-title" style="font-size: 18px; font-weight: 800; color: var(--text);">Confirm Job Update</div>
+          <div class="text-muted" style="font-size: 12px; margin-top: 4px;">Review the changed details before saving.</div>
+        </div>
+        <button type="button" class="panel-close" id="update-modal-close" aria-label="Close">x</button>
+      </div>
+      <div class="modal-body">
+        <div id="update-change-list" class="update-change-list"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="update-cancel-btn" style="flex: 1;">CANCEL</button>
+        <button type="button" class="btn btn-primary" id="update-confirm-btn" style="flex: 1.4;">YES, UPDATE</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item active">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <div id="toast-container"></div>
+
+  <script>
+    const API_BASE = '/api';
+    let originalJob = null;
+
+    // Hamburger Menu Logic
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+    const sideMenu = document.getElementById('side-menu');
+    const menuCloseBtn = document.getElementById('menu-close-btn');
+
+    function toggleMenu() {
+      menuOverlay.classList.toggle('open');
+      sideMenu.classList.toggle('open');
+    }
+
+    hamburgerBtn.addEventListener('click', toggleMenu);
+    menuCloseBtn.addEventListener('click', toggleMenu);
+    menuOverlay.addEventListener('click', toggleMenu);
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobID = urlParams.get('job') || urlParams.get('id');
+
+    if (!jobID) {
+      alert("No job ID provided!");
+      location.href = "index.html";
+    }
+
+    document.getElementById('job-id-display').textContent = `#${jobID}`;
+
+    function ensureSelectOption(selectId, value, label) {
+      if (!value) return;
+      const select = document.getElementById(selectId);
+      const exists = Array.from(select.options).some(opt => opt.value === value);
+      if (!exists) {
+        const opt = document.createElement('option');
+        opt.value = value;
+        opt.textContent = label || value;
+        select.appendChild(opt);
+      }
+    }
+
+    async function init() {
+      try {
+        // Load dependencies
+        const pRes = await fetch(`${API_BASE}/papers`);
+        
+        const papers = await pRes.json();
+        const pSelect = document.getElementById('f-papercode');
+        papers.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.paper_code;
+          opt.textContent = `${p.paper_code} — ${p.description}`;
+          pSelect.appendChild(opt);
+        });
+
+        // Operators fetch removed since they are static options now
+
+        // Fetch Job Data
+        const res = await fetch(`${API_BASE}/jobs/${jobID}`);
+        if (!res.ok) throw new Error(`Job fetch failed: ${res.status}`);
+        const job = await res.json();
+        originalJob = job;
+        
+        // Fill fields
+        document.getElementById('f-date').value = job.date;
+        document.getElementById('f-billno').value = job.bill_no || '';
+        document.getElementById('f-party-name').value = job.party_name;
+        document.getElementById('f-jobname').value = job.job_name;
+        ensureSelectOption('f-papercode', job.paper_code, job.paper_code);
+        document.getElementById('f-papercode').value = job.paper_code;
+        document.getElementById('f-papersize').value = job.paper_size;
+        document.getElementById('f-gsm').value = job.gsm_desc || '';
+        document.getElementById('f-ream').value = job.ream || 0;
+        document.getElementById('f-spr').value = job.sheet_per_ream || 100;
+        document.getElementById('f-loose').value = job.loose_sheets || 0;
+        document.getElementById('f-total').value = job.total_sheets || 0;
+        document.getElementById('f-waiting').checked = job.is_waiting_for_paper || false;
+        
+        document.getElementById('f-cutpart').value = String(job.cut_part || 1);
+        document.getElementById('f-cutsize').value = job.cut_size || '';
+        document.getElementById('f-cutqty').value = job.qty || 0;
+        ensureSelectOption('f-sides', job.printing, job.printing);
+        document.getElementById('f-sides').value = job.printing || 'S/S';
+        ensureSelectOption('f-operator', job.operator_name, job.operator_name);
+        document.getElementById('f-operator').value = job.operator_name || '';
+        ensureSelectOption('f-platesize', job.plate_size, job.plate_size);
+        document.getElementById('f-platesize').value = job.plate_size || '635x775';
+        document.getElementById('f-pulling').value = job.pulling || '';
+        document.getElementById('f-remarks').value = job.job_remark || '';
+
+        if (job.lam_job) {
+          document.getElementById('sec-lam').classList.add('open');
+          document.getElementById('l-process').value = job.lam_job.process || '';
+          document.getElementById('l-size').value = job.lam_job.size || '';
+          document.getElementById('l-side').value = job.lam_job.side || 'S/S';
+          document.getElementById('l-agency').value = job.lam_job.agency_name || '';
+          document.getElementById('l-pulling').value = job.lam_job.pulling || 0;
+        }
+
+        if (job.punch_job) {
+          document.getElementById('sec-punch').classList.add('open');
+          document.getElementById('p-dye').value = job.punch_job.dye || '';
+          document.getElementById('p-size').value = job.punch_job.size || '';
+          document.getElementById('p-qty').value = job.punch_job.qty || 0;
+          document.getElementById('p-agency').value = job.punch_job.agency || '';
+          document.getElementById('p-gsm').value = job.punch_job.gsm || '';
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert("Failed to load job data.");
+      }
+    }
+
+    // ── AUTO-CALC Logic (Formula Engine) ───────────────────────────────────
+    function parseSize(s) {
+      if (!s) return null;
+      const m = s.toLowerCase().match(/(\d+\.?\d*)\s*x\s*(\d+\.?\d*)/);
+      if (!m) return null;
+      const w = parseFloat(m[1]);
+      const h = parseFloat(m[2]);
+      return { a: Math.min(w, h), b: Math.max(w, h) };
+    }
+
+    function calculateResultSize() {
+      const cutPartStr = document.getElementById('f-cutpart').value;
+      const cutSizeStr = document.getElementById('f-cutsize').value;
+      const p = parseSize(cutSizeStr);
+      
+      let resStr = cutSizeStr;
+      let multiplier = 1;
+
+      if (p) {
+        if (cutPartStr === '1') {
+          resStr = `${p.a}X${p.b}`;
+          multiplier = 1;
+        } else if (cutPartStr === '2') {
+          const newB = p.b / 2;
+          const sides = [p.a, newB].sort((x, y) => x - y);
+          resStr = `${sides[0]}X${sides[1]}`;
+          multiplier = 2;
+        } else if (cutPartStr === '3') {
+          const newB = p.b / 3;
+          const sides = [p.a, newB].sort((x, y) => x - y);
+          resStr = `${sides[0]}X${sides[1]}`;
+          multiplier = 3;
+        } else if (cutPartStr === '4') {
+          const newA = p.a / 2;
+          const newB = p.b / 2;
+          const sides = [newA, newB].sort((x, y) => x - y);
+          resStr = `${sides[0]}X${sides[1]}`;
+          multiplier = 4;
+        } else {
+          multiplier = parseInt(cutPartStr) || 1;
+        }
+      }
+
+      document.getElementById('f-result-size').value = resStr;
+      const rawTotal = parseInt(document.getElementById('f-total').value) || 0;
+      document.getElementById('f-cutqty').value = rawTotal * multiplier;
+      updatePrintingInfo();
+    }
+
+    function updatePrintingInfo() {
+      const qty = parseInt(document.getElementById('f-cutqty').value) || 0;
+      const type = document.getElementById('f-sides').value;
+      let plates = 1; let planned = qty;
+      if (type === 'S/S') { plates = 1; planned = qty * 1; }
+      else if (type === 'F/B' || type === 'G/P') { plates = 1; planned = qty * 2; }
+      else if (type === 'F+B') { plates = 2; planned = qty * 2; }
+      else if (type === 'B/S' || type === 'F/S') { plates = 1; planned = qty * 1; }
+      document.getElementById('f-plates').value = plates;
+      document.getElementById('f-pulling').value = planned;
+    }
+
+    // Listeners
+    document.getElementById('f-papersize').addEventListener('input', (e) => {
+      document.getElementById('f-cutsize').value = e.target.value;
+      calculateResultSize();
+    });
+    document.getElementById('f-cutsize').addEventListener('input', calculateResultSize);
+    document.getElementById('f-cutpart').addEventListener('change', calculateResultSize);
+    document.getElementById('f-sides').addEventListener('change', calculateResultSize);
+
+    document.querySelectorAll('.calc-input').forEach(el => {
+      el.addEventListener('input', () => {
+        const r = parseInt(document.getElementById('f-ream').value) || 0;
+        const s = parseInt(document.getElementById('f-spr').value) || 0;
+        const l = parseInt(document.getElementById('f-loose').value) || 0;
+        document.getElementById('f-total').value = (r * s) + l;
+        calculateResultSize();
+      });
+    });
+
+    function buildPayload() {
+      const payload = {
+        date: document.getElementById('f-date').value,
+        job_name: document.getElementById('f-jobname').value,
+        bill_no: document.getElementById('f-billno').value,
+        paper_code: document.getElementById('f-papercode').value,
+        paper_size: document.getElementById('f-papersize').value,
+        gsm_desc: document.getElementById('f-gsm').value,
+        ream: parseInt(document.getElementById('f-ream').value) || 0,
+        sheet_per_ream: parseInt(document.getElementById('f-spr').value) || 0,
+        loose_sheets: parseInt(document.getElementById('f-loose').value) || 0,
+        total_sheets: parseInt(document.getElementById('f-total').value) || 0,
+        is_waiting_for_paper: document.getElementById('f-waiting').checked,
+        cut_size: document.getElementById('f-cutsize').value,
+        qty: parseInt(document.getElementById('f-cutqty').value) || 0,
+        cut_part: parseInt(document.getElementById('f-cutpart').value) || 1,
+        printing: document.getElementById('f-sides').value,
+        operator_name: document.getElementById('f-operator').value,
+        plate_size: document.getElementById('f-platesize').value,
+        pulling: document.getElementById('f-pulling').value,
+        job_remark: document.getElementById('f-remarks').value,
+      };
+
+      // Lamination (Optional)
+      const lamProcess = document.getElementById('l-process').value;
+      if (lamProcess) {
+        payload.lam_job = {
+          process: lamProcess,
+          size: document.getElementById('l-size').value,
+          side: document.getElementById('l-side').value,
+          agency_name: document.getElementById('l-agency').value,
+          pulling: parseInt(document.getElementById('l-pulling').value) || 0
+        };
+      } else {
+        payload.lam_job = null;
+      }
+
+      const punchPayload = {
+        dye: document.getElementById('p-dye').value.trim(),
+        size: document.getElementById('p-size').value.trim(),
+        qty: parseInt(document.getElementById('p-qty').value) || 0,
+        agency: document.getElementById('p-agency').value.trim(),
+        gsm: document.getElementById('p-gsm').value.trim()
+      };
+      const hasPunching = Boolean(punchPayload.dye || punchPayload.size || punchPayload.qty || punchPayload.agency || punchPayload.gsm);
+      payload.punch_job = hasPunching ? punchPayload : null;
+      return payload;
+    }
+
+    const FIELD_LABELS = {
+      date: 'Date',
+      job_name: 'Job Name',
+      bill_no: 'Bill No.',
+      paper_code: 'Paper Code',
+      paper_size: 'Paper Size',
+      gsm_desc: 'GSM / Description',
+      ream: 'Ream',
+      sheet_per_ream: 'Sheets / Ream',
+      loose_sheets: 'Loose Sheets',
+      total_sheets: 'Total Sheets',
+      is_waiting_for_paper: 'Waiting For Paper',
+      cut_size: 'Cut Size',
+      qty: 'Qty',
+      cut_part: 'Cut Part',
+      printing: 'Printing Run Type',
+      operator_name: 'Plate Supplier',
+      plate_size: 'Plate Size',
+      pulling: 'Planned Pulling',
+      job_remark: 'Remarks'
+    };
+
+    function displayValue(value) {
+      if (value === true) return 'Yes';
+      if (value === false) return 'No';
+      if (value === null || value === undefined || value === '') return 'Blank';
+      return String(value);
+    }
+
+    function summarizeSubRecord(record, fields) {
+      if (!record) return 'None';
+      const parts = fields
+        .map(field => displayValue(record[field]))
+        .filter(value => value !== 'Blank');
+      return parts.length ? parts.join(' / ') : 'None';
+    }
+
+    function buildChanges(payload) {
+      const changes = [];
+      Object.entries(FIELD_LABELS).forEach(([key, label]) => {
+        const before = displayValue(originalJob ? originalJob[key] : '');
+        const after = displayValue(payload[key]);
+        if (before !== after) changes.push({ label, before, after });
+      });
+
+      const lamBefore = summarizeSubRecord(originalJob?.lam_job, ['process', 'size', 'side', 'agency_name', 'pulling']);
+      const lamAfter = summarizeSubRecord(payload.lam_job, ['process', 'size', 'side', 'agency_name', 'pulling']);
+      if (lamBefore !== lamAfter) changes.push({ label: 'Lamination', before: lamBefore, after: lamAfter });
+
+      const punchBefore = summarizeSubRecord(originalJob?.punch_job, ['dye', 'size', 'qty', 'agency', 'gsm']);
+      const punchAfter = summarizeSubRecord(payload.punch_job, ['dye', 'size', 'qty', 'agency', 'gsm']);
+      if (punchBefore !== punchAfter) changes.push({ label: 'Punching / Die', before: punchBefore, after: punchAfter });
+
+      return changes;
+    }
+
+    function confirmUpdate(changes) {
+      return new Promise(resolve => {
+        const modal = document.getElementById('update-modal');
+        const list = document.getElementById('update-change-list');
+        const closeBtn = document.getElementById('update-modal-close');
+        const cancelBtn = document.getElementById('update-cancel-btn');
+        const confirmBtn = document.getElementById('update-confirm-btn');
+
+        list.innerHTML = '';
+        if (!changes.length) {
+          const empty = document.createElement('div');
+          empty.className = 'empty-state';
+          empty.innerHTML = '<div class="empty-title">No changes found</div><div class="empty-subtitle">The form matches the saved job record.</div>';
+          list.appendChild(empty);
+          confirmBtn.textContent = 'OK';
+        } else {
+          confirmBtn.textContent = 'YES, UPDATE';
+          changes.forEach(change => {
+            const row = document.createElement('div');
+            row.className = 'update-change-row';
+
+            const label = document.createElement('div');
+            label.className = 'update-change-label';
+            label.textContent = `${change.label}:`;
+
+            const before = document.createElement('span');
+            before.className = 'update-value before';
+            before.textContent = change.before;
+
+            const arrow = document.createElement('span');
+            arrow.className = 'update-arrow';
+            arrow.textContent = '->';
+
+            const after = document.createElement('span');
+            after.className = 'update-value after';
+            after.textContent = change.after;
+
+            row.appendChild(label);
+            row.appendChild(before);
+            row.appendChild(arrow);
+            row.appendChild(after);
+            list.appendChild(row);
+          });
+        }
+
+        const cleanup = (result) => {
+          modal.classList.remove('open');
+          modal.setAttribute('aria-hidden', 'true');
+          closeBtn.onclick = null;
+          cancelBtn.onclick = null;
+          confirmBtn.onclick = null;
+          resolve(result);
+        };
+
+        closeBtn.onclick = () => cleanup(false);
+        cancelBtn.onclick = () => cleanup(false);
+        confirmBtn.onclick = () => cleanup(changes.length > 0);
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+      });
+    }
+
+    document.getElementById('job-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const payload = buildPayload();
+      const changes = buildChanges(payload);
+      const confirmed = await confirmUpdate(changes);
+      if (!confirmed) return;
+
+      const btn = document.getElementById('save-btn');
+      btn.disabled = true; btn.textContent = 'UPDATING...';
+
+      try {
+        const res = await fetch(`${API_BASE}/jobs/${jobID}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) throw new Error();
+        alert("Job updated successfully!");
+        location.href = `jobcard.html?job=${jobID}`;
+      } catch (err) {
+        alert("Failed to update job.");
+        btn.disabled = false; btn.textContent = 'UPDATE JOB RECORD';
+      }
+    };
+
+    function toggleSection(id) {
+      document.getElementById(id).classList.toggle('open');
+    }
+
+    init();
+  </script>
+
+  <style>
+    .section-content { display: none; padding: 15px; background: rgba(255,255,255,0.02); }
+    .section-content.open { display: block; }
+    .sticky-bottom { position: sticky; bottom: 0; background: var(--surface); padding: 16px; border-top: 1px solid var(--border); box-shadow: 0 -4px 20px rgba(0,0,0,0.3); border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+    .update-modal-card { max-width: 680px; }
+    .update-change-list { display: grid; gap: 10px; }
+    .update-change-row {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface2);
+      padding: 12px;
+      display: grid;
+      grid-template-columns: minmax(110px, max-content) minmax(0, 1fr) auto minmax(0, 1fr);
+      gap: 8px;
+      align-items: center;
+    }
+    .update-change-label {
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .update-arrow {
+      color: var(--primary);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .update-value {
+      color: var(--text2);
+      font-size: 13px;
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+    .update-value.after { color: var(--green); }
+    @media (max-width: 560px) {
+      .update-change-row { grid-template-columns: 1fr; }
+      .modal-footer { flex-direction: column; }
+    }
+  </style>
+
+</body>
+</html>
