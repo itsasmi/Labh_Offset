@@ -39,7 +39,10 @@ labh-offset/
   │     ├── outward.py         ← Read-only outward register entries (auto-managed)
   │     ├── masters.py         ← Parties, paper codes, and operators CRUD
   │     ├── pending.py         ← Live shop floor queue queue filters
-  │     └── backups.py         ← Automated & manual database archiving pipelines
+  │     ├── backups.py         ← Automated & manual database archiving pipelines
+  │     ├── bill_ctcp.py       ← Dedicated rapid-entry endpoints for Bill and CTCP numbers
+  │     ├── auth_routes.py     ← Session-based authentication and login endpoints
+  │     └── users.py           ← System user credentials management
   │
   ├── pdf/                     ← Server-side A4 slip generation
   │     ├── generator.py       ← Jinja2 layout rendering & WeasyPrint compilation
@@ -53,12 +56,16 @@ labh-offset/
         ├── jobcard.html       ← Job card search & visual block display
         ├── print.html         ← Dedicated browser print dialog template for A4 slips
         ├── inward.html        ← Log paper received (with arrived vs pending status)
+        ├── outward.html       ← Read-only auto-managed consumption register
         ├── stock.html         ← Stock balances, available catalog, and low stock thresholds
         ├── ledger.html        ← Party transactional ledger (chronological + running balance)
         ├── pending.html       ← Shop floor machine-queue and status cycler
+        ├── waiting.html       ← Queue of jobs waiting for party/company paper to arrive
+        ├── bill_ctcp.html     ← Rapid data-entry UI for logging completed Bill and CTCP numbers
         ├── masters.html       ← Manage clients, paper masters, and shop staff
         ├── settings.html      ← Color theme selector (Light vs Dark)
         ├── backups.html       ← Visual management interface for downloading system backups
+        ├── login.html         ← Secure authentication gateway for staff access
         │
         ├── style.css          ← Core design system (DM Sans font, responsive variables, animations)
         ├── theme.js           ← Non-flash head script maintaining theme state
@@ -224,6 +231,14 @@ The system safeguards data via an integrated backup scheduler:
 ### Backups Router (`/api/backups`)
 *   `GET /api/backups/logs` - Fetches the history of all completed system backups.
 *   `POST /api/backups/generate` - Triggers an asynchronous manual background backup snapshot.
+
+### Bill & CTCP Router (`/api`)
+*   `GET /api/pending-bill-ctcp` - Fetches completed jobs that are missing their Bill No or CTCP Bill No.
+*   `PUT /api/update-bill-ctcp/{jobId}` - Rapidly updates just the bill fields for a job without touching core attributes.
+
+### Authentication Router
+*   `POST /login` - Exchanges credentials for a secure HTTP-only session cookie.
+*   `POST /logout` - Clears the authentication session.
 
 ---
 
