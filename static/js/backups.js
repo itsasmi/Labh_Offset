@@ -31,12 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const fileName = filePath.substring(filePath.lastIndexOf('\\') + 1) || filePath.substring(filePath.lastIndexOf('/') + 1) || filePath;
                 
                 tr.innerHTML = `
-                    <td class="td-mono">${log.id}</td>
-                    <td style="font-weight: 500;">${log.backup_date}</td>
-                    <td><span class="status-badge ${statusClass}">${log.status.toUpperCase()}</span>${errorText}</td>
-                    <td><div class="filepath-cell" title="${filePath}">${fileName || '—'}</div></td>
-                    <td><span class="status-badge ${uploadClass}">${(log.upload_status || 'UNKNOWN').toUpperCase()}</span></td>
-                    <td style="font-size: 11px; color: var(--text3); text-align: right;">${log.created_at}</td>
+                    <td data-label="ID" class="td-mono">${log.id}</td>
+                    <td data-label="BACKUP DATE" style="font-weight: 500;">${log.backup_date}</td>
+                    <td data-label="STATUS"><span class="status-badge ${statusClass}">${log.status.toUpperCase()}</span>${errorText}</td>
+                    <td data-label="LOCAL FILE"><div class="filepath-cell" title="${filePath}">${fileName || '—'}</div></td>
+                    <td data-label="CLOUD UPLOAD"><span class="status-badge ${uploadClass}">${(log.upload_status || 'UNKNOWN').toUpperCase()}</span></td>
+                    <td data-label="TIMESTAMP" style="font-size: 11px; color: var(--text3); text-align: right;">${log.created_at}</td>
                 `;
                 tableBody.appendChild(tr);
             });
