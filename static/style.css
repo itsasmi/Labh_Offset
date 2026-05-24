@@ -446,11 +446,15 @@ ul { list-style: none; }
   .stock-card-right {
     text-align: left !important;
   }
+  .stock-card-right > div:last-child {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
   .stock-card-right .btn {
-    margin-top: 10px !important;
-    display: block !important;
+    margin-top: 0 !important;
+    display: flex !important;
     width: 100%;
-    text-align: center;
+    justify-content: center;
   }
 }
 
@@ -576,6 +580,10 @@ ul { list-style: none; }
   font-weight: 600; font-size: 15px; border-bottom: 1px solid var(--border2);
 }
 .menu-item:active { background: var(--surface2); }
+.menu-items {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
 
 /* --- Modals / Overlays --- */
 .modal-overlay {
