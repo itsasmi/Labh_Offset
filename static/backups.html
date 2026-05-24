@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - Backups</title>
+  <link rel="stylesheet" href="style.css?v=5">
+  <style>
+    .backup-hero {
+      background: linear-gradient(135deg, var(--surface2) 0%, var(--surface1) 100%);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 30px;
+      margin-bottom: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+    .backup-hero-info h2 { margin: 0 0 8px 0; font-size: 24px; color: var(--text); }
+    .backup-hero-info p { margin: 0; color: var(--text3); font-size: 14px; }
+    
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .status-success { background: rgba(0, 210, 106, 0.1); color: #00d26a; }
+    .status-skipped { background: rgba(240, 185, 11, 0.1); color: #f0b90b; }
+    .status-failed { background: rgba(246, 70, 93, 0.1); color: #f6465d; }
+    
+    .filepath-cell {
+      max-width: 250px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: monospace;
+      color: var(--primary);
+      background: var(--surface2);
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: help;
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="index.html" class="back-btn" style="text-decoration: none; color: inherit;">
+        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+      </a>
+    </div>
+    <div class="topbar-center">
+      <h2>System Backups</h2>
+    </div>
+    <div class="topbar-right"></div>
+  </header>
+
+  <main class="container" style="padding-top: 80px;">
+    
+    <div class="backup-hero fade-up">
+      <div class="backup-hero-info">
+        <h2>Automated Archival System</h2>
+        <p>Full database snapshot to Excel. Scheduled for the last day of every month at 12:00 PM.</p>
+      </div>
+      <button class="btn btn-primary" id="btn-trigger-backup" style="white-space: nowrap; padding: 12px 24px; font-weight: bold; box-shadow: 0 4px 15px rgba(0, 102, 255, 0.3);">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="vertical-align: text-bottom; margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Trigger Manual Backup
+      </button>
+    </div>
+
+    <div class="table-container fade-up delay-1">
+      <table id="backups-table">
+        <thead>
+          <tr>
+            <th style="width: 60px;">ID</th>
+            <th style="width: 120px;">BACKUP DATE</th>
+            <th style="width: 120px;">STATUS</th>
+            <th>LOCAL FILE</th>
+            <th style="width: 140px;">CLOUD UPLOAD</th>
+            <th style="width: 160px; text-align: right;">TIMESTAMP</th>
+          </tr>
+        </thead>
+        <tbody id="backups-body">
+          <tr><td colspan="6"><div class="row-spinner"><div class="spinner"></div>Loading...</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <script src="js/backups.js"></script>
+</body>
+</html>

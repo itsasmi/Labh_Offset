@@ -287,3 +287,20 @@ class User(Base):
     password   = Column(Text, nullable=False)      # Hashed password
     is_admin   = Column(Boolean, default=False)
     created_at = Column(Text)
+
+
+# ── BACKUPS ───────────────────────────────────────────────────────────────────
+class BackupLog(Base):
+    """
+    Logs history of monthly automated database backups.
+    """
+    __tablename__ = "backup_logs"
+
+    id            = Column(Integer, primary_key=True, autoincrement=True)
+    backup_date   = Column(Text, nullable=False)
+    status        = Column(Text, nullable=False)      # 'success' | 'failed'
+    file_path     = Column(Text, nullable=True)       # path to local backup file
+    upload_status = Column(Text, nullable=True)       # 'success' | 'failed' | 'pending' | 'skipped'
+    error_message = Column(Text, nullable=True)
+    created_at    = Column(Text)
+

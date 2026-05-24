@@ -25,3 +25,8 @@ scratch/
 pdf/
 .dist/
 .sixth/
+
+# Backups
+backups/
+gdrive_credentials.json
+Latest_data.xlsx

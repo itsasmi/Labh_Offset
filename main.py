@@ -25,9 +25,33 @@ from fastapi.responses import JSONResponse, RedirectResponse
 
 from database import engine, Base, SessionLocal
 from routers import jobs, masters, stock, inward, outward, pending
-from routers import jobcard, auth_routes, users, bill_ctcp
+from routers import jobcard, auth_routes, users, bill_ctcp, backups
 from models import User
 from auth import get_password_hash
+
+from apscheduler.schedulers.background import BackgroundScheduler
+import calendar
+from datetime import timedelta
+from backup_manager.orchestrator import run_backup_pipeline
+
+def scheduled_backup_check():
+    """Runs daily at 12:00 PM. Triggers backup if it's the last day of month (and not Sunday), or 1st of month (if last day was Sunday)."""
+    now = datetime.now()
+    last_day_of_month = calendar.monthrange(now.year, now.month)[1]
+    is_last_day = (now.day == last_day_of_month)
+    
+    should_run = False
+    if is_last_day:
+        if now.weekday() != 6: # 6 is Sunday
+            should_run = True
+    elif now.day == 1:
+        yesterday = now - timedelta(days=1)
+        if yesterday.weekday() == 6:
+            should_run = True
+            
+    if should_run:
+        print("[Scheduler] Triggering Automated Monthly Backup...")
+        run_backup_pipeline()
 
 # ── CREATE APP ────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -76,7 +100,14 @@ def startup():
     """
     Base.metadata.create_all(bind=engine)
     seed_admin_users()
+    
+    # Initialize APScheduler
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(scheduled_backup_check, 'cron', hour=12, minute=0)
+    scheduler.start()
+    
     print("[OK] Database ready and admins seeded")
+    print("[OK] APScheduler started for automated backups")
     print("[OK] Labh Offset server started")
     print("  Open: http://localhost:8000")
     print("  Docs: http://localhost:8000/docs")
@@ -92,6 +123,7 @@ app.include_router(pending.router)
 app.include_router(auth_routes.router)
 app.include_router(users.router)
 app.include_router(bill_ctcp.router)
+app.include_router(backups.router)
 
 # ── HEALTH CHECK ─────────────────────────────────────────────────────────────
 @app.get("/api/health")
