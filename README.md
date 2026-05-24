@@ -38,7 +38,8 @@ labh-offset/
   │     ├── inward.py          ← Inward challan tracking and arrival logger
   │     ├── outward.py         ← Read-only outward register entries (auto-managed)
   │     ├── masters.py         ← Parties, paper codes, and operators CRUD
-  │     └── pending.py         ← Live shop floor queue queue filters
+  │     ├── pending.py         ← Live shop floor queue queue filters
+  │     └── backups.py         ← Automated & manual database archiving pipelines
   │
   ├── pdf/                     ← Server-side A4 slip generation
   │     ├── generator.py       ← Jinja2 layout rendering & WeasyPrint compilation
@@ -57,6 +58,7 @@ labh-offset/
         ├── pending.html       ← Shop floor machine-queue and status cycler
         ├── masters.html       ← Manage clients, paper masters, and shop staff
         ├── settings.html      ← Color theme selector (Light vs Dark)
+        ├── backups.html       ← Visual management interface for downloading system backups
         │
         ├── style.css          ← Core design system (DM Sans font, responsive variables, animations)
         ├── theme.js           ← Non-flash head script maintaining theme state
@@ -94,6 +96,12 @@ The jobs listing endpoint (`GET /api/jobs`) integrates advanced querying:
 *   **Fuzzy Global Query**: Fuzzy searches across party names, party codes, job names, bill numbers, and remarks in a single search bar.
 *   **Paper Query**: Directly isolate jobs using specific codes, sizes, or GSMs.
 *   **Sub-Record Scopes**: Filters to locate jobs based on lamination status (`has_lam`) or punching status (`has_punch`).
+
+### 5. Automated Database Archival
+The system safeguards data via an integrated backup scheduler:
+*   **Cron-based Automations**: Configured to run silently every night to dump the SQLite/PostgreSQL database into an encrypted snapshot.
+*   **Background Jobs Threading**: Manual backups triggered via the API (`/api/backups/generate`) execute via Python's `threading.Thread`, preventing HTTP request timeouts during heavy snapshot operations.
+*   **History Logs**: Complete audit trail of past successful database snapshots accessible through the frontend.
 
 ---
 
@@ -212,6 +220,10 @@ The jobs listing endpoint (`GET /api/jobs`) integrates advanced querying:
 *   `POST /api/inward` - Creates inward shipments. Supports starting them as `'pending'` or `'received'`.
 *   `PUT /api/inward/{id}` - Updates delivery challan fields.
 *   `DELETE /api/inward/{id}` - Deletes inward deliveries, recalculating affected paper codes.
+
+### Backups Router (`/api/backups`)
+*   `GET /api/backups/logs` - Fetches the history of all completed system backups.
+*   `POST /api/backups/generate` - Triggers an asynchronous manual background backup snapshot.
 
 ---
 
