@@ -1,10 +1,10 @@
-const CACHE_NAME = 'labh-offset-v3';
+const CACHE_NAME = 'labh-offset-v4';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/style.css?v=5',
   '/theme.js?v=5',
-  '/Icon/logo-img.png',
+  '/Icon/labhoffset.png',
   '/manifest.json'
 ];
 

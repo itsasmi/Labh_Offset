@@ -232,7 +232,7 @@
 
   <header class="topbar">
     <div class="topbar-left">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
     </div>
     <div class="topbar-center uppercase">Job Card</div>
     <div class="topbar-right">
@@ -245,17 +245,34 @@
   <div class="menu-overlay" id="menu-overlay"></div>
   <nav class="side-menu" id="side-menu">
     <div class="side-menu-header">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
-      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     </div>
-    <div class="menu-items">
-    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
-
-      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
-      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
-      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
-      <div class="menu-divider"></div>
-      
+                <div class="menu-items" style="display: flex; flex-direction: column; flex: 1;">
+      <a href="waiting.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Waiting for Paper
+      </a>
+      <a href="bill_ctcp.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Bill & CTCP Entry
+      </a>
+      <a href="inward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Inward Register
+      </a>
+      <a href="outward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Outward Register
+      </a>
+      <a href="masters.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        Master Data
+      </a>
+      <a href="settings.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Settings
+      </a>
     </div>
   </nav>
 
@@ -294,7 +311,8 @@
           <span class="badge badge-secondary" id="r-status">pending</span>
           <span class="badge" id="r-source" style="background:rgba(100,116,139,0.15); color:var(--text2);">party paper</span>
           <span class="badge" id="r-paper-state" style="background:var(--green-dim); color:var(--green);">PAPER AVAILABLE</span>
-          <span class="badge" id="r-bill" style="background:rgba(100,116,139,0.1); color:var(--text3);">—</span>
+          <span class="badge" id="r-bill" style="background:rgba(100,116,139,0.1); color:var(--text3); display:none;"></span>
+          <span class="badge" id="r-ctcp" style="background:rgba(100,116,139,0.1); color:var(--text3); display:none;"></span>
         </div>
       </div>
 
@@ -437,6 +455,27 @@
   <script>
     const API = '/api';
 
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        let y, m, d;
+        if (parts[0].length === 4) {
+          y = parts[0];
+          m = parts[1];
+          d = parts[2];
+        } else if (parts[2].length === 4) {
+          d = parts[0];
+          m = parts[1];
+          y = parts[2];
+        } else {
+          return dateStr;
+        }
+        return `${d.padStart(2, '0')}-${m.padStart(2, '0')}-${y}`;
+      }
+      return dateStr;
+    }
+
     // Menu
     ['hamburger-btn','menu-close-btn','menu-overlay'].forEach(id => {
       document.getElementById(id)?.addEventListener('click', () => {
@@ -487,7 +526,7 @@
         // Identity
         setText('r-party',   d.party_name);
         setText('r-jobname', d.job_name);
-        setText('r-date',    d.date);
+        setText('r-date',    formatDate(d.date));
         document.getElementById('r-badge').textContent = `#${d.job_id}`;
         const statusEl = document.getElementById('r-status');
         statusEl.textContent = (d.status || 'pending').toUpperCase();
@@ -504,7 +543,21 @@
           paperState.style.background = 'var(--green-dim)';
           paperState.style.color = 'var(--green)';
         }
-        document.getElementById('r-bill').textContent = d.bill_no || 'No Bill';
+        const bEl = document.getElementById('r-bill');
+        if (d.bill_no && d.bill_no.trim() !== '') {
+          bEl.textContent = `Bill: ${d.bill_no}`;
+          bEl.style.display = 'inline-block';
+        } else {
+          bEl.style.display = 'none';
+        }
+
+        const cEl = document.getElementById('r-ctcp');
+        if (d.ctcp_bill_no && d.ctcp_bill_no.trim() !== '') {
+          cEl.textContent = `CTCP: ${d.ctcp_bill_no}`;
+          cEl.style.display = 'inline-block';
+        } else {
+          cEl.style.display = 'none';
+        }
 
         // Paper
         setText('r-paper', d.gsm_desc || '');
@@ -520,7 +573,12 @@
         setText('r-cutpart',  d.cut_part);
         document.getElementById('r-qty').textContent = (d.qty || 0).toLocaleString();
         setText('r-printing', d.printing);
-        document.getElementById('r-pulling').textContent = d.pulling || 0;
+        let pullingText = (d.pulling || '0').toString();
+        if (pullingText.match(/ACTUAL:\s*[1-9]/i)) {
+          document.getElementById('r-pulling').textContent = pullingText.replace(/PLANNED:/gi, '').replace(/\|\s*ACTUAL:/gi, ' | ACTUAL:').trim();
+        } else {
+          document.getElementById('r-pulling').textContent = pullingText.split('|')[0].replace(/PLANNED:/gi, '').trim();
+        }
         setText('r-platesize', d.plate_size);
         setText('r-plateproc', d.plate_process);
         setText('r-operator',  d.operator_name);
@@ -595,7 +653,7 @@
         setText('r-remarks', d.job_remark);
 
         // Buttons
-        document.getElementById('btn-print').onclick = () => window.open(`print.html?job=${d.job_id}`, '_blank');
+        document.getElementById('btn-print').onclick = () => window.open(`print.html?job=${d.job_id}&v=${Date.now()}`, '_blank');
         document.getElementById('btn-edit').onclick  = () => location.href = `edit.html?job=${d.job_id}`;
 
         result.classList.add('visible');

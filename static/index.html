@@ -13,9 +13,9 @@
   <!-- Top Bar -->
   <header class="topbar">
     <div class="topbar-left">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
     </div>
-    <div class="topbar-center">DASHBOARD</div>
+    <div class="topbar-center"></div>
     <div class="topbar-right">
       <button class="hamburger" id="hamburger-btn" aria-label="Menu">
         <span></span><span></span><span></span>
@@ -27,80 +27,122 @@
   <div class="menu-overlay" id="menu-overlay"></div>
   <nav class="side-menu" id="side-menu">
     <div class="side-menu-header">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
-      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     </div>
-    <div class="menu-items">
-    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
-
-      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
-      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
-      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
-      <div class="menu-divider"></div>
-      
+                <div class="menu-items" style="display: flex; flex-direction: column; flex: 1;">
+      <a href="waiting.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Waiting for Paper
+      </a>
+      <a href="bill_ctcp.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Bill & CTCP Entry
+      </a>
+      <a href="inward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Inward Register
+      </a>
+      <a href="outward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Outward Register
+      </a>
+      <a href="masters.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        Master Data
+      </a>
+      <a href="settings.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Settings
+      </a>
     </div>
   </nav>
 
   <main class="container">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-      <div style="font-weight: 500; font-size: 14px; color: var(--text);">Good morning</div>
-      <div id="current-date" style="font-size: 12px; color: var(--text2);" class="mono"></div>
-    </div>
-
-    <!-- Stat Cards -->
-    <div class="stat-cards-container" id="stat-cards">
-      <div class="stat-card skeleton fade-up delay-1" style="height: 66px"></div>
-      <div class="stat-card skeleton fade-up delay-2" style="height: 66px"></div>
-      <div class="stat-card skeleton fade-up delay-3" style="height: 66px"></div>
-    </div>
-
-    <!-- Quick Actions -->
-    <div style="font-size: 10px; font-weight: 600; color: var(--text2); letter-spacing: 0.1em; margin-bottom: 12px;" class="uppercase">Quick Actions</div>
-    <div class="quick-actions-grid">
-      <div class="action-card fade-up delay-1" onclick="location.href='entry.html'">
-        <div class="action-icon" style="color: var(--orange)">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+    <!-- Search Hero -->
+    <div class="search-hero fade-up">
+      <div class="search-hero-content">
+        <h2 class="search-hero-title">Find job records, parties, materials, and invoices instantly.</h2>
+        <div class="search-input-wrapper">
+          <input type="text" class="form-control" id="f-global-search" placeholder="Search by Job Name, Bill No, Party...">
+          <button class="search-btn" id="btn-search-trigger">Search</button>
         </div>
-        <div class="action-label">+ NEW JOB</div>
-      </div>
-      <div class="action-card fade-up delay-2" onclick="location.href='jobcard.html'">
-        <div class="action-icon" style="color: var(--blue)">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        </div>
-        <div class="action-label">PRINT CARD</div>
-      </div>
-      <div class="action-card fade-up delay-3" onclick="location.href='inward.html'">
-        <div class="action-icon" style="color: var(--green)">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        </div>
-        <div class="action-label">LOG INWARD</div>
-      </div>
-      <div class="action-card fade-up delay-4" onclick="location.href='stock.html'">
-        <div class="action-icon" style="color: var(--teal)">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-        </div>
-        <div class="action-label">VIEW STOCK</div>
       </div>
     </div>
 
-    <!-- Today's Jobs -->
-    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; margin-top: 24px;">
-      <div style="font-size: 10px; font-weight: 600; color: var(--text2); letter-spacing: 0.1em;" class="uppercase">Today's Jobs</div>
-      <div style="flex-grow: 1; height: 1px; background: var(--border2); margin-left: 12px;"></div>
+    <!-- Filter Chips -->
+    <div class="filter-chips-container fade-up delay-1">
+      <input type="text" list="party-list" class="filter-chip" id="f-party" placeholder="Party Code...">
+      <datalist id="party-list"></datalist>
+      
+      <input type="text" list="paper-list" class="filter-chip" id="f-paper" placeholder="Paper Code...">
+      <datalist id="paper-list"></datalist>
+
+      <select class="filter-chip" id="f-time">
+        <option value="">All Time</option>
+        <option value="today" selected>Today</option>
+        <option value="last_7">Last 7 Days</option>
+        <option value="last_30">Last 30 Days</option>
+        <option value="last_3_months">Last 3 Months</option>
+        <option value="last_6_months">Last 6 Months</option>
+        <option value="curr_year">This Year</option>
+        <option value="custom">Custom Date Range</option>
+      </select>
+
+      <select class="filter-chip" id="f-supplier">
+        <option value="">All Suppliers</option>
+        <option value="Shantaram">Shantaram</option>
+        <option value="Parth">Parth</option>
+      </select>
+
+      <select class="filter-chip" id="f-machine">
+        <option value="">All Machines</option>
+        <option value="635x775">Big Machine (635x775)</option>
+        <option value="550x670">Small Machine (550x670)</option>
+        
+      </select>
+
+      <select class="filter-chip" id="f-limit">
+        <option value="10">Show 10</option>
+        <option value="50" selected>Show 50</option>
+        <option value="100">Show 100</option>
+        <option value="custom">Custom Range</option>
+      </select>
+
+      <input type="number" class="filter-chip-input" id="f-limit-custom" min="1" placeholder="Enter limit..." style="display: none;">
+    </div>
+
+    <!-- Custom Date Range -->
+    <div class="date-range-container" id="custom-date-container">
+      <div class="date-input-group">
+        <label>From Date</label>
+        <input type="date" class="form-control" id="f-date-from">
+      </div>
+      <div class="date-input-group">
+        <label>To Date</label>
+        <input type="date" class="form-control" id="f-date-to">
+      </div>
+    </div>
+
+    <!-- Search Results -->
+    <div class="results-header-row">
+      <div class="results-title-badge uppercase" id="results-title">Recent Jobs</div>
+      <div class="results-line"></div>
     </div>
     
-    <div class="table-container fade-up delay-4">
-      <table id="today-jobs-table">
+    <div class="table-container fade-up delay-2">
+      <table id="jobs-table">
         <thead>
           <tr>
             <th>JOB#</th>
             <th>PARTY</th>
             <th>JOB NAME</th>
-            <th>STATUS</th>
+            <th>PAPER / SIZE</th>
+            <th class="td-right">ACTION</th>
           </tr>
         </thead>
-        <tbody id="today-jobs-body">
-          <tr><td colspan="4"><div class="row-spinner"><div class="spinner"></div>Loading...</div></td></tr>
+        <tbody id="jobs-body">
+          <tr><td colspan="5"><div class="row-spinner"><div class="spinner"></div>Loading...</div></td></tr>
         </tbody>
       </table>
     </div>
@@ -131,9 +173,6 @@
   </nav>
 
   <script>
-    // Set Current Date
-    const dateOpts = { day: 'numeric', month: 'short', year: 'numeric' };
-    document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-GB', dateOpts);
 
     // Hamburger Menu Logic
     const hamburgerBtn = document.getElementById('hamburger-btn');
@@ -152,100 +191,227 @@
 
     const API_BASE = '/api';
 
-    // Fetch Dashboard Stats
-    async function fetchStats() {
-      try {
-        const res = await fetch(`${API_BASE}/dashboard`);
-        if (!res.ok) throw new Error('API Error');
-        const data = await res.json();
-        
-        const statCards = document.getElementById('stat-cards');
-        statCards.innerHTML = '';
-        
-        // Card 1: Today's Jobs
-        const tJobs = data.today_jobs || 0;
-        let c1 = 'text3';
-        if (tJobs > 0) c1 = 'primary';
-        
-        // Card 2: Pending
-        const pending = (data.pending_jobs || 0) + (data.in_progress_jobs || 0);
-        let c2 = '';
-        if (pending > 5) c2 = 'warning';
-        else if (pending === 0) c2 = 'good';
-        
-        // Card 3: Alerts
-        const alerts = (data.low_party_stock_count || 0) + (data.low_company_stock_count || 0);
-        let c3 = 'good';
-        if (alerts > 0) c3 = 'danger';
+    // Filters & Inputs
+    const fGlobal = document.getElementById('f-global-search');
+    const fParty = document.getElementById('f-party');
+    const fPaper = document.getElementById('f-paper');
+    const fTime = document.getElementById('f-time');
+    const fSupplier = document.getElementById('f-supplier');
+    const fMachine = document.getElementById('f-machine');
+    const fLimit = document.getElementById('f-limit');
+    const fLimitCustom = document.getElementById('f-limit-custom');
+    const customDateContainer = document.getElementById('custom-date-container');
+    const fDateFrom = document.getElementById('f-date-from');
+    const fDateTo = document.getElementById('f-date-to');
+    const resultsTitle = document.getElementById('results-title');
 
-        statCards.innerHTML = `
-          <div class="stat-card ${c1} fade-up">
-            <div class="stat-num ${tJobs > 0 ? 'text-orange' : 'text-muted'}">${tJobs}</div>
-            <div class="stat-label">TODAY'S JOBS</div>
-          </div>
-          <div class="stat-card ${c2} fade-up delay-1">
-            <div class="stat-num ${c2 === 'warning' ? 'text-amber' : (c2 === 'good' ? 'text-green' : '')}">${pending}</div>
-            <div class="stat-label">PENDING</div>
-          </div>
-          <div class="stat-card ${c3} fade-up delay-2">
-            <div class="stat-num ${c3 === 'danger' ? 'text-red' : 'text-green'}">${alerts}</div>
-            <div class="stat-label">STOCK ALERTS</div>
-          </div>
-        `;
+    // Debounce timer
+    let fetchTimer;
+
+    // Load Masters
+    async function loadMasters() {
+      try {
+        const [partyRes, paperRes] = await Promise.all([
+          fetch(`${API_BASE}/parties`),
+          fetch(`${API_BASE}/papers`)
+        ]);
+        if (partyRes.ok) {
+          const parties = await partyRes.json();
+          const list = document.getElementById('party-list');
+          list.innerHTML = '';
+          parties.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.party_code;
+            opt.label = p.party_name;
+            list.appendChild(opt);
+          });
+        }
+        if (paperRes.ok) {
+          const papers = await paperRes.json();
+          const list = document.getElementById('paper-list');
+          list.innerHTML = '';
+          papers.forEach(p => {
+            const opt = document.createElement('option');
+            opt.value = p.paper_code;
+            opt.label = p.description;
+            list.appendChild(opt);
+          });
+        }
       } catch (err) {
-        console.error('Failed to load stats', err);
-        document.getElementById('stat-cards').innerHTML = '<div class="stat-card"><div class="stat-num text-muted">-</div><div class="stat-label">ERROR LOADING</div></div>';
+        console.error('Failed to load masters', err);
       }
     }
 
-    // Fetch Today's Jobs
-    async function fetchTodayJobs() {
+    // Fetch Jobs
+    async function fetchJobs() {
       try {
-        const todayStr = new Date().toISOString().split('T')[0];
-        const res = await fetch(`${API_BASE}/jobs?limit=20&date_from=${todayStr}&date_to=${todayStr}`);
+        const tbody = document.getElementById('jobs-body');
+        tbody.innerHTML = `<tr><td colspan="5"><div class="row-spinner"><div class="spinner"></div>Loading...</div></td></tr>`;
+
+        // Calculate limit
+        let limitVal = 50;
+        if (fLimit.value === 'custom') {
+          limitVal = parseInt(fLimitCustom.value) || 50;
+        } else {
+          limitVal = parseInt(fLimit.value) || 50;
+        }
+
+        const params = new URLSearchParams({ limit: limitVal });
+        
+        if (fGlobal.value.trim()) params.set('global_query', fGlobal.value.trim());
+        if (fParty.value.trim()) params.set('party_code', fParty.value.trim());
+        if (fPaper.value.trim()) params.set('paper_query', fPaper.value.trim());
+        if (fSupplier.value.trim()) params.set('operator', fSupplier.value.trim());
+        if (fMachine.value.trim()) params.set('plate_size', fMachine.value.trim());
+        
+        const timeVal = fTime.value;
+        if (timeVal === 'custom') {
+          if (fDateFrom.value) params.set('date_from', fDateFrom.value);
+          if (fDateTo.value) params.set('date_to', fDateTo.value);
+        } else if (timeVal) {
+          params.set('time_filter', timeVal);
+        }
+
+        const res = await fetch(`${API_BASE}/jobs?${params.toString()}`);
         if (!res.ok) throw new Error('API Error');
         const data = await res.json();
         
-        const tbody = document.getElementById('today-jobs-body');
         tbody.innerHTML = '';
         
         if (data.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state">
-            <div class="empty-icon">📝</div>
-            <div class="empty-title">No jobs logged today</div>
-            <div class="empty-subtitle">New jobs will appear here</div>
-          </div></td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="5" style="padding: 60px 20px !important; text-align: center !important; border: none !important;">
+            <div class="empty-state" style="margin: 0 auto; display: flex; flex-direction: column; align-items: center;">
+              <div class="empty-icon" style="font-size:32px; margin-bottom:12px">🔍</div>
+              <div class="empty-title" style="font-size: 16px; color: var(--text);">No jobs found</div>
+              <div class="empty-subtitle" style="font-size: 12px; color: var(--text3);">Try adjusting your search or filters</div>
+            </div>
+          </td></tr>`;
+          resultsTitle.textContent = "0 Results";
           return;
         }
+
+        resultsTitle.textContent = `${data.length} Result${data.length !== 1 ? 's' : ''}`;
 
         data.forEach((job, index) => {
           const tr = document.createElement('tr');
           tr.className = 'clickable fade-up';
-          tr.style.animationDelay = `${index * 30}ms`;
+          tr.style.animationDelay = `${index * 20}ms`;
           tr.onclick = () => location.href = `jobcard.html?job=${job.id || job.job_id}`;
           
-          let statusBadge = `<span class="badge badge-info">${job.status}</span>`;
-          if (job.status === 'pending') statusBadge = `<span class="badge badge-pending">PEND</span>`;
-          if (job.status === 'in_progress') statusBadge = `<span class="badge badge-in_progress">PROG</span>`;
-          if (job.status === 'done') statusBadge = `<span class="badge badge-done">DONE</span>`;
+          let actionBtn = `<button class="btn" style="background: var(--surface2); color: var(--primary); padding: 10px 16px; font-size: 12px; font-weight: 700; text-decoration: none; border-radius: var(--radius-sm); border: 1px solid var(--border); width: 100%; max-width: 200px; margin: 0 auto;">VIEW ➔</button>`;
           
+          let paperInfo = '—';
+          if (job.gsm_desc || job.paper_size || job.paper_code) {
+            paperInfo = `<div style="font-size: 11px;">${job.gsm_desc || job.paper_code || ''}</div>
+                         <div style="font-size: 10px; color: var(--text3);">${job.paper_size || ''}</div>
+                         <div style="font-size: 10px; font-weight: 700; color: var(--orange); margin-top: 2px;">${job.total_sheets ? job.total_sheets.toLocaleString() + ' sheets' : ''}</div>`;
+          }
+
           tr.innerHTML = `
             <td class="td-mono" data-label="JOB#">${job.id || job.job_id}</td>
-            <td data-label="PARTY" style="max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${job.party_name}</td>
-            <td data-label="JOB NAME" style="max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${job.job_name}</td>
-            <td data-label="STATUS">${statusBadge}</td>
+            <td data-label="PARTY">${job.party_name}</td>
+            <td data-label="JOB NAME">${job.job_name}</td>
+            <td data-label="PAPER / SIZE">${paperInfo}</td>
+            <td style="padding: 16px !important; text-align: center !important; border: none !important;">${actionBtn}</td>
           `;
           tbody.appendChild(tr);
         });
       } catch (err) {
         console.error('Failed to load jobs', err);
-        document.getElementById('today-jobs-body').innerHTML = `<tr><td colspan="4" class="text-red">Error loading jobs</td></tr>`;
+        document.getElementById('jobs-body').innerHTML = `<tr><td colspan="4" class="text-red">Error loading jobs</td></tr>`;
       }
     }
 
+    // Event Listeners
+    function updateChipHighlights() {
+      [fParty, fPaper, fTime, fSupplier, fMachine, fLimit].forEach(el => {
+        if (el === fLimit) {
+          if (el.value === 'custom') {
+            el.classList.add('active-filter');
+          } else {
+            el.classList.remove('active-filter');
+          }
+        } else if (el.value !== "") {
+          el.classList.add('active-filter');
+        } else {
+          el.classList.remove('active-filter');
+        }
+      });
+
+      if (fLimit.value === 'custom' && fLimitCustom.value !== "") {
+        fLimitCustom.classList.add('active-filter');
+      } else {
+        fLimitCustom.classList.remove('active-filter');
+      }
+    }
+
+    function triggerFetch() {
+      updateChipHighlights();
+      clearTimeout(fetchTimer);
+      fetchTimer = setTimeout(fetchJobs, 300);
+    }
+
+    // Search Trigger button click
+    document.getElementById('btn-search-trigger').addEventListener('click', triggerFetch);
+
+    // Enter key press in text fields triggers search
+    [fGlobal, fParty, fPaper, fLimitCustom, fDateFrom, fDateTo].forEach(el => {
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          triggerFetch();
+        }
+      });
+    });
+
+    fGlobal.addEventListener('input', () => {
+      if (fGlobal.value.trim() !== "" && fTime.value === "today") {
+        fTime.value = "";
+      }
+      updateChipHighlights();
+    });
+    fParty.addEventListener('input', updateChipHighlights);
+    fParty.addEventListener('change', triggerFetch);
+    fPaper.addEventListener('input', updateChipHighlights);
+    fPaper.addEventListener('change', triggerFetch);
+    
+    fSupplier.addEventListener('change', triggerFetch);
+    fMachine.addEventListener('change', triggerFetch);
+    fDateFrom.addEventListener('change', triggerFetch);
+    fDateTo.addEventListener('change', triggerFetch);
+
+    fTime.addEventListener('change', () => {
+      if (fTime.value === 'custom') {
+        customDateContainer.classList.add('active');
+        // Set default dates if empty
+        if (!fDateFrom.value || !fDateTo.value) {
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (!fDateFrom.value) fDateFrom.value = todayStr;
+            if (!fDateTo.value) fDateTo.value = todayStr;
+        }
+      } else {
+        customDateContainer.classList.remove('active');
+      }
+      triggerFetch();
+    });
+
+    fLimit.addEventListener('change', () => {
+      if (fLimit.value === 'custom') {
+        fLimitCustom.style.display = 'inline-block';
+        fLimitCustom.value = '50';
+        fLimitCustom.focus();
+      } else {
+        fLimitCustom.style.display = 'none';
+      }
+      triggerFetch();
+    });
+
+    fLimitCustom.addEventListener('input', updateChipHighlights);
+
     // Init
-    fetchStats();
-    fetchTodayJobs();
+    loadMasters().then(() => {
+      updateChipHighlights();
+      fetchJobs();
+    });
   </script>
 </body>
 </html>

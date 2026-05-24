@@ -4,307 +4,1279 @@
   <script src="theme.js?v=5"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Job Card Slips - Labh Offset</title>
+  <title>Print Job Slips - Labh Offset</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Gujarati:wght@400;500;600;700;800&display=swap');
+
     :root {
-      --bg: #ffffff;
-      --text: #000000;
-      --border: #000000;
-      --header-bg: #e0e0e0;
+      /* Screen colors */
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --border: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --header-bg: #f8fafc;
+      --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #f0f0f0; 
-      padding: 20px;
+    [data-theme="dark"] {
+      --bg: #0b0f19;
+      --surface: #131b2e;
+      --border: #222f4b;
+      --text: #f8fafc;
+      --text-muted: #64748b;
+      --header-bg: #1b2640;
     }
 
-    .page {
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', 'Noto Sans Gujarati', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       background: var(--bg);
-      width: 210mm;
-      min-height: 297mm;
-      margin: 0 auto;
-      padding: 10mm;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background-image: radial-gradient(var(--border) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text);
+      padding-top: 100px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: background-color 0.3s, color 0.3s;
     }
 
-    .slip {
-      border: 2px solid var(--border);
-      margin-bottom: 10mm;
-      page-break-inside: avoid;
+    /* CONTROL BAR (SCREEN ONLY) */
+    .control-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 76px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 1000;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
     }
 
-    .slip-header {
+    [data-theme="dark"] .control-bar {
+      background: rgba(19, 27, 46, 0.8);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .brand img {
+      height: 48px;
+      width: auto;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
+    }
+
+    .controls-center {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .lang-selector {
+      display: flex;
       background: var(--header-bg);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .lang-btn {
+      padding: 8px 18px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 13px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .lang-btn.active {
+      background: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+
+    .lang-btn:hover:not(.active) {
+      color: var(--text);
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] .lang-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .btn-print {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+      color: #ffffff;
+      border: none;
+      font-weight: 700;
+      font-size: 14px;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      min-height: 44px;
+    }
+
+    .btn-print:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+    }
+
+    .btn-print:active {
+      transform: translateY(0);
+    }
+
+    /* PRINT PAGE WRAPPER */
+    .print-page {
+      background: var(--surface);
+      width: 210mm;
+      max-width: calc(100vw - 40px);
+      overflow-x: auto; /* Added to allow horizontal scrolling on mobile */
+      min-height: auto;
+      padding: 10mm 12mm;
+      box-shadow: var(--card-shadow), 0 20px 40px rgba(0,0,0,0.02);
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      margin: 20px 0 60px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6mm;
+      transition: background-color 0.3s;
+    }
+
+    /* SLIP CONTAINER */
+    .slip {
+      border: 1.5px solid #000000;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+      color: #000000;
+      display: flex;
+      flex-direction: column;
+      page-break-inside: avoid;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+      margin-bottom: 6mm;
+      min-width: 700px; /* Force A4-like minimum width to prevent table squishing */
+    }
+
+    /* SKEWED DESIGN HEADER */
+    .slip-header-container {
+      display: flex;
+      height: 100px;
+      border-bottom: 1.5px solid #000000;
+      position: relative;
+      background: #ffffff;
+      align-items: center;
+    }
+
+    .logo-box {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      z-index: 5;
+    }
+
+    .logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .header-main {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      z-index: 3;
+    }
+
+    .slip-title {
+      font-size: 19px;
+      font-weight: 850;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
       text-align: center;
-      padding: 8px;
-      font-size: 20px;
+      margin-bottom: 8px;
+      color: #000000;
+    }
+
+    .slip-meta-row {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-label {
+      font-weight: 800;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #334155;
+    }
+
+    .meta-val-box {
+      border: 1.5px solid #000000;
+      border-radius: 6px;
+      padding: 4px 12px;
+      min-width: 130px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+      background: #ffffff;
+    }
+
+    .meta-val-box.job-id {
+      color: #000000;
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    /* INFO ROW */
+    .slip-info-block {
+      display: flex;
+      flex-direction: column;
+      border-bottom: 1.5px solid #000000;
+    }
+
+    .info-row {
+      display: flex;
+      border-bottom: 1.5px solid #000000;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-cell {
+      flex: 1;
+      padding: 6px 12px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+    }
+
+    .info-cell.full-width {
+      flex: none;
+      width: 100%;
+    }
+
+    .info-cell .label {
       font-weight: 800;
       text-transform: uppercase;
-      border-bottom: 2px solid var(--border);
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      color: #334155;
+      flex: 0 0 115px;
+      white-space: nowrap;
     }
 
-    .data-table {
+    .info-cell .val-box {
+      flex-grow: 1;
+      border: 1.5px solid #000000;
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-weight: 800;
+      font-size: 14px;
+      background: #fafafa;
+    }
+
+    /* GRID CELLS (LABEL + VALUE IN ROW) */
+    .grid-row {
+      display: flex;
+      border-bottom: 1.5px solid #000000;
+    }
+
+    .grid-cell {
+      flex: 1;
+      border-right: 1.5px solid #000000;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .grid-cell:last-child {
+      border-right: none;
+    }
+
+    .grid-label {
+      font-weight: 800;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #334155;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .grid-val-box {
+      flex-grow: 1;
+      border: 1.5px solid #000000;
+      border-radius: 6px;
+      padding: 5px 10px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 14px;
+      background: #ffffff;
+      max-width: 180px;
+    }
+
+    /* TABLES */
+    .slip-table {
       width: 100%;
       border-collapse: collapse;
     }
 
-    .data-table td {
-      border: 1px solid var(--border);
-      padding: 6px 10px;
-      font-size: 13px;
-    }
-
-    .label {
-      font-weight: 700;
-      width: 150px;
-      background: #fafafa;
-    }
-
-    .val {
-      font-weight: 600;
-    }
-
-    .grid-row {
-      display: flex;
-    }
-
-    .grid-col {
-      flex: 1;
-      border: 1px solid var(--border);
-    }
-
-    .sub-header {
+    .slip-table th, .slip-table td {
+      border: 1.5px solid #000000;
+      padding: 7px 10px;
       text-align: center;
-      font-weight: 800;
-      font-size: 14px;
-      padding: 4px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .col-header {
-      font-size: 10px;
-      font-weight: 800;
-      text-align: center;
-      text-transform: uppercase;
-      background: #f5f5f5;
-      padding: 2px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .col-val {
-      text-align: center;
-      font-weight: 700;
-      padding: 4px;
-      font-size: 14px;
-    }
-
-    .remarks-box {
-      border: 1px solid var(--border);
-      padding: 8px;
-      min-height: 40px;
       font-size: 12px;
     }
 
-    .no-print {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 1000;
+    .slip-table th {
+      background: #e2e8f0;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.5px;
+      color: #000000;
     }
 
-    .btn {
-      padding: 10px 20px;
-      background: #000;
-      color: #fff;
-      border: none;
-      cursor: pointer;
+    .slip-table td {
       font-weight: 700;
-      border-radius: 4px;
+      font-size: 13.5px;
     }
 
+    /* SUBHEADERS (SOLID GRAY BAR) */
+    .slip-subheader {
+      background: #e2e8f0;
+      border-top: 1.5px solid #000000;
+      border-bottom: 1.5px solid #000000;
+      text-align: center;
+      padding: 5px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #000000;
+    }
+
+    .slip-subheader.no-top {
+      border-top: none;
+    }
+
+    /* PULLING COUNTER ENTRY SECTION */
+    .counter-section {
+      border-top: 1.5px solid #000000;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .counter-options {
+      display: flex;
+      align-items: center;
+      border-bottom: none;
+    }
+
+    .counter-cell {
+      flex: 1;
+      border-right: 1.5px solid #000000;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .counter-cell:last-child {
+      border-right: none;
+    }
+
+    .counter-label {
+      font-weight: 800;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #334155;
+      line-height: 1.2;
+    }
+
+    .counter-box {
+      border: 1.5px solid #000000;
+      border-radius: 4px;
+      width: 100px;
+      height: 24px;
+      background: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 900;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+
+    .counter-box.active {
+      border-color: #000000;
+      background: #fcfcfc;
+    }
+
+    /* REMARKS SECTION */
+    .remarks-content {
+      padding: 8px 16px;
+      font-size: 13px;
+      min-height: 40px;
+      font-weight: 600;
+      line-height: 1.4;
+      background: #fafafa;
+    }
+
+    /* LOADING CARD */
+    .loading-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 32px 48px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* SCREEN RESPONSIVE STYLES */
+    @media screen and (max-width: 600px) {
+      body {
+        padding-top: 145px;
+      }
+      .control-bar {
+        height: auto;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 16px;
+        align-items: center;
+      }
+      .brand {
+        font-size: 14px;
+        gap: 8px;
+      }
+      .brand img {
+        height: 36px;
+      }
+      .controls-center {
+        gap: 12px;
+      }
+      .lang-btn {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+      .btn-print {
+        padding: 8px 16px;
+        font-size: 12px;
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    /* PRINT STYLES */
+    @page {
+      size: A4;
+      margin: 4mm 6mm;
+    }
     @media print {
-      body { background: none; padding: 0; }
-      .page { box-shadow: none; width: 100%; margin: 0; padding: 0; }
-      .no-print { display: none; }
-      .slip { border-width: 1.5px; }
+      body {
+        background: #ffffff !important;
+        background-image: none !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        font-size: 10px !important;
+      }
+      .control-bar {
+        display: none !important;
+      }
+      .print-page {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+        border: none !important;
+        gap: 50px !important;
+        min-height: unset !important;
+      }
+      .slip {
+        border-width: 1.5px !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin-bottom: 0 !important;
+        page-break-inside: avoid !important;
+      }
+      .slip-header-container {
+        height: 90px !important;
+        border-bottom-width: 1.5px !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .logo-box {
+        position: absolute !important;
+        left: 12px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        width: 70px !important;
+        height: 70px !important;
+        padding: 0 !important;
+        border-right: none !important;
+        background: transparent !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .header-main {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+      }
+      .slip-meta-row {
+        display: flex !important;
+        justify-content: center !important;
+        gap: 16px !important;
+      }
+      .slip-title {
+        font-size: 14px !important;
+        margin-bottom: 4px !important;
+        color: #000000 !important;
+      }
+      .meta-label {
+        font-size: 9px !important;
+        color: #000000 !important;
+      }
+      .meta-val-box {
+        font-size: 11px !important;
+        padding: 2px 8px !important;
+        min-width: 90px !important;
+        border-radius: 4px !important;
+      }
+      .info-cell {
+        padding: 3px 8px !important;
+        font-size: 11px !important;
+      }
+      .info-cell .label {
+        font-size: 9px !important;
+        color: #000000 !important;
+        flex: 0 0 90px !important;
+      }
+      .info-cell .val-box {
+        padding: 2px 8px !important;
+        font-size: 11px !important;
+        border-radius: 4px !important;
+        background: #ffffff !important;
+      }
+      .slip-subheader {
+        padding: 3px !important;
+        font-size: 9px !important;
+        border-top-width: 1.5px !important;
+        border-bottom-width: 1.5px !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .slip-table th, .slip-table td {
+        padding: 3px 5px !important;
+        font-size: 10px !important;
+        border-width: 1.5px !important;
+      }
+      .slip-table th {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .grid-cell {
+        padding: 3px 8px !important;
+        border-right-width: 1.5px !important;
+      }
+      .grid-label {
+        font-size: 9px !important;
+        color: #000000 !important;
+      }
+      .grid-val-box {
+        font-size: 10px !important;
+        padding: 2px 5px !important;
+        border-radius: 4px !important;
+      }
+      .counter-cell {
+        padding: 3px 8px !important;
+        border-right-width: 1.5px !important;
+      }
+      .counter-label {
+        font-size: 9px !important;
+        color: #000000 !important;
+      }
+      .counter-box {
+        width: 70px !important;
+        height: 18px !important;
+        font-size: 11px !important;
+        border-radius: 3px !important;
+      }
+      .remarks-content {
+        padding: 4px 8px !important;
+        font-size: 10px !important;
+        min-height: 24px !important;
+        line-height: 1.2 !important;
+        background: #ffffff !important;
+      }
+      .slip-info-block {
+        border-bottom-width: 1.5px !important;
+      }
+      .slip-subheader, .slip-table th {
+        background: #e2e8f0 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .meta-val-box, .val-box, .grid-val-box, .counter-box {
+        background: #ffffff !important;
+        border-color: #000000 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="no-print">
-    <button class="btn" onclick="window.print()">🖨 PRINT SLIPS</button>
+  <!-- Control Bar (Screen Only) -->
+  <div class="control-bar no-print">
+    <div class="brand">
+      <img src="Icon/labhoffset.png" alt="Logo">
+      <span>PRINT SLIPS</span>
+    </div>
+    
+    <div class="controls-center">
+      <!-- Language Selector -->
+      <div class="lang-selector">
+        <button id="btn-en" class="lang-btn active" onclick="setLanguage('en')">English</button>
+        <button id="btn-gu" class="lang-btn" onclick="setLanguage('gu')">ગુજરાતી</button>
+      </div>
+    </div>
+
+    <div>
+      <button class="btn-print" onclick="window.print()">🖨 <span id="lbl-btn-print">PRINT SLIPS</span></button>
+    </div>
   </div>
 
-  <div class="page" id="print-area">
-    <!-- Slips will be injected here -->
+  <!-- Print Area Wrapper -->
+  <div class="print-page" id="print-area" style="display: flex; align-items: center; justify-content: center; min-height: 250px; border: none; box-shadow: none; background: transparent;">
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <span style="font-weight: 600; font-size: 14px; color: var(--text-muted);">Loading job details...</span>
+    </div>
   </div>
 
   <script>
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        let y, m, d;
+        if (parts[0].length === 4) {
+          y = parts[0];
+          m = parts[1];
+          d = parts[2];
+        } else if (parts[2].length === 4) {
+          d = parts[0];
+          m = parts[1];
+          y = parts[2];
+        } else {
+          return dateStr;
+        }
+        return `${d.padStart(2, '0')}-${m.padStart(2, '0')}-${y}`;
+      }
+      return dateStr;
+    }
+
+    // ── TRANSLATION DICTIONARY ──────────────────────────────────────────
+    const LABELS = {
+      en: {
+        titleCutting: "CUTTING DETAILS",
+        titlePrinting: "PRINTING DETAILS",
+        titleLamination: "LAMINATION DETAILS",
+        titlePunching: "PUNCHING DETAILS",
+        jobNo: "Job no.:",
+        date: "Date :",
+        partyName: "PARTY NAME :",
+        jobName: "JOB NAME :",
+        otherDetails: "OTHER DETAILS",
+        
+        // Cutting Table
+        paperGsm: "PAPER GSM",
+        size: "SIZE",
+        reamPkt: "REAM/PKT",
+        sheetPerReam: "SHEET PER (REAM/PKT.)",
+        loose: "LOOSE",
+        totalSheet: "TOTAL SHEET",
+        
+        // Job Cutting Details
+        subCutting: "JOB CUTTING DETAILS",
+        cutSize: "CUT SIZE",
+        qty: "QTY.",
+        printingSide: "PRINTING SIDE",
+        
+        // Job Printing Details
+        subPrinting: "JOB PRINTING DETAILS",
+        printSide: "PRINT SIDE",
+        pulling: "PULLING",
+        plateProcessor: "PLATE PROCESSOR",
+        plateSize: "PLATE SIZE",
+        plateSupplier: "QUALITY",  // Replaced blank Quality field visual mapping
+        set: "SET",
+        paperProvider: "PAPER PROVIDER",
+        counterTitle: "FOR PRINTER COUNTER DETAILS AFTER PRINTING (PULLING COUNTER)",
+        singleSide: "SINGLE SIDE",
+        frontBack: "FRONT/BACK",
+        frontPlusBack: "FRONT+BACK",
+        
+        // Job Lamination Details
+        subLamination: "JOB LAMINATION DETAILS",
+        lamProcess: "LAMINATION PROCESS",
+        agency: "AGENCY",
+        side: "SIDE",
+        
+        // Job Punching Details
+        subPunching: "JOB PUNCHING DETAILS",
+        dye: "DYE",
+        gsm: "GSM",
+
+        // Actions
+        btnPrint: "PRINT SLIPS"
+      },
+      gu: {
+        titleCutting: "કટિંગની માહિતી",
+        titlePrinting: "પ્રિન્ટિંગની માહિતી",
+        titleLamination: "લેમિનેશનની માહિતી",
+        titlePunching: "પંચિંગની માહિતી",
+        jobNo: "જોબ નં. :",
+        date: "તારીખ :",
+        partyName: "પાર્ટીનું નામ :",
+        jobName: "જોબનું નામ :",
+        otherDetails: "વિગત",
+        
+        // Cutting Table
+        paperGsm: "પેપર (જી.એસ.એમ.)",
+        size: "સાઈઝ",
+        reamPkt: "રીમ/પેકેટ",
+        sheetPerReam: "એક રીમ/પેકેટની શીટ",
+        loose: "છૂટક",
+        totalSheet: "ટોટલ શીટ",
+        
+        // Job Cutting Details
+        subCutting: "કટિંગની વિગત",
+        cutSize: "કટ સાઈઝ",
+        qty: "કુલ",
+        printingSide: "પ્રિન્ટિંગ સાઈડ",
+        
+        // Job Printing Details
+        subPrinting: "પ્રિન્ટિંગ જોબની માહિતી",
+        printSide: "પ્રિન્ટ સાઈડ",
+        pulling: "પુલિંગ",
+        plateProcessor: "પ્લેટ પ્રોસેસર",
+        plateSize: "પ્લેટ સાઈઝ",
+        plateSupplier: "પ્લેટ પ્રકાર",
+        set: "ટોટલ સેટ",
+        paperProvider: "પેપર કોનું?",
+        counterTitle: "પુલિંગ કાઉન્ટર : પ્રિન્ટરે લખવાનું રહેશે",
+        singleSide: "SINGLE SIDE",
+        frontBack: "FRONT/BACK",
+        frontPlusBack: "FRONT+BACK",
+        
+        // Job Lamination Details
+        subLamination: "લેમિનેશન જોબની માહિતી",
+        lamProcess: "લેમિનેશનનો પ્રકાર",
+        agency: "એજન્સી",
+        side: "સાઈડ",
+        
+        // Job Punching Details
+        subPunching: "પંચિંગ જોબની માહિતી",
+        dye: "ડાય",
+        gsm: "જીએસએમ",
+
+        // Actions
+        btnPrint: "પ્રિન્ટ કરો"
+      }
+    };
+
     const urlParams = new URLSearchParams(window.location.search);
     const jobID = urlParams.get('job');
     const API_BASE = '/api';
+    let currentJob = null;
+    let currentLang = 'en';
 
+    // Fetch Job Data from Backend
     async function fetchJob() {
-      if (!jobID) return;
+      if (!jobID) {
+        document.getElementById('print-area').innerHTML = `<div style="padding: 20px; color: red;">Error: No Job ID specified in URL.</div>`;
+        return;
+      }
       try {
         const res = await fetch(`${API_BASE}/jobs/${jobID}/card`);
         if (!res.ok) throw new Error("Job not found");
-        const data = await res.json();
-        render(data);
+        currentJob = await res.json();
+        render();
       } catch (err) {
         document.getElementById('print-area').innerHTML = `<div style="padding: 20px; color: red;">Error: ${err.message}</div>`;
       }
     }
 
-    function render(job) {
-      const container = document.getElementById('print-area');
-      container.innerHTML = '';
+    // Switch UI labels language — dataset values (Party, Paper, Job Name) always stay in English
+    function setLanguage(lang) {
+      currentLang = lang;
 
-      // 1. CUTTING SLIP
-      container.appendChild(createSlip("CUTTING DETAILS LABH OFFSET", job, renderCutting));
+      // Update toggle button states
+      document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+      document.getElementById('btn-gu').classList.toggle('active', lang === 'gu');
 
-      // 2. OFFSET SLIP
-      container.appendChild(createSlip("OFFSET PRINTER LABH OFFSET", job, renderOffset));
+      // Update print button label
+      const labels = LABELS[lang];
+      document.getElementById('lbl-btn-print').textContent = labels.btnPrint;
 
-      // 3. LAMINATION SLIP
-      if (job.lam_job) {
-        container.appendChild(createSlip("LAMINATION JOB", job, renderLamination));
-      }
-      
-      // 4. PUNCHING SLIP
-      if (job.punch_job) {
-        container.appendChild(createSlip("PUNCHING / DIE-CUTTING", job, renderPunching));
-      }
+      render();
     }
 
-    function createSlip(title, job, contentFn) {
+    function isSingleSide(printing) {
+      if (!printing) return false;
+      const val = printing.toLowerCase().trim();
+      return val === 's/s' || val === 'single side' || val === 'single';
+    }
+
+    function isFrontBack(printing) {
+      if (!printing) return false;
+      const val = printing.toLowerCase().trim();
+      return val === 'f/b' || val === 'front/back' || val === 'front back';
+    }
+
+    function isFrontPlusBack(printing) {
+      if (!printing) return false;
+      const val = printing.toLowerCase().trim().replace(/\s+/g, '');
+      return val === 'f+b' || val === 'front+back' || val === 'front+ back' || val === 'front +back' || val === 'front + back';
+    }
+
+    // Helper: format printing option name to translated readable format
+    function formatPrintingSide(printing, labels) {
+      if (!printing) return '—';
+      if (isSingleSide(printing)) return labels.singleSide;
+      if (isFrontBack(printing)) return labels.frontBack;
+      if (isFrontPlusBack(printing)) return labels.frontPlusBack;
+      return printing.toUpperCase();
+    }
+
+    // Build common Slip Header (containing Labh Offset logo and Job no / Date boxes)
+    function createSlipHeader(job, title, labels) {
+      return `
+        <div class="slip-header-container">
+          <div class="logo-box">
+            <img src="Icon/labhoffset.png" alt="Labh Offset">
+          </div>
+          <div class="header-main">
+            <div class="slip-title">${title}</div>
+            <div class="slip-meta-row">
+              <div class="meta-item">
+                <span class="meta-label">${labels.jobNo}</span>
+                <span class="meta-val-box job-id">${job.job_id}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">${labels.date}</span>
+                <span class="meta-val-box">${formatDate(job.date)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Build common Party / Job details rows
+    function createSlipInfoBlock(job, labels, isCutting = false) {
+      if (isCutting) {
+        const providerText = job.paper_source === 'company' ? 'COMPANY' : 'PARTY';
+        return `
+          <div class="slip-info-block">
+            <div class="info-row">
+              <div class="info-cell" style="flex: 2; border-right: 1.5px solid #000000;">
+                <span class="label">${labels.partyName}</span>
+                <span class="val-box">${job.party_name || '—'}</span>
+              </div>
+              <div class="info-cell" style="flex: 1;">
+                <span class="label">${labels.paperProvider}</span>
+                <span class="val-box" style="font-weight: 800; color: ${job.paper_source === 'company' ? '#c00' : '#000'}">${providerText}</span>
+              </div>
+            </div>
+            <div class="info-row">
+              <div class="info-cell full-width">
+                <span class="label">${labels.jobName}</span>
+                <span class="val-box">${job.job_name || '—'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      return `
+        <div class="slip-info-block">
+          <div class="info-row">
+            <div class="info-cell full-width">
+              <span class="label">${labels.partyName}</span>
+              <span class="val-box">${job.party_name || '—'}</span>
+            </div>
+          </div>
+          <div class="info-row">
+            <div class="info-cell full-width">
+              <span class="label">${labels.jobName}</span>
+              <span class="val-box">${job.job_name || '—'}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Build Cutting Slip Layout
+    function createCuttingSlip(job, labels) {
       const div = document.createElement('div');
       div.className = 'slip';
+      div.id = 'slip-cutting';
       
       div.innerHTML = `
-        <div class="slip-header">${title}</div>
-        <table class="data-table">
-          <tr>
-            <td class="label">Job Number :</td>
-            <td class="val" style="color: red; font-size: 18px;">${job.job_id}</td>
-            <td class="label">Date</td>
-            <td class="val">${job.date}</td>
-          </tr>
-          <tr>
-            <td class="label">Party's Name</td>
-            <td class="val" colspan="3" style="font-size: 16px;">${job.party_name}</td>
-          </tr>
-          <tr>
-            <td class="label">Job Name</td>
-            <td class="val" colspan="3">${job.job_name}</td>
-          </tr>
+        ${createSlipHeader(job, labels.titleCutting, labels)}
+        ${createSlipInfoBlock(job, labels, true)}
+        
+        <table class="slip-table">
+          <thead>
+            <tr>
+              <th>${labels.paperGsm}</th>
+              <th>${labels.size}</th>
+              <th>${labels.reamPkt}</th>
+              <th>${labels.sheetPerReam}</th>
+              <th>${labels.loose}</th>
+              <th>${labels.totalSheet}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${job.gsm_desc || '—'}</td>
+              <td>${job.paper_size || '—'}</td>
+              <td>${job.ream ?? 0}</td>
+              <td>${job.sheet_per_ream ?? 0}</td>
+              <td>${job.loose_sheets ?? 0}</td>
+              <td style="font-size: 15px; font-weight: 800;">${(job.total_sheets || 0).toLocaleString()}</td>
+            </tr>
+          </tbody>
         </table>
+        
+        <div class="slip-subheader">${labels.subCutting}</div>
+        
+        <div class="grid-row">
+          <div class="grid-cell">
+            <span class="grid-label">${labels.cutSize}</span>
+            <span class="grid-val-box">${job.cut_size || '—'}</span>
+          </div>
+          <div class="grid-cell">
+            <span class="grid-label">${labels.qty}</span>
+            <span class="grid-val-box">${(job.qty || 0).toLocaleString()}</span>
+          </div>
+          <div class="grid-cell">
+            <span class="grid-label">${labels.printingSide}</span>
+            <span class="grid-val-box" style="text-transform: uppercase;">${formatPrintingSide(job.printing, labels)}</span>
+          </div>
+        </div>
+        
+        <div class="slip-subheader no-top">${labels.otherDetails}</div>
+        <div class="remarks-content">
+          ${job.job_remark || '—'}
+        </div>
       `;
-      
-      const contentDiv = document.createElement('div');
-      contentFn(contentDiv, job);
-      div.appendChild(contentDiv);
-      
       return div;
     }
 
-    function renderCutting(target, job) {
-      target.innerHTML = `
-        <div class="grid-row">
-          <div class="grid-col"><div class="col-header">PAPER GSM</div><div class="col-val">${job.gsm_desc || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">SIZE</div><div class="col-val">${job.paper_size || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">REAM/PKT</div><div class="col-val">${job.ream || 0}</div></div>
-          <div class="grid-col"><div class="col-header">SHEET/PKT</div><div class="col-val">${job.sheet_per_ream || 0}</div></div>
-          <div class="grid-col"><div class="col-header">LOOSE SHEET</div><div class="col-val">${job.loose_sheets || 0}</div></div>
-          <div class="grid-col"><div class="col-header">TOTAL SHEET</div><div class="col-val">${job.total_sheets || 0}</div></div>
-        </div>
-        <div class="sub-header">CUTTING DETAILS</div>
-        <div class="grid-row">
-          <div class="grid-col" style="flex:2"><div class="col-header">CUT SIZE</div><div class="col-val">${job.cut_size || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">CUT PART</div><div class="col-val">${job.cut_part || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">QTY</div><div class="col-val">${job.qty || 0}</div></div>
-          <div class="grid-col"><div class="col-header">PRINTING</div><div class="col-val">${job.printing || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">PAPER</div><div class="col-val" style="text-transform: capitalize;">${job.paper_source}</div></div>
-        </div>
-        <div class="remarks-box"><strong>REMARKS :</strong> ${job.job_remark || '—'}</div>
-      `;
-    }
-
-    function renderOffset(target, job) {
-      target.innerHTML = `
-        <div class="sub-header">Printing Details</div>
-        <div class="grid-row">
-          <div class="grid-col" style="flex:1.5"><div class="col-header">PAPER GSM</div><div class="col-val">${job.gsm_desc || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">CUT SIZE</div><div class="col-val">${job.cut_size || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">QTY</div><div class="col-val">${job.qty || 0}</div></div>
-          <div class="grid-col"><div class="col-header">PRINTING</div><div class="col-val">${job.printing || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">PULLING</div><div class="col-val">${job.pulling || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">PAPER</div><div class="col-val" style="text-transform: capitalize;">${job.paper_source}</div></div>
-        </div>
-        <div class="grid-row">
-          <div class="grid-col" style="flex:0.8"><div class="col-val" style="font-size:11px;">Plate Process :</div></div>
-          <div class="grid-col"><div class="col-val">${job.plate_process || '—'}</div></div>
-          <div class="grid-col" style="flex:0.8"><div class="col-val" style="font-size:11px;">Plate size :</div></div>
-          <div class="grid-col"><div class="col-val">${job.plate_size || '—'}</div></div>
-          <div class="grid-col" style="flex:0.5"><div class="col-val" style="font-size:11px;">SET :</div></div>
-          <div class="grid-col" style="flex:0.5"><div class="col-val">${job.set_no || 1}</div></div>
-        </div>
-        <div class="grid-row">
-           <div class="grid-col"><div class="col-header">PULLING counter</div><div class="col-val">${job.pulling || '—'}</div></div>
-           <div class="grid-col" style="flex:2"><div class="col-header">PLATE SUPPLIER</div><div class="col-val">${job.operator_name || '—'}</div></div>
-        </div>
-        <div class="remarks-box"><strong>REMARKS :</strong> ${job.job_remark || '—'}</div>
-      `;
-    }
-
-    function renderLamination(target, job) {
-      const lam = job.lam_job || {};
-      target.innerHTML = `
-        <table class="data-table">
-          <tr>
-            <td class="label">LAM. PROCESS</td>
-            <td class="val" colspan="3" style="background: #ffffcc;">${lam.process || '—'}</td>
-          </tr>
-          <tr>
-            <td class="label">SIZE</td>
-            <td class="val" style="background: #ffffcc;">${lam.size || '—'}</td>
-            <td class="label">PULLING</td>
-            <td class="val" style="background: #f0f0f0;">${lam.pulling || '—'}</td>
-          </tr>
-          <tr>
-            <td class="label">AGENCY NAME</td>
-            <td class="val" style="background: #ffffcc;">${lam.agency_name || '—'}</td>
-            <td class="label">SIDE</td>
-            <td class="val" style="background: #ffffcc;">${lam.side || '—'}</td>
-          </tr>
-          <tr>
-            <td class="label">OPE./AGENCY SIGN.</td>
-            <td class="val" style="background: #ffffcc;">—</td>
-            <td class="label">REMARKS</td>
-            <td class="val" style="background: #f0f0f0;">${job.job_remark || '—'}</td>
-          </tr>
+    // Build Printing Slip Layout
+    function createPrintingSlip(job, labels) {
+      const div = document.createElement('div');
+      div.className = 'slip';
+      div.id = 'slip-printing';
+      
+      // Paper source always displayed in English (dataset values must not be translated)
+      const paperSourceText = job.paper_source === 'company' ? 'Company' : 'Party';
+      
+      div.innerHTML = `
+        ${createSlipHeader(job, labels.titlePrinting, labels)}
+        ${createSlipInfoBlock(job, labels)}
+        
+        <div class="slip-subheader no-top">${labels.subPrinting}</div>
+        
+        <table class="slip-table">
+          <thead>
+            <tr>
+              <th>${labels.paperGsm}</th>
+              <th>${labels.cutSize}</th>
+              <th>${labels.qty}</th>
+              <th>${labels.printSide}</th>
+              <th>${labels.pulling}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${job.gsm_desc || '—'}</td>
+              <td>${job.cut_size || '—'}</td>
+              <td>${(job.qty || 0).toLocaleString()}</td>
+              <td style="text-transform: uppercase;">${formatPrintingSide(job.printing, labels)}</td>
+              <td>${(job.pulling || '—').toString().replace(/PLANNED:/gi, '').replace(/\|\s*ACTUAL:/gi, ' | ACTUAL:').trim()}</td>
+            </tr>
+          </tbody>
         </table>
-      `;
-    }
-
-    function renderPunching(target, job) {
-      const punch = job.punch_job || {};
-      target.innerHTML = `
-        <div class="sub-header">PUNCHING PROCESS</div>
-        <div class="grid-row">
-          <div class="grid-col" style="flex:2"><div class="col-header">DYE</div><div class="col-val">${punch.dye || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">SIZE</div><div class="col-val">${punch.size || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">GSM</div><div class="col-val">${punch.gsm || '—'}</div></div>
-          <div class="grid-col"><div class="col-header">QTY</div><div class="col-val">${punch.qty || 0}</div></div>
-          <div class="grid-col" style="flex:1.5"><div class="col-header">AGENCY</div><div class="col-val">${punch.agency || '—'}</div></div>
+        
+        <table class="slip-table" style="border-top: none;">
+          <thead>
+            <tr>
+              <th>${labels.plateProcessor}</th>
+              <th>${labels.plateSize}</th>
+              <th>${labels.plateSupplier}</th>
+              <th>${labels.set}</th>
+              <th>${labels.paperProvider}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>${job.operator_name || '—'}</td>
+              <td>${job.plate_size || '—'}</td>
+              <td>${job.plate_process || '—'}</td>
+              <td>${job.set_no || 1}</td>
+              <td style="text-transform: uppercase;">${paperSourceText}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="counter-section">
+          <div class="slip-subheader no-top">${labels.counterTitle}</div>
+          <div class="counter-options">
+            <div class="counter-cell">
+              <span class="counter-label">${labels.singleSide}</span>
+              <span class="counter-box"></span>
+            </div>
+            <div class="counter-cell">
+              <span class="counter-label">${labels.frontBack}</span>
+              <span class="counter-box"></span>
+            </div>
+            <div class="counter-cell">
+              <span class="counter-label">${labels.frontPlusBack}</span>
+              <span class="counter-box"></span>
+            </div>
+          </div>
         </div>
-        <div class="remarks-box"><strong>REMARKS :</strong> ${job.job_remark || '—'}</div>
+        
+        <div class="slip-subheader no-top">${labels.otherDetails}</div>
+        <div class="remarks-content">
+          ${job.job_remark || '—'}
+        </div>
       `;
+      return div;
     }
 
+    // Build Lamination Slip Layout
+    function createLaminationSlip(job, labels) {
+      const div = document.createElement('div');
+      div.className = 'slip';
+      div.id = 'slip-lamination';
+      
+      const lam = job.lam_job || {};
+      
+      div.innerHTML = `
+        ${createSlipHeader(job, labels.titleLamination, labels)}
+        ${createSlipInfoBlock(job, labels)}
+        
+        <div class="slip-subheader no-top">${labels.subLamination}</div>
+        
+        <table class="slip-table">
+          <thead>
+            <tr>
+              <th>${labels.lamProcess}</th>
+              <th>${labels.size}</th>
+              <th>${labels.agency}</th>
+              <th>${labels.side}</th>
+              <th>${labels.qty}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: 800;">${lam.process || '—'}</td>
+              <td>${lam.size || '—'}</td>
+              <td>${lam.agency_name || '—'}</td>
+              <td>${lam.side || '—'}</td>
+              <td style="font-size: 15px; font-weight: 800;">${lam.pulling ? (lam.pulling).toLocaleString() : '—'}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="slip-subheader no-top">${labels.otherDetails}</div>
+        <div class="remarks-content">
+          ${job.job_remark || '—'}
+        </div>
+      `;
+      return div;
+    }
+
+    // Build Punching Slip Layout
+    function createPunchingSlip(job, labels) {
+      const div = document.createElement('div');
+      div.className = 'slip';
+      div.id = 'slip-punching';
+      
+      const punch = job.punch_job || {};
+      
+      div.innerHTML = `
+        ${createSlipHeader(job, labels.titlePunching, labels)}
+        ${createSlipInfoBlock(job, labels)}
+        
+        <div class="slip-subheader no-top">${labels.subPunching}</div>
+        
+        <table class="slip-table">
+          <thead>
+            <tr>
+              <th>${labels.dye}</th>
+              <th>${labels.size}</th>
+              <th>${labels.gsm}</th>
+              <th>${labels.qty}</th>
+              <th>${labels.agency}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: 800;">${punch.dye || '—'}</td>
+              <td>${punch.size || '—'}</td>
+              <td>${punch.gsm || '—'}</td>
+              <td style="font-size: 15px; font-weight: 800;">${punch.qty ? (punch.qty).toLocaleString() : '—'}</td>
+              <td>${punch.agency || '—'}</td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <div class="slip-subheader no-top">${labels.otherDetails}</div>
+        <div class="remarks-content">
+          ${job.job_remark || '—'}
+        </div>
+      `;
+      return div;
+    }
+
+    // Validation checks for empty/placeholder entries
+    function hasLaminationData(lam) {
+      if (!lam) return false;
+      const process = (lam.process || '').trim().toLowerCase();
+      const agency = (lam.agency_name || '').trim().toLowerCase();
+      const size = (lam.size || '').trim().toLowerCase();
+      
+      return (process && process !== 'none' && process !== '—') ||
+             (agency && agency !== 'none' && agency !== '—') ||
+             (size && size !== 'none' && size !== '—');
+    }
+
+    function hasPunchingData(punch) {
+      if (!punch) return false;
+      const dye = (punch.dye || '').trim().toLowerCase();
+      const agency = (punch.agency || '').trim().toLowerCase();
+      const size = (punch.size || '').trim().toLowerCase();
+      
+      return (dye && dye !== 'none' && dye !== '—') ||
+             (agency && agency !== 'none' && agency !== '—') ||
+             (size && size !== 'none' && size !== '—');
+    }
+
+    // Main Renderer
+    function render() {
+      if (!currentJob) return;
+      
+      const container = document.getElementById('print-area');
+      container.innerHTML = '';
+      
+      const labels = LABELS[currentLang];
+
+      // Create main print page container
+      const printPageDiv = document.createElement('div');
+      printPageDiv.className = 'print-page';
+
+      // 1. CUTTING DETAILS (Always)
+      printPageDiv.appendChild(createCuttingSlip(currentJob, labels));
+      
+      // 2. PRINTING DETAILS (Always)
+      printPageDiv.appendChild(createPrintingSlip(currentJob, labels));
+      
+      // 3. LAMINATION DETAILS (Only if lamination job exists and has actual data)
+      if (currentJob.lam_job && hasLaminationData(currentJob.lam_job)) {
+        printPageDiv.appendChild(createLaminationSlip(currentJob, labels));
+      }
+      
+      // 4. PUNCHING DETAILS (Only if punching job exists and has actual data)
+      if (currentJob.punch_job && hasPunchingData(currentJob.punch_job)) {
+        printPageDiv.appendChild(createPunchingSlip(currentJob, labels));
+      }
+
+      container.appendChild(printPageDiv);
+    }
+
+    // Run on page load
     fetchJob();
   </script>
 </body>

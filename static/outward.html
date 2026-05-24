@@ -11,7 +11,7 @@
 
   <header class="topbar">
     <div class="topbar-left">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
     </div>
     <div class="topbar-center uppercase">Outward History</div>
     <div class="topbar-right">
@@ -25,17 +25,34 @@
   <div class="menu-overlay" id="menu-overlay"></div>
   <nav class="side-menu" id="side-menu">
     <div class="side-menu-header">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
-      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     </div>
-    <div class="menu-items">
-    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
-
-      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
-      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
-      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
-      <div class="menu-divider"></div>
-      
+                <div class="menu-items" style="display: flex; flex-direction: column; flex: 1;">
+      <a href="waiting.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Waiting for Paper
+      </a>
+      <a href="bill_ctcp.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Bill & CTCP Entry
+      </a>
+      <a href="inward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Inward Register
+      </a>
+      <a href="outward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Outward Register
+      </a>
+      <a href="masters.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        Master Data
+      </a>
+      <a href="settings.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Settings
+      </a>
     </div>
   </nav>
 
@@ -44,7 +61,21 @@
       <div style="font-size: 20px; font-weight: 600; color: var(--text);">Paper Usage History</div>
     </div>
 
-    <div class="filter-bar" style="margin-bottom: 24px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);">
+    <div style="margin-bottom: 24px; padding: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);">
+      <div class="form-row form-row-3" style="align-items: end; margin-bottom: 12px;">
+        <div class="form-group" style="margin:0;">
+          <label class="form-label" style="font-size: 10px;">PARTY</label>
+          <input type="text" id="party-code" class="form-control" list="party-list" placeholder="Select Party">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label" style="font-size: 10px;">PAPER</label>
+          <input type="text" id="paper-code" class="form-control" list="paper-list" placeholder="Select Paper">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label class="form-label" style="font-size: 10px;">SEARCH</label>
+          <input type="text" id="search-query" class="form-control" placeholder="Job, Paper Size, etc.">
+        </div>
+      </div>
       <div class="form-row form-row-3" style="align-items: end; margin-bottom: 0;">
         <div class="form-group" style="margin:0;">
           <label class="form-label" style="font-size: 10px;">FROM DATE</label>
@@ -59,13 +90,13 @@
     </div>
 
     <div class="table-container">
-      <table id="outward-table">
+      <table class="data-table" id="outward-table">
         <thead>
           <tr>
-            <th>DATE</th>
-            <th>JOB NAME</th>
-            <th>PAPER / SIZE</th>
-            <th class="td-right">SHEETS</th>
+            <th style="width: 15%;">DATE</th>
+            <th style="width: 45%;">JOB NAME</th>
+            <th style="width: 25%;">PAPER / SIZE</th>
+            <th class="td-right" style="width: 15%;">SHEETS</th>
           </tr>
         </thead>
         <tbody id="outward-body">
@@ -98,8 +129,31 @@
     </a>
   </nav>
 
+  <datalist id="party-list"></datalist>
+  <datalist id="paper-list"></datalist>
   <script>
     const API_BASE = '/api';
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        let y, m, d;
+        if (parts[0].length === 4) {
+          y = parts[0];
+          m = parts[1];
+          d = parts[2];
+        } else if (parts[2].length === 4) {
+          d = parts[0];
+          m = parts[1];
+          y = parts[2];
+        } else {
+          return dateStr;
+        }
+        return `${d.padStart(2, '0')}-${m.padStart(2, '0')}-${y}`;
+      }
+      return dateStr;
+    }
     
     // Hamburger Menu Logic
     const hamburgerBtn = document.getElementById('hamburger-btn');
@@ -118,38 +172,72 @@
     
     // Default dates
     const today = new Date().toISOString().split('T')[0];
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-    document.getElementById('date-from').value = thirtyDaysAgo;
+    const firstDayOfYear = new Date(new Date().getFullYear(), 0, 1).toISOString().split('T')[0];
+    document.getElementById('date-from').value = firstDayOfYear;
     document.getElementById('date-to').value = today;
+
+    async function initLists() {
+      try {
+        const [pRes, paRes] = await Promise.all([
+          fetch(`${API_BASE}/parties`),
+          fetch(`${API_BASE}/papers`)
+        ]);
+        const parties = await pRes.json();
+        const papers = await paRes.json();
+
+        const partyList = document.getElementById('party-list');
+        parties.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.party_code;
+          opt.textContent = p.party_name;
+          partyList.appendChild(opt);
+        });
+
+        const paperList = document.getElementById('paper-list');
+        papers.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.paper_code;
+          opt.textContent = p.description;
+          paperList.appendChild(opt);
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
     async function loadOutward() {
       const from = document.getElementById('date-from').value;
       const to = document.getElementById('date-to').value;
+      const query = document.getElementById('search-query').value;
+      const party = document.getElementById('party-code').value;
+      const paper = document.getElementById('paper-code').value;
+      
       const body = document.getElementById('outward-body');
       body.innerHTML = '<tr><td colspan="4"><div class="row-spinner"><div class="spinner"></div>Searching...</div></td></tr>';
 
       try {
-        const res = await fetch(`${API_BASE}/outward?date_from=${from}&date_to=${to}`);
+        const res = await fetch(`${API_BASE}/outward?date_from=${from}&date_to=${to}&party_code=${encodeURIComponent(party)}&paper_code=${encodeURIComponent(paper)}&global_query=${encodeURIComponent(query)}`);
         const data = await res.json();
         
         if (data.length === 0) {
-          body.innerHTML = '<tr><td colspan="4"><div class="empty-state">No records found.</div></td></tr>';
+          body.innerHTML = '<tr><td colspan="4" style="padding: 60px 20px !important; text-align: center !important; border: none !important;"><div class="empty-state">No records found.</div></td></tr>';
           return;
         }
 
         body.innerHTML = data.map(row => `
           <tr class="fade-up">
-            <td data-label="DATE">${row.date}</td>
+            <td data-label="DATE" style="white-space: nowrap;">${formatDate(row.date)}</td>
             <td data-label="JOB NAME">
+              <div style="font-size: 10px; font-weight: 700; color: var(--primary); margin-bottom: 2px;">#${row.job_id}</div>
               <div style="font-weight: 600; color: var(--text);">${row.job_name}</div>
               <div style="font-size: 11px; color: var(--text3);">${row.party_name}</div>
             </td>
             <td data-label="PAPER / SIZE">
               <div style="font-size: 13px;">${row.paper_name}</div>
-              <div style="font-size: 11px; color: var(--text3);">${row.paper_size} (${row.stock_type})</div>
+              <div style="font-size: 11px; color: var(--text3);">${row.paper_size || '-'} (${row.stock_type})</div>
             </td>
             <td class="td-right" data-label="SHEETS" style="font-weight: 700; color: var(--orange);">
-              ${row.used_sheets.toLocaleString()}
+              ${(row.used_sheets || 0).toLocaleString()}
             </td>
           </tr>
         `).join('');
@@ -159,6 +247,7 @@
     }
 
     document.getElementById('btn-filter').onclick = loadOutward;
+    initLists();
     loadOutward();
   </script>
 

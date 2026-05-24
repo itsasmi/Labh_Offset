@@ -15,7 +15,7 @@ All routes related to jobs:
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import Session, joinedload
-from sqlalchemy import func, desc, or_
+from sqlalchemy import func, desc, or_, cast, String
 from datetime import datetime, date, timedelta
 from typing import Optional, List
 
@@ -75,6 +75,12 @@ def sync_outward_for_job(db: Session, job: Job):
     Called automatically on PUT /api/jobs/{id}
     """
     outward = db.query(Outward).filter(Outward.job_id == job.job_id).first()
+    
+    if getattr(job, 'is_waiting_for_paper', False):
+        if outward:
+            db.delete(outward)
+        return
+
     if outward:
         outward.date        = job.date
         outward.party_code  = job.party_code
@@ -103,6 +109,7 @@ def list_jobs(
     operator:     Optional[str] = Query(None),
     has_lam:      Optional[bool] = Query(None),
     has_punch:    Optional[bool] = Query(None),
+    plate_size:   Optional[str] = Query(None),
     limit:        int = Query(200),
     page:         int = Query(1),
     db: Session = Depends(get_db)
@@ -131,6 +138,12 @@ def list_jobs(
             date_to   = today.isoformat()
         elif time_filter == "curr_month":
             date_from = today.replace(day=1).isoformat()
+            date_to   = today.isoformat()
+        elif time_filter == "last_3_months":
+            date_from = (today - timedelta(days=90)).isoformat()
+            date_to   = today.isoformat()
+        elif time_filter == "last_6_months":
+            date_from = (today - timedelta(days=180)).isoformat()
             date_to   = today.isoformat()
         elif time_filter == "prev_month":
             last_day_prev = today.replace(day=1) - timedelta(days=1)
@@ -162,6 +175,8 @@ def list_jobs(
         q = q.filter(Job.status == status)
     if operator:
         q = q.filter(Job.operator_name.ilike(f"%{operator}%"))
+    if plate_size:
+        q = q.filter(Job.plate_size == plate_size)
         
     if has_lam is True:
         q = q.filter(Job.lam_job.has())
@@ -184,18 +199,19 @@ def list_jobs(
         )
 
     if global_query:
-        pattern = f"%{global_query}%"
-        q = q.filter(
-            or_(
-                Job.party_name.ilike(pattern),
-                Job.party_code.ilike(pattern),
-                Job.job_name.ilike(pattern),
-                Job.bill_no.ilike(pattern),
-                Job.ctcp_bill_no.ilike(pattern),
-                Job.job_remark.ilike(pattern),
-                Job.paper_source.ilike(pattern)
-            )
-        )
+      pattern = f"%{global_query}%"
+      q = q.filter(
+          or_(
+              cast(Job.job_id, String).ilike(pattern),
+              Job.party_name.ilike(pattern),
+              Job.party_code.ilike(pattern),
+              Job.job_name.ilike(pattern),
+              Job.bill_no.ilike(pattern),
+              Job.ctcp_bill_no.ilike(pattern),
+              Job.job_remark.ilike(pattern),
+              Job.paper_source.ilike(pattern)
+          )
+      )
         
     jobs = q.order_by(desc(Job.date), desc(Job.job_id)) \
               .offset((page - 1) * limit) \
@@ -233,12 +249,12 @@ def create_job(payload: JobCreate, db: Session = Depends(get_db)):
     2. Outward entry is created in the same transaction
     3. LamJob and PunchJob are created if provided
     """
-    # Parse year and month from date string
     try:
         d = datetime.strptime(payload.date, "%Y-%m-%d")
         year, month = d.year, d.month
     except ValueError:
         raise HTTPException(400, "date must be in YYYY-MM-DD format")
+
 
     # Validate party exists
     party = db.query(Party).filter(
@@ -261,6 +277,7 @@ def create_job(payload: JobCreate, db: Session = Depends(get_db)):
     )
     
     can_start = (balance >= (payload.total_sheets or 0))
+    is_waiting = not can_start
     
     # Build the job object
     job = Job(
@@ -291,16 +308,18 @@ def create_job(payload: JobCreate, db: Session = Depends(get_db)):
         operator_name  = payload.operator_name,
         pulling_charge = payload.pulling_charge,
         paper_source   = payload.paper_source.value,
-        is_waiting_for_paper = payload.is_waiting_for_paper,
-        status         = "in_progress" if (can_start and not payload.is_waiting_for_paper) else "pending",
+        is_waiting_for_paper = is_waiting,
+        party_provider = payload.party_provider,
+        status         = "pending" if is_waiting else "in_progress",
         created_at     = datetime.now().isoformat(),
         updated_at     = datetime.now().isoformat(),
     )
     db.add(job)
     db.flush()  # Get job_id before creating related records
 
-    # Always create an outward entry when a job is created
-    create_outward_for_job(db, job)
+    # Only create outward entry if the paper is actually available
+    if not is_waiting:
+        create_outward_for_job(db, job)
 
     # Create lamination record if provided
     if payload.lam_job:
@@ -332,6 +351,18 @@ def create_job(payload: JobCreate, db: Session = Depends(get_db)):
 
     db.commit()
     db.refresh(job)
+
+    # If an inward entry was created, it might satisfy this job's paper requirement (or other pending jobs)
+    if payload.inward_entry and 'inward' in locals():
+        try:
+            from routers.inward import auto_activate_pending_jobs
+            auto_activate_pending_jobs(db, inward)
+            db.refresh(job)
+        except Exception as e:
+            import traceback
+            print(f"Auto-activation check failed during job creation: {e}")
+            traceback.print_exc()
+
     return job
 
 
@@ -392,6 +423,17 @@ def update_job(job_id: int, payload: JobUpdate, db: Session = Depends(get_db)):
             job.month = d.month
         except ValueError:
             pass
+
+    # Recalculate stock and waiting status if not explicitly moved out of waiting
+    if payload.is_waiting_for_paper is None and job.status == "pending":
+        balance = get_stock_balance(
+            db, 
+            job.paper_code, 
+            job.paper_size, 
+            job.paper_source, 
+            job.party_code
+        )
+        job.is_waiting_for_paper = balance < (job.total_sheets or 0)
 
     # Sync outward entry
     sync_outward_for_job(db, job)

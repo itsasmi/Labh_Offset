@@ -26,16 +26,33 @@
   <nav class="side-menu" id="side-menu">
     <div class="side-menu-header">
       <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
-      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+      <button class="panel-close" id="menu-close-btn" aria-label="Close"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     </div>
-    <div class="menu-items">
-    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
-
-      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
-      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
-      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
-      <div class="menu-divider"></div>
-      
+                <div class="menu-items" style="display: flex; flex-direction: column; flex: 1;">
+      <a href="waiting.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Waiting for Paper
+      </a>
+      <a href="bill_ctcp.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Bill & CTCP Entry
+      </a>
+      <a href="inward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Inward Register
+      </a>
+      <a href="outward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Outward Register
+      </a>
+      <a href="masters.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        Master Data
+      </a>
+      <a href="settings.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Settings
+      </a>
     </div>
   </nav>
 
@@ -54,7 +71,7 @@
             <div class="section-arrow">▾</div>
           </div>
           <div class="section-content open" id="sec-basic">
-            <div class="form-row form-row-2">
+            <div class="form-row form-row-3">
               <div class="form-group">
                 <label class="form-label">DATE</label>
                 <input type="date" class="form-control" id="f-date" required>
@@ -62,6 +79,10 @@
               <div class="form-group">
                 <label class="form-label">BILL NO.</label>
                 <input type="text" class="form-control" id="f-billno" placeholder="Optional">
+              </div>
+              <div class="form-group">
+                <label class="form-label">CTCP BILL NO. / CTCP NO.</label>
+                <input type="text" class="form-control" id="f-ctcp-billno" placeholder="Optional">
               </div>
             </div>
             <div class="form-group">
@@ -84,15 +105,16 @@
           <div class="section-content open" id="sec-paper">
             <div class="form-row form-row-2">
               <div class="form-group">
-                <label class="form-label">PAPER CODE</label>
-                <select class="form-control" id="f-papercode" required></select>
+                <label class="form-label">PAPER CODE <span style="font-size: 9px; color: var(--primary);">(Type or select)</span></label>
+                <input type="text" class="form-control" id="f-papercode" list="paper-code-list" required placeholder="Type or select paper code">
+                <datalist id="paper-code-list"></datalist>
               </div>
               <div class="form-group">
                 <label class="form-label">PAPER SIZE</label>
                 <input type="text" class="form-control" id="f-papersize" required>
               </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="margin-bottom: 16px;">
               <label class="form-label">GSM / DESCRIPTION</label>
               <input type="text" class="form-control" id="f-gsm">
             </div>
@@ -134,11 +156,10 @@
               <div class="form-group">
                 <label class="form-label">CUT PART</label>
                 <select class="form-control" id="f-cutpart" required>
-                  <option value="1">1 (Same Size)</option>
-                  <option value="2">2 (Bigger ÷ 2)</option>
-                  <option value="3">3 (Bigger ÷ 3)</option>
-                  <option value="4">4 (Both ÷ 2)</option>
-                  <option value="manual">Manual</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
                 </select>
               </div>
               <div class="form-group">
@@ -146,8 +167,8 @@
                 <input type="text" class="form-control" id="f-cutsize" placeholder="e.g. 28x40" required>
               </div>
               <div class="form-group">
-                <label class="form-label text-orange">RESULT SIZE (AUTO)</label>
-                <input type="text" class="form-control text-orange" id="f-result-size" readonly placeholder="Auto-calculated">
+                <label class="form-label text-orange">FINAL CUT SIZE (AUTO / OVERRIDE)</label>
+                <input type="text" class="form-control text-orange" id="f-result-size" placeholder="Auto-calculated or type override">
               </div>
             </div>
 
@@ -159,12 +180,10 @@
               <div class="form-group">
                 <label class="form-label">PRINTING RUN TYPE</label>
                 <select class="form-control" id="f-sides" required>
-                  <option value="S/S">S/S — Single Side</option>
-                  <option value="F/B">F/B — Front & Back (1 Plate)</option>
-                  <option value="F+B">F+B — Front + Back (2 Plates)</option>
-                  <option value="G/P">G/P — Gape/P</option>
-                  <option value="B/S">B/S</option>
-                  <option value="F/S">F/S</option>
+                  <option value="S/S">S/S</option>
+                  <option value="F/B">F/B</option>
+                  <option value="F+B">F+B</option>
+                  <option value="G/P">G/P</option>
                 </select>
               </div>
               <div class="form-group">
@@ -181,18 +200,31 @@
               <div class="form-group">
                 <label class="form-label">PLATE SIZE</label>
                 <select class="form-control" id="f-platesize" required>
-                  <option value="635x775">635x775 — Big Machine</option>
-                  <option value="550x670">550x670 — Small Machine</option>
-                  <option value="560x670">560x670 — Small Machine</option>
+                  <option value="635x775">635x775</option>
+                  <option value="550x670">550x670</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">PLATE PROCESS</label>
+                <select class="form-control" id="f-plateprocess">
+                  <option value="Tharmal">Thermal</option>
+                  <option value="CTCP">CTCP</option>
                 </select>
               </div>
               <div class="form-group">
                 <label class="form-label text-orange">PLATES (AUTO)</label>
                 <input type="text" class="form-control text-orange" id="f-plates" value="1" readonly>
               </div>
+            </div>
+
+            <div class="form-row form-row-2">
               <div class="form-group">
                 <label class="form-label text-amber">PLANNED PULLING (AUTO)</label>
                 <input type="text" class="form-control text-amber" id="f-pulling" placeholder="Auto-calculated" readonly>
+              </div>
+              <div class="form-group">
+                <label class="form-label text-green">ACTUAL PULLING (MANUAL)</label>
+                <input type="text" class="form-control text-green" id="f-pulling-actual" placeholder="Fill after job runs">
               </div>
             </div>
           </div>
@@ -281,7 +313,7 @@
             <div class="section-arrow">▾</div>
           </div>
           <div class="section-content open" id="sec-remarks">
-            <textarea class="form-control" id="f-remarks" rows="2"></textarea>
+            <textarea class="form-control" id="f-remarks" rows="3" style="width: 100%; box-sizing: border-box;" placeholder="Add any special instructions or remarks here..."></textarea>
           </div>
         </div>
 
@@ -300,7 +332,7 @@
           <div id="update-modal-title" style="font-size: 18px; font-weight: 800; color: var(--text);">Confirm Job Update</div>
           <div class="text-muted" style="font-size: 12px; margin-top: 4px;">Review the changed details before saving.</div>
         </div>
-        <button type="button" class="panel-close" id="update-modal-close" aria-label="Close">x</button>
+        <button type="button" class="panel-close" id="update-modal-close" aria-label="Close"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
       </div>
       <div class="modal-body">
         <div id="update-change-list" class="update-change-list"></div>
@@ -383,12 +415,23 @@
         const pRes = await fetch(`${API_BASE}/papers`);
         
         const papers = await pRes.json();
-        const pSelect = document.getElementById('f-papercode');
+        let papersData = [];
+        const pList = document.getElementById('paper-code-list');
         papers.forEach(p => {
           const opt = document.createElement('option');
           opt.value = p.paper_code;
           opt.textContent = `${p.paper_code} — ${p.description}`;
-          pSelect.appendChild(opt);
+          pList.appendChild(opt);
+          papersData.push(p);
+        });
+
+        // Auto-fill GSM on paper code change
+        document.getElementById('f-papercode').addEventListener('input', (e) => {
+          const code = e.target.value;
+          const selectedPaper = papersData.find(p => p.paper_code === code);
+          if (selectedPaper && selectedPaper.description) {
+            document.getElementById('f-gsm').value = selectedPaper.description;
+          }
         });
 
         // Operators fetch removed since they are static options now
@@ -402,9 +445,9 @@
         // Fill fields
         document.getElementById('f-date').value = job.date;
         document.getElementById('f-billno').value = job.bill_no || '';
+        document.getElementById('f-ctcp-billno').value = job.ctcp_bill_no || '';
         document.getElementById('f-party-name').value = job.party_name;
         document.getElementById('f-jobname').value = job.job_name;
-        ensureSelectOption('f-papercode', job.paper_code, job.paper_code);
         document.getElementById('f-papercode').value = job.paper_code;
         document.getElementById('f-papersize').value = job.paper_size;
         document.getElementById('f-gsm').value = job.gsm_desc || '';
@@ -415,7 +458,8 @@
         document.getElementById('f-waiting').checked = job.is_waiting_for_paper || false;
         
         document.getElementById('f-cutpart').value = String(job.cut_part || 1);
-        document.getElementById('f-cutsize').value = job.cut_size || '';
+        document.getElementById('f-cutsize').value = job.paper_size || ''; // Initialize with base paper size
+        document.getElementById('f-result-size').value = job.cut_size || ''; // Load the actual saved cut size (might be custom trim)
         document.getElementById('f-cutqty').value = job.qty || 0;
         ensureSelectOption('f-sides', job.printing, job.printing);
         document.getElementById('f-sides').value = job.printing || 'S/S';
@@ -423,8 +467,33 @@
         document.getElementById('f-operator').value = job.operator_name || '';
         ensureSelectOption('f-platesize', job.plate_size, job.plate_size);
         document.getElementById('f-platesize').value = job.plate_size || '635x775';
-        document.getElementById('f-pulling').value = job.pulling || '';
+        // Plate process
+        if (job.plate_process) {
+          ensureSelectOption('f-plateprocess', job.plate_process, job.plate_process);
+          document.getElementById('f-plateprocess').value = job.plate_process;
+        }
+        // Parse pulling e.g. "PLANNED:1500 | ACTUAL:1200"
+        let plannedVal = '';
+        let actualVal = '';
+        const pullingStr = job.pulling || '';
+        if (pullingStr.includes('PLANNED:')) {
+          const mPlanned = pullingStr.match(/PLANNED:\s*([^\s|]+)/i);
+          if (mPlanned) plannedVal = mPlanned[1];
+          const mActual = pullingStr.match(/ACTUAL:\s*([^\s|]+)/i);
+          if (mActual) actualVal = mActual[1];
+        } else {
+          plannedVal = pullingStr;
+        }
+        document.getElementById('f-pulling').value = plannedVal;
+        document.getElementById('f-pulling-actual').value = actualVal;
         document.getElementById('f-remarks').value = job.job_remark || '';
+
+        // After all fields loaded: if F+B, reformat pulling as qty+qty
+        const loadedType = document.getElementById('f-sides').value;
+        if (loadedType === 'F+B') {
+          const loadedQty = parseInt(document.getElementById('f-cutqty').value) || 0;
+          document.getElementById('f-pulling').value = `${loadedQty}+${loadedQty}`;
+        }
 
         if (job.lam_job) {
           document.getElementById('sec-lam').classList.add('open');
@@ -469,24 +538,25 @@
       let multiplier = 1;
 
       if (p) {
+        const fmt = (n) => parseFloat(n.toFixed(2));
         if (cutPartStr === '1') {
-          resStr = `${p.a}X${p.b}`;
+          resStr = cutSizeStr;
           multiplier = 1;
         } else if (cutPartStr === '2') {
           const newB = p.b / 2;
           const sides = [p.a, newB].sort((x, y) => x - y);
-          resStr = `${sides[0]}X${sides[1]}`;
+          resStr = `${fmt(sides[0])}X${fmt(sides[1])}`;
           multiplier = 2;
         } else if (cutPartStr === '3') {
           const newB = p.b / 3;
           const sides = [p.a, newB].sort((x, y) => x - y);
-          resStr = `${sides[0]}X${sides[1]}`;
+          resStr = `${fmt(sides[0])}X${fmt(sides[1])}`;
           multiplier = 3;
         } else if (cutPartStr === '4') {
           const newA = p.a / 2;
           const newB = p.b / 2;
           const sides = [newA, newB].sort((x, y) => x - y);
-          resStr = `${sides[0]}X${sides[1]}`;
+          resStr = `${fmt(sides[0])}X${fmt(sides[1])}`;
           multiplier = 4;
         } else {
           multiplier = parseInt(cutPartStr) || 1;
@@ -503,16 +573,24 @@
       const qty = parseInt(document.getElementById('f-cutqty').value) || 0;
       const type = document.getElementById('f-sides').value;
       let plates = 1; let planned = qty;
-      if (type === 'S/S') { plates = 1; planned = qty * 1; }
+      if (type === 'S/S') { plates = 1; planned = qty; }
       else if (type === 'F/B' || type === 'G/P') { plates = 1; planned = qty * 2; }
-      else if (type === 'F+B') { plates = 2; planned = qty * 2; }
-      else if (type === 'B/S' || type === 'F/S') { plates = 1; planned = qty * 1; }
+      else if (type === 'F+B') { plates = 2; planned = qty; }
+      else if (type === 'B/S' || type === 'F/S') { plates = 1; planned = qty; }
       document.getElementById('f-plates').value = plates;
-      document.getElementById('f-pulling').value = planned;
+      // For F+B, show as qty+qty format
+      if (type === 'F+B') {
+        document.getElementById('f-pulling').value = `${qty}+${qty}`;
+      } else {
+        document.getElementById('f-pulling').value = planned;
+      }
     }
 
     // Listeners
+    // When paper size changes: always apply the currently-selected cut part
+    // to the new size so result size, qty, and pulling all recalculate correctly
     document.getElementById('f-papersize').addEventListener('input', (e) => {
+      // Always update cut size to new paper size, then apply cut-part formula
       document.getElementById('f-cutsize').value = e.target.value;
       calculateResultSize();
     });
@@ -535,6 +613,7 @@
         date: document.getElementById('f-date').value,
         job_name: document.getElementById('f-jobname').value,
         bill_no: document.getElementById('f-billno').value,
+        ctcp_bill_no: document.getElementById('f-ctcp-billno').value || null,
         paper_code: document.getElementById('f-papercode').value,
         paper_size: document.getElementById('f-papersize').value,
         gsm_desc: document.getElementById('f-gsm').value,
@@ -543,13 +622,20 @@
         loose_sheets: parseInt(document.getElementById('f-loose').value) || 0,
         total_sheets: parseInt(document.getElementById('f-total').value) || 0,
         is_waiting_for_paper: document.getElementById('f-waiting').checked,
-        cut_size: document.getElementById('f-cutsize').value,
+        cut_size: document.getElementById('f-result-size').value || document.getElementById('f-cutsize').value,
         qty: parseInt(document.getElementById('f-cutqty').value) || 0,
         cut_part: parseInt(document.getElementById('f-cutpart').value) || 1,
         printing: document.getElementById('f-sides').value,
         operator_name: document.getElementById('f-operator').value,
         plate_size: document.getElementById('f-platesize').value,
-        pulling: document.getElementById('f-pulling').value,
+        plate_process: document.getElementById('f-plateprocess') ? document.getElementById('f-plateprocess').value : null,
+        pulling: (() => {
+          const planned = document.getElementById('f-pulling').value;
+          const actual = document.getElementById('f-pulling-actual').value.trim();
+          let combined = `PLANNED:${planned}`;
+          if (actual) combined += ` | ACTUAL:${actual}`;
+          return combined;
+        })(),
         job_remark: document.getElementById('f-remarks').value,
       };
 
@@ -583,6 +669,7 @@
       date: 'Date',
       job_name: 'Job Name',
       bill_no: 'Bill No.',
+      ctcp_bill_no: 'CTCP Bill No.',
       paper_code: 'Paper Code',
       paper_size: 'Paper Size',
       gsm_desc: 'GSM / Description',
@@ -597,6 +684,7 @@
       printing: 'Printing Run Type',
       operator_name: 'Plate Supplier',
       plate_size: 'Plate Size',
+      plate_process: 'Plate Process',
       pulling: 'Planned Pulling',
       job_remark: 'Remarks'
     };
@@ -732,7 +820,9 @@
   <style>
     .section-content { display: none; padding: 15px; background: rgba(255,255,255,0.02); }
     .section-content.open { display: block; }
-    .sticky-bottom { position: sticky; bottom: 0; background: var(--surface); padding: 16px; border-top: 1px solid var(--border); box-shadow: 0 -4px 20px rgba(0,0,0,0.3); border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+    @media (min-width: 769px) {
+      .sticky-bottom { position: sticky; bottom: 0; background: var(--surface); padding: 16px; border-top: 1px solid var(--border); box-shadow: 0 -4px 20px rgba(0,0,0,0.3); border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+    }
     .update-modal-card { max-width: 680px; }
     .update-change-list { display: grid; gap: 10px; }
     .update-change-row {

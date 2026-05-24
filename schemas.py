@@ -195,6 +195,7 @@ class JobCreate(BaseModel):
     # Paper source — CRITICAL
     paper_source: PaperSource = PaperSource.party
     is_waiting_for_paper: bool = False
+    party_provider: Optional[str] = None  # who provides paper for cutting
 
     # Optional sub-records
     lam_job:      Optional[LamJobCreate]   = None
@@ -229,6 +230,7 @@ class JobUpdate(BaseModel):
     pulling_charge: Optional[str]         = None
     paper_source:   Optional[PaperSource] = None
     is_waiting_for_paper: Optional[bool] = None
+    party_provider: Optional[str] = None
     status:         Optional[JobStatus]   = None
     lam_job:        Optional[LamJobCreate]   = None
     punch_job:      Optional[PunchJobCreate] = None
@@ -265,6 +267,7 @@ class JobOut(BaseModel):
     paper_source:   str
     status:         str
     is_waiting_for_paper: bool = False
+    party_provider: Optional[str] = None
     created_at:     Optional[str] = None
     updated_at:     Optional[str] = None
     lam_job:        Optional[LamJobOut]   = None
@@ -278,6 +281,11 @@ class JobListItem(BaseModel):
     party_code:   Optional[str] = None
     party_name:   str
     job_name:     str
+    qty:          Optional[int] = None
+    gsm_desc:     Optional[str] = None
+    printing:     Optional[str] = None
+    pulling:      Optional[str] = None
+    set_no:       Optional[int] = None
     plate_size:   Optional[str] = None
     operator_name: Optional[str] = None
     paper_source: str
@@ -288,6 +296,7 @@ class JobListItem(BaseModel):
     is_waiting_for_paper: Optional[bool] = False
     has_lamination: Optional[bool] = False
     has_punching: Optional[bool] = False
+    queue_order:  int = 0
     model_config = {"from_attributes": True}
 
 class JobCardData(BaseModel):
@@ -299,6 +308,7 @@ class JobCardData(BaseModel):
     date:          str
     party_name:    str
     bill_no:       Optional[str] = None
+    ctcp_bill_no:  Optional[str] = None
     job_name:      str
     gsm_desc:      Optional[str] = None
     paper_size:    Optional[str] = None
@@ -319,6 +329,7 @@ class JobCardData(BaseModel):
     status:        Optional[str] = None
     job_remark:    Optional[str] = None
     is_waiting_for_paper: bool = False
+    party_provider: Optional[str] = None
     inward_status: str = "none"  # "none", "pending", "received"
     inward_sheets: int = 0
     lam_job:       Optional[LamJobOut]   = None
@@ -407,6 +418,13 @@ class LedgerEntry(BaseModel):
     paper_size:      Optional[str]  = None
     sheets:          int
     running_balance: int            # cumulative balance after this transaction
+    
+class StockTransferRequest(BaseModel):
+    """Payload for transferring party stock to company stock."""
+    party_code: str
+    paper_code: str
+    paper_size: str
+    qty:        int
 
 
 # ── DASHBOARD ─────────────────────────────────────────────────────────────────
@@ -438,9 +456,57 @@ class JobActivate(BaseModel):
     total_sheets: Optional[int] = None
     paper_source: Optional[PaperSource] = None
 
+class ReorderRequest(BaseModel):
+    """Payload to update the queue order of pending jobs."""
+    job_ids: List[int]
+
 class JobActivateResponse(BaseModel):
     """Response after activating a job."""
     success: bool
     message: str
     job:     JobOut
     warning: Optional[str] = None
+
+
+# ── USERS ─────────────────────────────────────────────────────────────────────
+
+class UserBase(BaseModel):
+    username: str
+
+class UserCreate(UserBase):
+    password: str
+
+class UserLogin(UserBase):
+    password: str
+
+class UserOut(UserBase):
+    id: int
+    is_admin: bool
+    created_at: Optional[str] = None
+    model_config = {"from_attributes": True}
+
+class UserUpdate(BaseModel):
+    password: Optional[str] = None
+    is_admin: Optional[bool] = None
+
+
+# ── BILL & CTCP ENTRY ─────────────────────────────────────────────────────────
+
+class PendingBillCtcpListItem(BaseModel):
+    """Compact job details for the Bill & CTCP Entry queue."""
+    job_id:        int
+    date:          str
+    job_name:      str
+    party_name:    str
+    operator_name: Optional[str] = None  # Plate Provider
+    gsm_desc:      Optional[str] = None  # Paper Name
+    paper_size:    Optional[str] = None  # Paper Size
+    bill_no:       Optional[str] = None
+    ctcp_bill_no:  Optional[str] = None
+    model_config = {"from_attributes": True}
+
+class UpdateBillCtcpRequest(BaseModel):
+    """Payload to update Bill and/or CTCP number."""
+    bill_no:       Optional[str] = None
+    ctcp_bill_no:  Optional[str] = None
+

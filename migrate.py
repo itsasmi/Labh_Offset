@@ -404,20 +404,28 @@ def import_jobs(conn, df_entry):
         loose       = to_int(r.get("loos") or r.get("LOOSE"))
         total       = to_int(r.get("Paper Sheet") or r.get("TOTAL SHEET"))
         cut_size    = clean(r.get("Size") or r.get("CUT SIZE"))
-        qty         = to_int(r.get("Cutting Use") or r.get("QTY"))
         cut_part    = to_int(r.get("Cut Part"))
-        printing    = normalize_printing(r.get("paper") or r.get("PRINTING"))  # the printing col is called 'paper' in the sheet
-        pulling     = clean(r.get("Pulling") or r.get("PULLING"))
+        
+        # In Excel, the column after Cut Part is Unnamed: 17 which represents Qty (Cutting Use * Cut Part)
+        qty_val     = r.get("Unnamed: 17")
+        if qty_val is None or pd.isna(qty_val):
+            qty_val = (r.get("Cutting Use") if r.get("Cutting Use") is not None else total or 0) * (cut_part or 1)
+        qty         = to_int(qty_val)
+        # In Excel: 'paper' is Paper Source, 'Pulling' is Print Side, and 'Pulling Charge' is Pulling count!
+        psource     = normalize_paper_source(r.get("paper") or r.get("Stock"))
+        printing    = normalize_printing(r.get("Pulling") or r.get("PRINTING"))
+        
+        pulling_val = to_int(r.get("Pulling Charge") or r.get("PULLING"))
+        pulling     = f"PLANNED:{pulling_val}" if pulling_val is not None else ""
+        pull_chg    = None
+        
         set_no      = to_int(r.get("Set") or r.get("SET"), 1)
         plate_size  = clean(r.get("plate size") or r.get("Plate size"))
         plate_proc  = clean(r.get("Plate Process") or r.get("Plate Process :"))
         operator    = clean(r.get("Process Name") or r.get("OPERATOR NAME"))
-        pull_chg    = clean(r.get("Pulling Charge"))
         bill_no     = clean(r.get("BILL NO.") or r.get("Bill no."))
         ctcp_bill   = clean(r.get("CTCP BILL NO."))
         remark      = clean(r.get("Job Remark") or r.get("REMARKS"))
-        # paper_source: from 'Stock' column (party/labh)
-        psource     = normalize_paper_source(r.get("Stock"))
 
         if not job_id:
             continue

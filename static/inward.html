@@ -6,12 +6,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Labh Offset - Inward Register</title>
   <link rel="stylesheet" href="style.css?v=5">
+  <style>
+    @media (max-width: 768px) {
+      /* Form padding and layout for mobile */
+      .section-content.open { padding: 16px !important; gap: 16px !important; }
+      .form-row-2 { gap: 12px !important; }
+      
+      /* Quantity Grid: 2 columns on mobile instead of stacked */
+      .form-row-3 { grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
+      .form-row-3 .form-group:last-child { grid-column: span 2; }
+      #i-total { font-size: 24px !important; }
+      
+      /* History Card responsive layout */
+      .card { padding: 16px !important; flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
+      .card > div:first-child { flex: 1; }
+      .card > div:last-child { width: 100%; text-align: right !important; display: flex; justify-content: space-between; align-items: center; padding: 10px 16px !important; border-radius: 10px !important; }
+      .card > div:last-child > div:first-child { font-size: 18px !important; order: 2; }
+      .card > div:last-child > div:last-child { margin-top: 0 !important; order: 1; font-size: 10px !important; }
+      
+      /* Mobile Button tweaks */
+      .sticky-bottom .btn { height: 50px !important; font-size: 15px !important; border-radius: 12px !important; }
+    }
+  </style>
 </head>
 <body>
 
   <header class="topbar">
     <div class="topbar-left">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
     </div>
     <div class="topbar-center uppercase">Inward Entry</div>
     <div class="topbar-right">
@@ -25,41 +47,67 @@
   <div class="menu-overlay" id="menu-overlay"></div>
   <nav class="side-menu" id="side-menu">
     <div class="side-menu-header">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
-      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     </div>
-    <div class="menu-items">
-    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
-
-      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
-      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
-      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
-      <div class="menu-divider"></div>
-      
+                <div class="menu-items" style="display: flex; flex-direction: column; flex: 1;">
+      <a href="waiting.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Waiting for Paper
+      </a>
+      <a href="bill_ctcp.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Bill & CTCP Entry
+      </a>
+      <a href="inward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Inward Register
+      </a>
+      <a href="outward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Outward Register
+      </a>
+      <a href="masters.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        Master Data
+      </a>
+      <a href="settings.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Settings
+      </a>
     </div>
   </nav>
 
   <main class="container">
     <div id="form-container">
-      <div style="font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 20px;">Receive New Paper</div>
+      <div style="margin-bottom: 32px; text-align: center;" class="fade-up">
+        <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 16px; background: var(--primary-glow); color: var(--primary); margin-bottom: 16px;">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        </div>
+        <h1 style="font-size: 28px; font-weight: 800; color: var(--text); letter-spacing: -0.02em; margin-bottom: 4px;">Receive Stock</h1>
+        <p style="font-size: 14px; color: var(--text2);">Log incoming paper stock inventory</p>
+      </div>
 
       <form id="inward-form">
         <!-- Section 1: Source -->
-        <div class="section-card">
+        <div class="section-card fade-up delay-1" style="border: 1px solid var(--border); box-shadow: 0 8px 16px rgba(0,0,0,0.03);">
           <div class="section-header active">
             <div class="section-title">━━ STOCK SOURCE</div>
           </div>
-          <div class="section-content open">
+          <div class="section-content open" style="display: flex; flex-direction: column; gap: 20px;">
             <div class="form-group">
-              <label class="form-label">OWNER / TYPE</label>
-              <select class="form-control" id="i-source" required>
+              <label class="form-label" style="display: flex; justify-content: space-between;">
+                <span>OWNER / TYPE</span>
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="color: var(--primary);"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              </label>
+              <select class="form-control" id="i-source" required style="font-weight: 600; color: var(--primary);">
                 <option value="party">Party Stock</option>
                 <option value="company">Company Stock</option>
               </select>
             </div>
             
             <div id="party-fields">
-              <div class="form-row form-row-2">
+              <div class="form-row form-row-2" style="margin-bottom: 0;">
                 <div class="form-group">
                   <label class="form-label">PARTY CODE</label>
                   <input type="text" class="form-control mono" id="i-party-code" list="party-list" placeholder="Enter Code">
@@ -74,12 +122,12 @@
         </div>
 
         <!-- Section 2: Paper -->
-        <div class="section-card">
+        <div class="section-card fade-up delay-2" style="border: 1px solid var(--border); box-shadow: 0 8px 16px rgba(0,0,0,0.03);">
           <div class="section-header active">
             <div class="section-title">━━ PAPER & SUPPLIER</div>
           </div>
-          <div class="section-content open">
-            <div class="form-row form-row-2">
+          <div class="section-content open" style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="form-row form-row-2" style="margin-bottom: 0;">
               <div class="form-group">
                 <label class="form-label">PAPER CODE</label>
                 <input type="text" class="form-control mono" id="i-paper-code" list="paper-list" placeholder="Enter Code" required>
@@ -105,44 +153,54 @@
         </div>
 
         <!-- Section 3: Quantity -->
-        <div class="section-card">
+        <div class="section-card fade-up delay-3" style="border: 1px solid var(--border); box-shadow: 0 8px 16px rgba(0,0,0,0.03);">
           <div class="section-header active">
             <div class="section-title">━━ QUANTITY RECEIVED</div>
           </div>
-          <div class="section-content open">
-            <div class="form-row form-row-3">
+          <div class="section-content open" style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="form-row form-row-3" style="margin-bottom: 0;">
               <div class="form-group">
                 <label class="form-label">REAM</label>
-                <input type="text" class="form-control calc-input" id="i-ream" min="0" value="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input type="text" class="form-control calc-input" id="i-ream" min="0" value="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 18px; font-weight: 600;">
               </div>
               <div class="form-group">
                 <label class="form-label">SHEET/REAM</label>
-                <input type="text" class="form-control calc-input" id="i-spr" min="0" value="100" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input type="text" class="form-control calc-input" id="i-spr" min="0" value="100" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 18px; font-weight: 600;">
               </div>
               <div class="form-group">
                 <label class="form-label">LOOSE</label>
-                <input type="text" class="form-control calc-input" id="i-loose" min="0" value="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                <input type="text" class="form-control calc-input" id="i-loose" min="0" value="0" inputmode="numeric" oninput="this.value = this.value.replace(/[^0-9]/g, '')" style="text-align: center; font-size: 18px; font-weight: 600;">
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label text-green" style="color: var(--green);">TOTAL RECEIVED SHEETS</label>
-              <input type="text" class="form-control" id="i-total" readonly style="color: var(--green); font-weight: 800; font-size: 18px;">
+            <div class="form-group" style="background: var(--green-dim); padding: 20px; border-radius: 16px; border: 1px dashed var(--green); margin-top: 8px;">
+              <label class="form-label text-green" style="color: var(--green); text-align: center; width: 100%;">TOTAL RECEIVED SHEETS</label>
+              <input type="text" class="form-control" id="i-total" readonly style="background: transparent; border: none; color: var(--green); font-weight: 800; font-size: 28px; text-align: center; padding: 0;">
             </div>
           </div>
         </div>
 
-        <div class="sticky-bottom">
-          <button type="submit" class="btn btn-primary btn-block" style="height: 50px;" id="save-btn">SAVE INWARD ENTRY</button>
+        <div class="sticky-bottom fade-up delay-3">
+          <button type="submit" class="btn btn-primary btn-block" style="height: 54px; font-size: 16px; border-radius: 16px; background: linear-gradient(135deg, var(--primary), var(--purple)); border: none; box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);" id="save-btn">SAVE INWARD ENTRY</button>
         </div>
       </form>
     </div>
 
     <!-- Live Balance Verification Section -->
-    <div style="margin-top: 40px; margin-bottom: 80px;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-        <div style="font-size: 10px; font-weight: 700; color: var(--text3); letter-spacing: 0.1em;" class="uppercase">Previous Arrivals & Balance</div>
-        <button class="btn btn-secondary btn-sm" onclick="loadInwardHistory()">↻ REFRESH</button>
+    <div style="margin-top: 48px; margin-bottom: 80px;" class="fade-up delay-3">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 3px; height: 16px; background: var(--primary); border-radius: 4px;"></div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: 0.05em;" class="uppercase">Recent Arrivals</div>
+        </div>
+        <button class="btn btn-secondary btn-sm" style="background: var(--surface); border-color: var(--border2); border-radius: 20px; font-size: 11px; padding: 6px 12px;" onclick="loadInwardHistory()">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 4px;"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+          REFRESH
+        </button>
       </div>
+      <div style="margin-bottom: 16px;">
+        <input type="text" id="inward-search" class="form-control" placeholder="Search Supplier, Paper, Party..." oninput="loadInwardHistory()">
+      </div>
+      <div id="inward-history-container"></div>
     </div>
 
     <!-- Job Update Modal (Glass UI) -->
@@ -153,7 +211,7 @@
             <div style="font-size: 10px; font-weight: 800; color: var(--primary); letter-spacing: 0.1em;" class="uppercase">⚠️ Paper Mismatch Detected</div>
             <div style="font-weight: 700; font-size: 18px; color: var(--text); margin-top: 4px;">Update Job Entry?</div>
           </div>
-          <button class="panel-close" onclick="closeModal()">✕</button>
+          <button class="panel-close" onclick="closeModal()"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
         </div>
         <div class="modal-body" style="font-size: 13px; color: var(--text2); line-height: 1.6;">
           The paper type or size you entered is different from <strong id="mismatch-job-title">Job</strong>:
@@ -208,6 +266,27 @@
 
   <script>
     const API_BASE = '/api';
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        let y, m, d;
+        if (parts[0].length === 4) {
+          y = parts[0];
+          m = parts[1];
+          d = parts[2];
+        } else if (parts[2].length === 4) {
+          d = parts[0];
+          m = parts[1];
+          y = parts[2];
+        } else {
+          return dateStr;
+        }
+        return `${d.padStart(2, '0')}-${m.padStart(2, '0')}-${y}`;
+      }
+      return dateStr;
+    }
     let jobData = null;
     const urlParams = new URLSearchParams(window.location.search);
     const jobId = urlParams.get('job_id') || urlParams.get('job');
@@ -328,23 +407,101 @@
       await submitInwardPayload();
     }
 
+    // ── CUTTING / PULLING FORMULA HELPERS ────────────────────────────────────
+    function parseSize(s) {
+      if (!s) return null;
+      const m = s.toLowerCase().match(/(\d+\.?\d*)\s*x\s*(\d+\.?\d*)/);
+      if (!m) return null;
+      const w = parseFloat(m[1]), h = parseFloat(m[2]);
+      return { a: Math.min(w, h), b: Math.max(w, h) };
+    }
+
+    function applyInwardCutFormula(newPaperSize, cutPart, totalSheets, printingType, existingPullingStr) {
+      const pSize = newPaperSize;
+      const cutSize = newPaperSize;
+      const p = parseSize(newPaperSize);
+      let resultSize = pSize;
+      let multiplier = 1;
+      const cp = String(cutPart);
+      const fmt = (n) => parseFloat(n.toFixed(2));
+
+      if (cp === '1') {
+        multiplier = 1;
+        resultSize = pSize;
+      } else if (p) {
+        if (cp === '2') {
+          const nb = p.b / 2;
+          const sides = [p.a, nb].sort((x, y) => x - y);
+          resultSize = `${fmt(sides[0])}X${fmt(sides[1])}`; multiplier = 2;
+        } else if (cp === '3') {
+          const nb = p.b / 3;
+          const sides = [p.a, nb].sort((x, y) => x - y);
+          resultSize = `${fmt(sides[0])}X${fmt(sides[1])}`; multiplier = 3;
+        } else if (cp === '4') {
+          const na = p.a / 2, nb = p.b / 2;
+          const sides = [na, nb].sort((x, y) => x - y);
+          resultSize = `${fmt(sides[0])}X${fmt(sides[1])}`; multiplier = 4;
+        }
+      }
+
+      // Step 3: qty (cutqty) = totalSheets × multiplier
+      const qty = (parseInt(totalSheets) || 0) * multiplier;
+
+      // Step 4: pulling based on printing type
+      let plannedPulling;
+      const type = printingType || 'S/S';
+      if (type === 'F+B') {
+        plannedPulling = `${qty}+${qty}`;
+      } else if (type === 'F/B' || type === 'G/P') {
+        plannedPulling = String(qty * 2);
+      } else {
+        plannedPulling = String(qty);
+      }
+
+      // Preserve existing ACTUAL pulling if present
+      const mActual = (existingPullingStr || '').match(/ACTUAL:\s*([^\s|]+)/i);
+      let combined = `PLANNED:${plannedPulling}`;
+      if (mActual) combined += ` | ACTUAL:${mActual[1]}`;
+
+      return { cutSize, resultSize, qty, pulling: combined };
+    }
+
     async function updateJobAndSaveInward() {
       const btn = document.getElementById('save-btn');
       btn.disabled = true; btn.textContent = 'UPDATING JOB...';
       closeModal();
       try {
+        const newPaperSize = document.getElementById('i-size').value.trim();
+
+        // BUG FIX: Do NOT use inward quantity to overwrite the job's required quantity!
+        // The inward entry logs received stock, which may be more than the job needs.
+        // We only recalculate cut_size based on the new paper_size, but preserve the job's required total_sheets.
+        const jobTotalSheets = jobData.total_sheets || 0;
+
+        const { cutSize, resultSize, qty, pulling } = applyInwardCutFormula(
+          newPaperSize,
+          jobData.cut_part || 1,
+          jobTotalSheets,
+          jobData.printing || 'S/S',
+          jobData.pulling || ''
+        );
+
         const res = await fetch(`${API_BASE}/jobs/${jobId}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            paper_code: document.getElementById('i-paper-code').value,
-            paper_size: document.getElementById('i-size').value,
-            gsm_desc: document.getElementById('i-desc').value
+            paper_code:   document.getElementById('i-paper-code').value,
+            paper_size:   newPaperSize,
+            gsm_desc:     document.getElementById('i-desc').value,
+            cut_size:     resultSize,
+            qty:          qty,
+            total_sheets: jobTotalSheets,
+            pulling:      pulling
           })
         });
         if (!res.ok) {
           const errText = await res.text();
-          throw new Error(errText || "Failed to update job details");
+          throw new Error(errText || 'Failed to update job details');
         }
         await submitInwardPayload();
       } catch (e) {
@@ -416,34 +573,40 @@
 
     async function loadInwardHistory() {
       const container = document.getElementById('inward-history-container');
+      const searchBox = document.getElementById('inward-search');
+      const query = searchBox ? searchBox.value.trim() : '';
+
       try {
-        const res = await fetch(`${API_BASE}/stock/inward_register`);
+        const res = await fetch(`${API_BASE}/stock/inward_register?global_query=${encodeURIComponent(query)}`);
         const data = await res.json();
         
         // Show only last 20 for performance
-        const recent = data.slice(-20).reverse();
+        const recent = data.slice(0, 20);
 
         if (recent.length === 0) {
           container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--text3);">No arrivals logged yet.</div>';
           return;
         }
 
-        container.innerHTML = recent.map(row => {
+        container.innerHTML = recent.map((row, i) => {
           const isFinished = row.remaining <= 0;
           return `
-            <div class="section-card" style="margin-bottom: 8px; opacity: ${isFinished ? '0.6' : '1'};">
-              <div style="padding: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div class="card fade-up" style="margin-bottom: 16px; opacity: ${isFinished ? '0.6' : '1'}; padding: 20px; display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; border-radius: 16px; animation-delay: ${0.1 * (i % 5)}s;">
+              <div style="display: flex; gap: 16px; align-items: center; flex: 1; min-width: 200px;">
+                <div style="width: 48px; height: 48px; border-radius: 14px; background: ${row.party_code ? 'var(--green-dim)' : 'var(--primary-glow)'}; color: ${row.party_code ? 'var(--green)' : 'var(--primary)'}; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                </div>
                 <div>
-                  <div style="font-size: 11px; color: var(--text3);">${row.date} | ${row.supplier || 'N/A'}</div>
-                  <div style="font-weight: 700; color: var(--text);">${row.paper_code} (${row.paper_size})</div>
-                  <div style="font-size: 10px; color: var(--blue); font-weight: 600;">${row.party_code ? `PARTY: ${row.party_code.toUpperCase()}` : 'COMPANY STOCK'}</div>
+                  <div style="font-size: 11px; color: var(--text3); margin-bottom: 2px;">${formatDate(row.date)} &bull; ${row.supplier || 'Unknown Supplier'}</div>
+                  <div style="font-weight: 700; color: var(--text); font-size: 15px;">${row.paper_code} <span style="font-weight: 400; color: var(--text2);">(${row.paper_size})</span></div>
+                  <div style="font-size: 10px; color: ${row.party_code ? 'var(--green)' : 'var(--primary)'}; font-weight: 700; margin-top: 2px; letter-spacing: 0.05em;" class="uppercase">${row.party_code ? `PARTY: ${row.party_code.toUpperCase()}` : 'COMPANY STOCK'}</div>
                 </div>
-                <div style="text-align: right;">
-                  <div style="font-size: 16px; font-weight: 800; color: ${isFinished ? 'var(--text3)' : 'var(--green)'};">
-                    ${row.remaining.toLocaleString()} <span style="font-size: 9px; font-weight: 400; color: var(--text3);">LEFT</span>
-                  </div>
-                  <div style="font-size: 9px; color: var(--text3);">of ${row.total_sheets.toLocaleString()} sheets</div>
+              </div>
+              <div style="text-align: right; background: ${isFinished ? 'var(--surface2)' : 'var(--green-dim)'}; padding: 12px 16px; border-radius: 12px;">
+                <div style="font-size: 20px; font-weight: 800; color: ${isFinished ? 'var(--text3)' : 'var(--green)'}; line-height: 1;">
+                  ${row.remaining.toLocaleString()}
                 </div>
+                <div style="font-size: 9px; font-weight: 600; color: ${isFinished ? 'var(--text3)' : 'var(--green)'}; text-transform: uppercase; margin-top: 4px; letter-spacing: 0.05em;">Remaining</div>
               </div>
             </div>
           `;

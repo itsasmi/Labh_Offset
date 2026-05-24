@@ -142,6 +142,7 @@ def list_inward(
 def create_inward(payload: InwardCreate, db: Session = Depends(get_db)):
     if payload.stock_type.value == "party" and not payload.party_code:
         raise HTTPException(400, "party_code is required when stock_type is 'party'")
+        
     max_ch = db.query(func.max(Inward.ch_no)).scalar() or 0
     max_sr = db.query(func.max(Inward.sr_no)).scalar() or 0
     data = payload.model_dump()

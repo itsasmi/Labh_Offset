@@ -11,7 +11,7 @@
 
   <header class="topbar">
     <div class="topbar-left">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
     </div>
     <div class="topbar-center uppercase">Party Ledger</div>
     <div class="topbar-right">
@@ -25,17 +25,34 @@
   <div class="menu-overlay" id="menu-overlay"></div>
   <nav class="side-menu" id="side-menu">
     <div class="side-menu-header">
-      <img src="Icon/logo-img.png" class="logo-img" alt="Logo">
-      <button class="panel-close" id="menu-close-btn" aria-label="Close">✕</button>
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
     </div>
-    <div class="menu-items">
-    <a href="settings.html?v=3" class="menu-item">⚙ Settings</a>
-
-      <a href="inward.html?v=3" class="menu-item">≡ Inward Register</a>
-      <a href="outward.html?v=3" class="menu-item">≡ Outward Register</a>
-      <a href="masters.html?v=3" class="menu-item">≡ Master Data</a>
-      <div class="menu-divider"></div>
-      
+                <div class="menu-items" style="display: flex; flex-direction: column; flex: 1;">
+      <a href="waiting.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Waiting for Paper
+      </a>
+      <a href="bill_ctcp.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Bill & CTCP Entry
+      </a>
+      <a href="inward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Inward Register
+      </a>
+      <a href="outward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Outward Register
+      </a>
+      <a href="masters.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        Master Data
+      </a>
+      <a href="settings.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Settings
+      </a>
     </div>
   </nav>
 
@@ -46,6 +63,18 @@
         <div style="font-size: 13px; color: var(--text3); margin-top: 4px;">Code: <span id="party-code-display" style="font-family: var(--mono); color: var(--blue);"></span></div>
       </div>
       <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨 PRINT</button>
+    </div>
+
+    <!-- Paper Filter Selector -->
+    <div class="section-card" style="margin-bottom: 24px;">
+      <div class="section-content open" style="padding: 16px;">
+        <div class="form-group">
+          <label class="form-label">FILTER BY PAPER TYPE & SIZE</label>
+          <select class="form-control" id="paper-select" onchange="onPaperChange()">
+            <option value="">-- All Papers (No Running Balance) --</option>
+          </select>
+        </div>
+      </div>
     </div>
 
     <div class="table-container" style="background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden;">
@@ -92,6 +121,27 @@
   <script>
     const API_BASE = '/api';
 
+    function formatDate(dateStr) {
+      if (!dateStr) return '—';
+      const parts = dateStr.split('-');
+      if (parts.length === 3) {
+        let y, m, d;
+        if (parts[0].length === 4) {
+          y = parts[0];
+          m = parts[1];
+          d = parts[2];
+        } else if (parts[2].length === 4) {
+          d = parts[0];
+          m = parts[1];
+          y = parts[2];
+        } else {
+          return dateStr;
+        }
+        return `${d.padStart(2, '0')}-${m.padStart(2, '0')}-${y}`;
+      }
+      return dateStr;
+    }
+
     // Hamburger Menu Logic
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const menuOverlay = document.getElementById('menu-overlay');
@@ -106,19 +156,72 @@
     hamburgerBtn.addEventListener('click', toggleMenu);
     menuCloseBtn.addEventListener('click', toggleMenu);
     menuOverlay.addEventListener('click', toggleMenu);
+    
     const urlParams = new URLSearchParams(window.location.search);
     const partyCode = urlParams.get('party');
+    const originCode = urlParams.get('origin');
+    const initialPaper = urlParams.get('paper');
+    const initialSize = urlParams.get('size');
 
     if (!partyCode) {
       location.href = 'stock.html';
     }
 
-    document.getElementById('party-code-display').textContent = partyCode.toUpperCase();
+    let displayName = partyCode.toUpperCase();
+    if (partyCode.toLowerCase() === 'company' && originCode) {
+        displayName = `COMPANY STOCK (${originCode.toUpperCase()})`;
+    } else if (partyCode.toLowerCase() === 'company') {
+        displayName = 'COMPANY STOCK';
+    }
+    
+    document.getElementById('party-code-display').textContent = displayName;
+
+    async function loadPapersDropdown() {
+      const select = document.getElementById('paper-select');
+      try {
+        let fetchUrl = `${API_BASE}/stock?party_code=${partyCode}`;
+        if (partyCode && partyCode.toLowerCase() === 'company') {
+          fetchUrl = `${API_BASE}/stock?stock_type=company`;
+          if (originCode) fetchUrl += `&origin=${originCode}`;
+        }
+        const res = await fetch(fetchUrl);
+        const data = await res.json();
+        
+        data.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = `${p.paper_code}|${p.paper_size}`;
+          opt.textContent = `${p.paper_desc} (${p.paper_size}) - Balance: ${p.balance.toLocaleString()} sheets`;
+          
+          if (initialPaper && initialSize && 
+              p.paper_code.toLowerCase() === initialPaper.toLowerCase() && 
+              p.paper_size.toLowerCase().replace(/\s+/g, '') === initialSize.toLowerCase().replace(/\s+/g, '')) {
+            opt.selected = true;
+          }
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        console.error("Error loading papers list", err);
+      }
+    }
 
     async function loadLedger() {
       const body = document.getElementById('ledger-body');
+      const paperVal = document.getElementById('paper-select').value;
+      
+      let queryStr = '';
+      if (paperVal) {
+        const [pcode, psize] = paperVal.split('|');
+        queryStr = `?paper_code=${encodeURIComponent(pcode)}&paper_size=${encodeURIComponent(psize)}`;
+      }
+
       try {
-        const res = await fetch(`${API_BASE}/stock/party/${partyCode}`);
+        let ledgerUrl = `${API_BASE}/stock/party/${partyCode}${queryStr}`;
+        if (partyCode.toLowerCase() === 'company' && originCode) {
+          const separator = queryStr ? '&' : '?';
+          ledgerUrl += `${separator}origin=${encodeURIComponent(originCode)}`;
+        }
+
+        const res = await fetch(ledgerUrl);
         const data = await res.json();
         
         if (data.length === 0) {
@@ -126,23 +229,35 @@
           return;
         }
 
-        document.getElementById('party-name').textContent = partyCode.toUpperCase();
+        document.getElementById('party-name').textContent = partyCode.toUpperCase() + (paperVal ? ' - Paper History' : ' - Statement');
 
         body.innerHTML = data.map(row => {
           const isOut = row.type === 'outward';
+          
+          let detailsHtml = '';
+          if (isOut) {
+            detailsHtml = `
+              <div style="font-weight: 600;">
+                Job #${row.job_id}: <a href="jobcard.html?job=${row.job_id}" style="color: var(--primary); text-decoration: underline; font-weight: 700;">${row.job_name}</a>
+              </div>
+            `;
+          } else {
+            detailsHtml = `<div style="font-weight: 600; color: var(--text);">${row.supplier || 'Inward'}</div>`;
+          }
+
           return `
             <tr class="fade-up">
               <td data-label="TYPE"><span class="badge ${isOut ? 'badge-error' : 'badge-success'}">${row.type.toUpperCase()}</span></td>
-              <td data-label="DATE">${row.date}</td>
+              <td data-label="DATE">${formatDate(row.date)}</td>
               <td data-label="DETAILS">
-                <div style="font-weight: 600; color: var(--text);">${isOut ? row.job_name : (row.supplier || 'Inward')}</div>
-                <div style="font-size: 11px; color: var(--text3);">${row.paper_desc} (${row.paper_size})</div>
+                ${detailsHtml}
+                <div style="font-size: 11px; color: var(--text3);">${row.paper_desc || row.paper_code} (${row.paper_size})</div>
               </td>
               <td class="td-right" data-label="SHEETS" style="color: ${isOut ? 'var(--red)' : 'var(--green)'}; font-weight: 700;">
                 ${isOut ? '-' : '+'}${row.sheets.toLocaleString()}
               </td>
               <td class="td-right" data-label="BALANCE" style="font-weight: 700; font-family: var(--mono); color: var(--text);">
-                ${row.running_balance.toLocaleString()}
+                ${paperVal ? row.running_balance.toLocaleString() : '—'}
               </td>
             </tr>
           `;
@@ -151,7 +266,17 @@
         body.innerHTML = '<tr><td colspan="5" style="padding: 40px; text-align: center; color: var(--red);">Error.</td></tr>';
       }
     }
-    loadLedger();
+
+    function onPaperChange() {
+      loadLedger();
+    }
+
+    async function initPage() {
+      await loadPapersDropdown();
+      loadLedger();
+    }
+    
+    initPage();
   </script>
 
 </body>

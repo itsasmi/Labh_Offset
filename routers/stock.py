@@ -4,8 +4,8 @@ from sqlalchemy import func, text
 from typing import Optional, List
 from database import get_db
 from models import Inward, Outward, Party, PaperMaster
-from schemas import StockBalance, StockCheckResponse, LedgerEntry, DashboardStats, InwardOut
-
+from schemas import StockBalance, StockCheckResponse, LedgerEntry, DashboardStats, InwardOut, StockTransferRequest
+from datetime import datetime
 router = APIRouter(prefix="/api", tags=["Stock"])
 
 
@@ -13,10 +13,12 @@ router = APIRouter(prefix="/api", tags=["Stock"])
 def get_available_stock(
     stock_type: str             = Query(...),
     party_code: Optional[str]   = Query(None),
+    paper_code: Optional[str]   = Query(None),
     db: Session = Depends(get_db)
 ):
     sql = text("""
         SELECT
+            main.party_code,
             main.paper_code,
             COALESCE(pm.description, main.paper_desc, main.paper_code) AS paper_desc,
             main.paper_size,
@@ -53,19 +55,22 @@ def get_available_stock(
         LEFT JOIN paper_master pm ON main.paper_code = pm.paper_code
         WHERE main.stock_type = :stock_type
           AND (:party_code IS NULL OR main.party_code = :party_code)
-        GROUP BY main.paper_code, main.paper_size
+          AND (:paper_code IS NULL OR main.paper_code LIKE :paper_code OR pm.description LIKE :paper_code)
+        GROUP BY main.party_code, main.paper_code, main.paper_size
         HAVING (total_in - total_out) > 0
         ORDER BY paper_desc, main.paper_size
     """)
     
     rows = db.execute(sql, {
         "stock_type": stock_type, 
-        "party_code": party_code.lower() if party_code else None
+        "party_code": party_code.lower() if party_code else None,
+        "paper_code": f"%{paper_code}%" if paper_code else None
     }).fetchall()
 
     result = []
     for r in rows:
         result.append({
+            "party_code": r.party_code,
             "paper_code": r.paper_code,
             "paper_desc": r.paper_desc,
             "paper_size": r.paper_size,
@@ -73,6 +78,7 @@ def get_available_stock(
             "balance":    r.total_in - r.total_out,
         })
     return result
+
 
 def get_stock_balance(db: Session, paper_code: str, paper_size: str, stock_type: str, party_code: Optional[str] = None) -> int:
     """Helper to get current sheet balance for any paper + size + type combo."""
@@ -192,7 +198,7 @@ def get_stock_register(
         LEFT JOIN paper_master pm ON main.paper_code = pm.paper_code
         WHERE (:stock_type IS NULL OR main.stock_type = :stock_type)
           AND (:party_code IS NULL OR main.party_code = :party_code)
-          AND (:paper_code IS NULL OR main.paper_code LIKE :paper_code)
+          AND (:paper_code IS NULL OR main.paper_code LIKE :paper_code OR pm.description LIKE :paper_code)
         ORDER BY paper_desc ASC
     """)
     rows = db.execute(sql, {"stock_type": stock_type, "party_code": party_code, "paper_code": f"%{paper_code}%" if paper_code else None}).fetchall()
@@ -216,26 +222,99 @@ def get_stock_register(
         ))
     return result
 
+@router.get("/stock/inward_register")
+def get_inward_register(
+    global_query: Optional[str] = Query(None),
+    limit: int = Query(50),
+    db: Session = Depends(get_db)
+):
+    """List recent inward entries with their remaining balance. Added for inward.html UI."""
+    # We get all inward entries
+    q = db.query(Inward).outerjoin(Party, Inward.party_code == Party.party_code).filter(Inward.status == 'received')
+    
+    if global_query:
+        pattern = f"%{global_query}%"
+        q = q.filter(
+            func.or_(
+                Inward.party_code.ilike(pattern),
+                Party.party_name.ilike(pattern),
+                Inward.supplier_name.ilike(pattern),
+                Inward.paper_code.ilike(pattern),
+                Inward.paper_desc.ilike(pattern),
+                Inward.paper_size.ilike(pattern)
+            )
+        )
+        
+    entries = q.order_by(Inward.id.desc()).limit(limit).all()
+    
+    result = []
+    for r in entries:
+        # Calculate remaining for this paper code and size
+        bal = get_stock_balance(db, r.paper_code, r.paper_size, r.stock_type, r.party_code)
+        result.append({
+            "id": r.id,
+            "date": r.date,
+            "supplier": r.supplier_name,
+            "paper_code": r.paper_code,
+            "paper_size": r.paper_size,
+            "party_code": r.party_code,
+            "stock_type": r.stock_type,
+            "total_sheets": r.total_sheets,
+            "remaining": bal
+        })
+    return result
+
 @router.get("/stock/party/{party_code}", response_model=List[LedgerEntry])
-def get_party_ledger(party_code: str, db: Session = Depends(get_db)):
+def get_party_ledger(
+    party_code: str,
+    origin: Optional[str] = Query(None),
+    paper_code: Optional[str] = Query(None),
+    paper_size: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
     """
     Full chronological transaction history for one party.
     Equivalent to the 'atul enterprise' sheet in your Excel.
     Returns inward + outward entries merged and sorted by date,
     with a running balance after each row.
+    Allows optional filtering by paper_code and paper_size.
     """
     entries = []
 
-    inwards = db.query(Inward).filter(
-        Inward.party_code == party_code.lower(),
-        Inward.stock_type == "party",
-        Inward.status == "received"
-    ).order_by(Inward.date).all()
+    if party_code.lower() == "company":
+        inward_q = db.query(Inward).filter(
+            Inward.stock_type == "company",
+            Inward.status == "received"
+        )
+        if origin:
+            inward_q = inward_q.filter(Inward.party_code == origin.lower())
+    else:
+        inward_q = db.query(Inward).filter(
+            Inward.party_code == party_code.lower(),
+            Inward.status == "received"
+        )
+        
+    if paper_code:
+        inward_q = inward_q.filter(func.lower(Inward.paper_code) == paper_code.lower())
+    if paper_size:
+        p_size = paper_size.lower().replace(" ", "")
+        inward_q = inward_q.filter(func.lower(func.replace(Inward.paper_size, ' ', '')) == p_size)
+    inwards = inward_q.order_by(Inward.date).all()
 
-    outwards = db.query(Outward).filter(
-        Outward.party_code == party_code.lower(),
-        Outward.stock_type == "party"
-    ).order_by(Outward.date).all()
+    if party_code.lower() == "company":
+        outward_q = db.query(Outward).filter(
+            Outward.stock_type == "company"
+        )
+    else:
+        outward_q = db.query(Outward).filter(
+            Outward.party_code == party_code.lower()
+        )
+    if paper_code:
+        outward_q = outward_q.filter(func.lower(Outward.paper_code) == paper_code.lower())
+    if paper_size:
+        p_size = paper_size.lower().replace(" ", "")
+        outward_q = outward_q.filter(func.lower(func.replace(Outward.paper_size, ' ', '')) == p_size)
+    outwards = outward_q.order_by(Outward.date).all()
 
     # Merge and sort by date
     all_txns = []
@@ -243,7 +322,7 @@ def get_party_ledger(party_code: str, db: Session = Depends(get_db)):
         all_txns.append(("inward", i.date, None, None, i.supplier_name, i.paper_code, i.paper_desc, i.paper_size, i.total_sheets))
     for o in outwards:
         all_txns.append(("outward", o.date, o.job_id, o.job_name, None, o.paper_code, o.paper_name, o.paper_size, o.used_sheets))
-    all_txns.sort(key=lambda x: x[1])
+    all_txns.sort(key=lambda x: (x[1], 0 if x[0] == "inward" else 1))
 
     running = 0
     for txn in all_txns:
@@ -340,3 +419,65 @@ def get_dashboard(db: Session = Depends(get_db)):
         low_party_stock_count  = low_party,
         low_company_stock_count= low_company,
     )
+
+from fastapi import HTTPException
+
+@router.post("/stock/transfer")
+def transfer_stock(req: StockTransferRequest, db: Session = Depends(get_db)):
+    """
+    Transfers stock from a party's account to the company's account
+    by creating a negative inward entry for the party and a positive inward entry for the company.
+    """
+    if req.qty <= 0:
+        raise HTTPException(status_code=400, detail="Transfer quantity must be greater than zero.")
+        
+    # Check if party has enough balance
+    balance = get_stock_balance(db, req.paper_code, req.paper_size, "party", req.party_code)
+    if balance < req.qty:
+        raise HTTPException(status_code=400, detail=f"Insufficient balance. Party only has {balance} sheets.")
+        
+    party = db.query(Party).filter(Party.party_code == req.party_code).first()
+    party_name = party.party_name if party else req.party_code
+        
+    paper = db.query(PaperMaster).filter(PaperMaster.paper_code == req.paper_code).first()
+    paper_desc = paper.description if paper else req.paper_code
+        
+    now = datetime.now()
+    date_str = now.strftime("%Y-%m-%d")
+    datetime_str = now.strftime("%Y-%m-%d %H:%M:%S")
+    
+    # 1. Negative Inward for Party (Deduction)
+    party_deduction = Inward(
+        date=date_str,
+        stock_type="party",
+        party_code=req.party_code,
+        supplier_name="Transferred to Company Stock",
+        paper_code=req.paper_code,
+        paper_desc=paper_desc,
+        paper_size=req.paper_size,
+        total_sheets=-req.qty,  # Negative!
+        notes="Transferred leftover stock to company.",
+        status="received",
+        created_at=datetime_str
+    )
+    
+    # 2. Positive Inward for Company (Addition)
+    company_addition = Inward(
+        date=date_str,
+        stock_type="company",
+        party_code=None,
+        supplier_name=f"Transferred from {party_name}",
+        paper_code=req.paper_code,
+        paper_desc=paper_desc,
+        paper_size=req.paper_size,
+        total_sheets=req.qty,  # Positive!
+        notes="Transferred leftover stock from party.",
+        status="received",
+        created_at=datetime_str
+    )
+    
+    db.add(party_deduction)
+    db.add(company_addition)
+    db.commit()
+    
+    return {"success": True, "message": f"Successfully transferred {req.qty} sheets to Company Stock."}

@@ -17,14 +17,17 @@ On LAN (other devices on same Wi-Fi):
 """
 
 import os
-from fastapi import FastAPI
+from datetime import datetime
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, RedirectResponse
 
-from database import engine, Base
+from database import engine, Base, SessionLocal
 from routers import jobs, masters, stock, inward, outward, pending
-from routers import jobcard
+from routers import jobcard, auth_routes, users, bill_ctcp
+from models import User
+from auth import get_password_hash
 
 # ── CREATE APP ────────────────────────────────────────────────────────────────
 app = FastAPI(
@@ -44,6 +47,27 @@ app.add_middleware(
 )
 
 # ── STARTUP: CREATE TABLES ────────────────────────────────────────────────────
+def seed_admin_users():
+    db = SessionLocal()
+    try:
+        admins = [
+            {"username": "asmi", "password": "7434023114"},
+            {"username": "chirag", "password": "9376146514"}
+        ]
+        for admin in admins:
+            existing = db.query(User).filter(User.username == admin["username"]).first()
+            if not existing:
+                new_admin = User(
+                    username=admin["username"],
+                    password=get_password_hash(admin["password"]),
+                    is_admin=True,
+                    created_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                )
+                db.add(new_admin)
+        db.commit()
+    finally:
+        db.close()
+
 @app.on_event("startup")
 def startup():
     """
@@ -51,7 +75,8 @@ def startup():
     If you already ran migrate.py, tables already exist — this is a no-op.
     """
     Base.metadata.create_all(bind=engine)
-    print("[OK] Database ready")
+    seed_admin_users()
+    print("[OK] Database ready and admins seeded")
     print("[OK] Labh Offset server started")
     print("  Open: http://localhost:8000")
     print("  Docs: http://localhost:8000/docs")
@@ -64,6 +89,9 @@ app.include_router(stock.router)
 app.include_router(inward.router)
 app.include_router(outward.router)
 app.include_router(pending.router)
+app.include_router(auth_routes.router)
+app.include_router(users.router)
+app.include_router(bill_ctcp.router)
 
 # ── HEALTH CHECK ─────────────────────────────────────────────────────────────
 @app.get("/api/health")
@@ -84,16 +112,28 @@ NO_CACHE = {
 
 # Serve HTML files with explicit no-cache headers
 @app.get("/{page:path}.html")
-async def serve_html(page: str):
+async def serve_html(page: str, request: Request):
+    if page != "login":
+        token = request.cookies.get("access_token")
+        if not token:
+            return RedirectResponse(url="/login.html", status_code=303)
+            
     file_path = os.path.join(static_dir, f"{page}.html")
     if not os.path.exists(file_path):
         from fastapi import HTTPException
         raise HTTPException(status_code=404)
     return FileResponse(file_path, media_type="text/html", headers=NO_CACHE)
 
+@app.get("/")
+async def root(request: Request):
+    token = request.cookies.get("access_token")
+    if not token:
+        return RedirectResponse(url="/login.html", status_code=303)
+    return RedirectResponse(url="/index.html", status_code=303)
+
 # Mount everything else (CSS, JS, images)
 if os.path.exists(static_dir):
-    app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")
+    app.mount("/", StaticFiles(directory=static_dir, html=False), name="static")
 
 
 # ── RUN ───────────────────────────────────────────────────────────────────────

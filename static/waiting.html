@@ -4,7 +4,7 @@
   <script src="theme.js?v=5"></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Labh Offset - Pending Jobs</title>
+  <title>Labh Offset - Waiting for Paper</title>
   <link rel="stylesheet" href="style.css?v=5">
   <style>
     /* Make container full width for the wide queue table */
@@ -235,7 +235,7 @@
 
   <main class="container">
     <div class="page-header fade-up" style="align-items: center; text-align: center;">
-      <h1 class="page-title" style="margin:0;">Pending Jobs</h1>
+      <h1 class="page-title" style="margin:0;">Waiting for Paper</h1>
       <div id="count-badge" class="badge badge-info" style="margin-top: 4px;">0 pending</div>
     </div>
 
@@ -269,8 +269,7 @@
             <th>SET</th>
             <th>PROCESS</th>
             <th>PAPER</th>
-            <th style="text-align:center;">PLATE</th>
-            <th class="done-col" style="text-align:center;">DONE</th>
+                        <th style="text-align:center;">ACTION</th>
           </tr>
         </thead>
         <tbody id="queue-body">
@@ -298,7 +297,7 @@
       <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
       <div class="nav-label">STOCK</div>
     </a>
-    <a href="pending.html?v=3" class="nav-item active">
+    <a href="pending.html?v=3" class="nav-item">
       <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
       <div class="nav-label">QUEUE</div>
     </a>
@@ -340,7 +339,8 @@
 
       try {
         const res = await fetch(url);
-        const data = await res.json();
+        const rawData = await res.json();
+        const data = rawData.filter(job => job.is_waiting_for_paper === true);
 
         if (isDragging) return; // double check after fetch
 
@@ -355,15 +355,14 @@
         data.forEach((job, index) => {
           const tr = document.createElement('tr');
           tr.className = 'queue-row';
-          tr.draggable = true;
-          tr.dataset.jobId = job.job_id;
+                    tr.dataset.jobId = job.job_id;
           
           const availability = job.is_waiting_for_paper 
             ? `<span class="badge-waiting">WAITING PAPER</span>` 
             : `<span class="badge-ready">READY</span>`;
 
           tr.innerHTML = `
-            <td class="seq-col" data-label="SEQ"><span class="drag-handle">≡</span> <span class="seq-num">${index + 1}</span></td>
+            <td class="seq-col" data-label="SEQ"><span class="seq-num">${index + 1}</span></td>
             <td class="td-mono" data-label="JOB#"><a href="jobcard.html?job=${job.job_id}">${job.job_id}</a></td>
             <td style="white-space:nowrap;" data-label="DATE">${job.date || ''}</td>
             <td style="white-space:nowrap;" data-label="M.SIZE">${job.plate_size || ''}</td>
@@ -377,27 +376,13 @@
             <td data-label="SET">${job.set_no || ''}</td>
             <td data-label="PROCESS">${job.operator_name || ''}</td>
             <td data-label="PAPER">${availability}</td>
-            <td style="text-align:center;" data-label="PLATE"><div class="plate-box"></div></td>
-            <td class="done-col" style="text-align:center;" data-label="DONE">
-              <div class="print-box"></div>
-              <input type="checkbox" class="done-toggle" onchange="markDone(${job.job_id}, this)">
+                        <td style="text-align:center;" data-label="ACTION">
+              <a href="inward.html?job_id=${job.job_id}" class="btn btn-primary" style="font-size: 10px; padding: 4px 8px; border-radius: 4px; text-decoration: none;">➕ INWARD</a>
             </td>
           `;
 
-          // Desktop drag events
-          tr.addEventListener('dragstart', handleDragStart);
-          tr.addEventListener('dragover', handleDragOver);
-          tr.addEventListener('drop', handleDrop);
-          tr.addEventListener('dragenter', handleDragEnter);
-          tr.addEventListener('dragleave', handleDragLeave);
-          tr.addEventListener('dragend', handleDragEnd);
-
-          // Mobile touch events
-          tr.addEventListener('touchstart', handleTouchStart, { passive: false });
-          tr.addEventListener('touchmove', handleTouchMove, { passive: false });
-          tr.addEventListener('touchend', handleTouchEnd);
-          tr.addEventListener('touchcancel', handleTouchEnd);
-
+          
+          
           tbody.appendChild(tr);
         });
       } catch (err) {
@@ -423,122 +408,8 @@
       }
     }
 
-    // --- Drag and Drop Logic (Desktop) ---
-    let draggedRow = null;
-
-    function handleDragStart(e) {
-      draggedRow = this;
-      isDragging = true;
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', this.outerHTML);
-      this.classList.add('dragging');
-    }
-
-    function handleDragOver(e) {
-      if (e.preventDefault) e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      return false;
-    }
-
-    function handleDragEnter(e) {
-      if (this !== draggedRow) this.classList.add('drag-over');
-    }
-
-    function handleDragLeave(e) {
-      this.classList.remove('drag-over');
-    }
-
-    function handleDrop(e) {
-      if (e.stopPropagation) e.stopPropagation();
-      if (draggedRow !== this) {
-        this.parentNode.removeChild(draggedRow);
-        const rect = this.getBoundingClientRect();
-        if (e.clientY - rect.top < rect.height / 2) {
-          this.parentNode.insertBefore(draggedRow, this);
-        } else {
-          this.parentNode.insertBefore(draggedRow, this.nextSibling);
-        }
-        updateSequenceNumbers();
-        saveNewOrder();
-      }
-      return false;
-    }
-
-    function handleDragEnd(e) {
-      this.classList.remove('dragging');
-      document.querySelectorAll('.queue-row').forEach(r => r.classList.remove('drag-over'));
-      isDragging = false;
-    }
-
-    // --- Touch Drag and Drop Logic (Mobile) ---
-    let touchDraggedRow = null;
-
-    function handleTouchStart(e) {
-      // Only start dragging if touching the drag handle
-      if (!e.target.classList.contains('drag-handle')) return;
-      touchDraggedRow = this;
-      isDragging = true;
-      this.classList.add('dragging');
-    }
-
-    function handleTouchMove(e) {
-      if (!touchDraggedRow) return;
-      e.preventDefault(); // Prevent screen scroll while dragging row
-      
-      const touchY = e.touches[0].clientY;
-      const rows = Array.from(document.querySelectorAll('.queue-row'));
-      
-      const overRow = rows.find(row => {
-        if (row === touchDraggedRow) return false;
-        const rect = row.getBoundingClientRect();
-        return touchY > rect.top && touchY < rect.bottom;
-      });
-
-      if (overRow) {
-        const rect = overRow.getBoundingClientRect();
-        if (touchY < rect.top + rect.height / 2) {
-          overRow.parentNode.insertBefore(touchDraggedRow, overRow);
-        } else {
-          overRow.parentNode.insertBefore(touchDraggedRow, overRow.nextSibling);
-        }
-      }
-    }
-
-    function handleTouchEnd(e) {
-      if (!touchDraggedRow) return;
-      touchDraggedRow.classList.remove('dragging');
-      touchDraggedRow = null;
-      isDragging = false;
-      updateSequenceNumbers();
-      saveNewOrder();
-    }
-
-    function updateSequenceNumbers() {
-      const rows = document.querySelectorAll('.queue-row');
-      rows.forEach((row, idx) => {
-        const seqSpan = row.querySelector('.seq-num');
-        if (seqSpan) seqSpan.textContent = idx + 1;
-      });
-    }
-
-    async function saveNewOrder() {
-      const rows = document.querySelectorAll('.queue-row');
-      const jobIds = Array.from(rows).map(r => parseInt(r.dataset.jobId));
-      
-      try {
-        await fetch(`${API_BASE}/pending/reorder`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ job_ids: jobIds })
-        });
-      } catch (e) {
-        console.error("Failed to save order", e);
-      }
-    }
-
-    // Initialize and start live polling
+    // Initial load
     fetchQueue();
-    pollInterval = setInterval(() => fetchQueue(true), 10000); // silent refresh every 10s
   </script>
 </body>
 </html>

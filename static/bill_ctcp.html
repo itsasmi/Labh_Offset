@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="theme.js?v=5"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Labh Offset - Bill & CTCP Entry</title>
+  <link rel="stylesheet" href="style.css?v=5">
+  <style>
+    /* Custom style overrides for Bill & CTCP Entry */
+    .container {
+      max-width: 1400px !important;
+      width: 100%;
+    }
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+    
+    /* Stat Cards Scroll */
+    .stat-cards-wrapper {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 768px) {
+      .stat-cards-wrapper {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    /* Row Highlighting and Badges */
+    .tr-both-missing td {
+      background-color: var(--red-dim) !important;
+    }
+    .tr-both-missing:hover td {
+      background-color: var(--red-glow) !important;
+    }
+    
+    .badge-both {
+      background-color: var(--red-dim);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+    }
+    .badge-bill {
+      background-color: var(--amber-dim);
+      color: var(--amber);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+    }
+    .badge-ctcp {
+      background-color: var(--primary-glow);
+      color: var(--primary);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+    }
+    
+    /* Inline inputs inside table cells */
+    .table-input {
+      width: 100%;
+      height: 36px;
+      background-color: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 6px 10px;
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 600;
+      transition: all var(--t);
+      outline: none;
+    }
+    .table-input:focus {
+      border-color: var(--primary);
+      background-color: var(--surface);
+      box-shadow: 0 0 0 3px var(--primary-glow);
+    }
+    .table-input::placeholder {
+      color: var(--text3);
+      opacity: 0.5;
+      font-family: var(--font);
+      font-weight: 400;
+    }
+    
+    /* Action Button states */
+    .btn-save-row {
+      min-height: 36px !important;
+      height: 36px;
+      padding: 0 16px !important;
+      font-size: 12px !important;
+      border-radius: var(--radius-sm) !important;
+      font-weight: 700;
+    }
+    
+    /* Fade Out Animation for complete rows */
+    .row-fade-out {
+      opacity: 0;
+      transform: translateX(30px);
+      transition: all 0.5s ease-out;
+    }
+    
+    /* Search Engine controls */
+    .control-bar {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .search-input-group {
+      flex: 2;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .filter-input-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    @media (max-width: 600px) {
+      .control-bar {
+        flex-direction: column;
+        gap: 12px;
+      }
+    }
+    
+    /* Pagination Controls */
+    .pagination-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+      padding: 0 4px;
+    }
+    .pagination-btns {
+      display: flex;
+      gap: 8px;
+    }
+    .pagination-info {
+      font-size: 13px;
+      color: var(--text2);
+      font-weight: 500;
+    }
+    .page-num-btn {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border: 1px solid var(--border3);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text2);
+      transition: all var(--t);
+    }
+    .page-num-btn:hover {
+      background: var(--surface2);
+      border-color: var(--text3);
+    }
+    .page-num-btn.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
+    </div>
+    <div class="topbar-center uppercase">Bill & CTCP Entry</div>
+    <div class="topbar-right">
+      <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Side Menu -->
+  <div class="menu-overlay" id="menu-overlay"></div>
+  <nav class="side-menu" id="side-menu">
+    <div class="side-menu-header">
+      <img src="Icon/labhoffset.png" class="logo-img" alt="Logo" style="max-height: 40px; width: auto; flex-shrink: 0;">
+      <button class="panel-close" id="menu-close-btn" aria-label="Close"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+    </div>
+                <div class="menu-items" style="display: flex; flex-direction: column; flex: 1;">
+      <a href="waiting.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        Waiting for Paper
+      </a>
+      <a href="bill_ctcp.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Bill & CTCP Entry
+      </a>
+      <a href="inward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Inward Register
+      </a>
+      <a href="outward.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+        Outward Register
+      </a>
+      <a href="masters.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+        Master Data
+      </a>
+      <a href="settings.html?v=3" class="menu-item">
+        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" style="margin-right: 12px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        Settings
+      </a>
+    </div>
+  </nav>
+
+  <main class="container">
+    
+    <div class="page-header fade-up">
+      <div class="page-title">Pending Bill & CTCP Records</div>
+      <div id="count-badge" class="badge badge-info">0 pending</div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div class="stat-cards-wrapper fade-up delay-1">
+      <div class="stat-card">
+        <div class="stat-num" id="stat-total">0</div>
+        <div class="stat-label">Total Pending</div>
+      </div>
+      <div class="stat-card" style="border-left: 4px solid var(--red);">
+        <div class="stat-num text-red" id="stat-both">0</div>
+        <div class="stat-label">Both Missing</div>
+      </div>
+      <div class="stat-card" style="border-left: 4px solid var(--amber);">
+        <div class="stat-num text-amber" id="stat-bill">0</div>
+        <div class="stat-label">Bill Missing</div>
+      </div>
+      <div class="stat-card" style="border-left: 4px solid var(--primary);">
+        <div class="stat-num text-orange" id="stat-ctcp">0</div>
+        <div class="stat-label">CTCP Missing</div>
+      </div>
+    </div>
+
+    <!-- Search & Filter Controls -->
+    <div class="control-bar fade-up delay-2">
+      <div class="search-input-group">
+        <label class="form-label">Search Queue</label>
+        <input type="text" class="form-control" id="search-input" placeholder="Search by Job # or Party Name...">
+      </div>
+      <div class="filter-input-group">
+        <label class="form-label">Status Filter</label>
+        <select class="form-control" id="status-filter">
+          <option value="all">All Missing Records</option>
+          <option value="both">Both Missing</option>
+          <option value="bill">Bill Missing Only</option>
+          <option value="ctcp">CTCP Missing Only</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Responsive Table -->
+    <div class="table-container fade-up delay-3">
+      <table id="table-pending">
+        <thead>
+          <tr>
+            <th style="width: 70px;">JOB#</th>
+            <th>JOB NAME</th>
+            <th>PARTY NAME</th>
+            <th>PLATE PROVIDER</th>
+            <th>PAPER INFO</th>
+            <th style="width: 140px;">STATUS</th>
+            <th style="width: 140px;">BILL NUMBER</th>
+            <th style="width: 140px;">CTCP NUMBER</th>
+            <th style="width: 90px; text-align: center;">ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr><td colspan="9"><div class="row-spinner"><div class="spinner"></div>Loading pending records...</div></td></tr>
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div id="empty-state" style="display: none;">
+        <div class="empty-state">
+          <div class="empty-icon">✓</div>
+          <div class="empty-title">All Billing & CTCP Records Complete!</div>
+          <div class="empty-subtitle">There are no pending jobs requiring updates.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="pagination-bar fade-up delay-3" id="pagination-controls" style="display: none;">
+      <div class="pagination-info" id="pagination-info">Showing 0-0 of 0 records</div>
+      <div class="pagination-btns">
+        <button class="page-num-btn" id="btn-prev" onclick="changePage(-1)">◀</button>
+        <div id="page-buttons" style="display: flex; gap: 4px;"></div>
+        <button class="page-num-btn" id="btn-next" onclick="changePage(1)">▶</button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊞</div></div>
+      <div class="nav-label">DASH</div>
+    </a>
+    <a href="jobcard.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">▦</div></div>
+      <div class="nav-label">CARD</div>
+    </a>
+    <a href="entry.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">⊕</div></div>
+      <div class="nav-label">NEW</div>
+    </a>
+    <a href="stock.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◈</div></div>
+      <div class="nav-label">STOCK</div>
+    </a>
+    <a href="pending.html?v=3" class="nav-item">
+      <div class="nav-icon-wrapper"><div class="nav-icon">◷</div></div>
+      <div class="nav-label">PEND</div>
+    </a>
+  </nav>
+
+  <!-- Toast Container -->
+  <div id="toast-container"></div>
+
+  <script>
+    const API_BASE = '/api';
+    let allRecords = []; // Master list fetched from API
+    let filteredRecords = []; // List after applying search and filter
+    
+    // Pagination state
+    const ITEMS_PER_PAGE = 15;
+    let currentPage = 1;
+
+    // Elements
+    const tableBody = document.getElementById('table-body');
+    const emptyState = document.getElementById('empty-state');
+    const countBadge = document.getElementById('count-badge');
+    const searchInput = document.getElementById('search-input');
+    const statusFilter = document.getElementById('status-filter');
+    const paginationControls = document.getElementById('pagination-controls');
+    const paginationInfo = document.getElementById('pagination-info');
+    const pageButtons = document.getElementById('page-buttons');
+
+    // Menu logic
+    ['hamburger-btn', 'menu-close-btn', 'menu-overlay'].forEach(id => {
+      document.getElementById(id)?.addEventListener('click', () => {
+        document.getElementById('menu-overlay').classList.toggle('open');
+        document.getElementById('side-menu').classList.toggle('open');
+      });
+    });
+
+    // Load data
+    async function loadData() {
+      try {
+        const res = await fetch(`${API_BASE}/pending-bill-ctcp`);
+        if (!res.ok) throw new Error("API Failure");
+        allRecords = await res.json();
+        
+        updateStats();
+        applyFilters();
+      } catch (err) {
+        console.error(err);
+        showToast("Error loading pending records.", "error");
+        tableBody.innerHTML = `<tr><td colspan="9" class="text-red" style="text-align:center">Failed to load data. Please refresh.</td></tr>`;
+      }
+    }
+
+    // Calculate counters based on master records list
+    function updateStats() {
+      const stats = {
+        total: allRecords.length,
+        both: 0,
+        bill: 0,
+        ctcp: 0
+      };
+
+      allRecords.forEach(j => {
+        const hasBill = j.bill_no && j.bill_no.trim().length > 0;
+        const hasCtcp = j.ctcp_bill_no && j.ctcp_bill_no.trim().length > 0;
+        
+        if (!hasBill && !hasCtcp) {
+          stats.both++;
+        } else if (!hasBill) {
+          stats.bill++;
+        } else if (!hasCtcp) {
+          stats.ctcp++;
+        }
+      });
+
+      document.getElementById('stat-total').textContent = stats.total;
+      document.getElementById('stat-both').textContent = stats.both;
+      document.getElementById('stat-bill').textContent = stats.bill;
+      document.getElementById('stat-ctcp').textContent = stats.ctcp;
+      countBadge.textContent = `${stats.total} pending`;
+    }
+
+    // Filter and search logic
+    function applyFilters() {
+      const searchVal = searchInput.value.toLowerCase().trim();
+      const filterVal = statusFilter.value;
+
+      filteredRecords = allRecords.filter(j => {
+        // Search condition
+        const matchesSearch = !searchVal || 
+          j.job_id.toString().includes(searchVal) || 
+          j.party_name.toLowerCase().includes(searchVal) ||
+          j.job_name.toLowerCase().includes(searchVal);
+
+        if (!matchesSearch) return false;
+
+        // Status filter condition
+        const hasBill = j.bill_no && j.bill_no.trim().length > 0;
+        const hasCtcp = j.ctcp_bill_no && j.ctcp_bill_no.trim().length > 0;
+
+        if (filterVal === 'both') {
+          return !hasBill && !hasCtcp;
+        } else if (filterVal === 'bill') {
+          return !hasBill && hasCtcp;
+        } else if (filterVal === 'ctcp') {
+          return hasBill && !hasCtcp;
+        }
+        return true;
+      });
+
+      currentPage = 1;
+      renderTable();
+    }
+
+    // Render table rows based on current page of filtered records
+    function renderTable() {
+      tableBody.innerHTML = '';
+
+      if (filteredRecords.length === 0) {
+        document.getElementById('table-pending').style.display = 'none';
+        emptyState.style.display = 'block';
+        paginationControls.style.display = 'none';
+        return;
+      }
+
+      document.getElementById('table-pending').style.display = 'table';
+      emptyState.style.display = 'none';
+
+      const totalItems = filteredRecords.length;
+      const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+      
+      // Paginated slice
+      const startIdx = (currentPage - 1) * ITEMS_PER_PAGE;
+      const endIdx = Math.min(startIdx + ITEMS_PER_PAGE, totalItems);
+      const pageItems = filteredRecords.slice(startIdx, endIdx);
+
+      pageItems.forEach(job => {
+        const tr = document.createElement('tr');
+        tr.id = `row-${job.job_id}`;
+        
+        const hasBill = job.bill_no && job.bill_no.trim().length > 0;
+        const hasCtcp = job.ctcp_bill_no && job.ctcp_bill_no.trim().length > 0;
+        
+        let statusBadge = '';
+        if (!hasBill && !hasCtcp) {
+          tr.className = 'tr-both-missing';
+          statusBadge = '<span class="badge badge-both">Both Missing</span>';
+        } else if (!hasBill) {
+          statusBadge = '<span class="badge badge-bill">Bill Missing</span>';
+        } else {
+          statusBadge = '<span class="badge badge-ctcp">CTCP Missing</span>';
+        }
+
+        // Format paper info: category/gsm + size
+        const paperInfo = `${job.gsm_desc || 'Paper'}<br><small class="text-muted">${job.paper_size || '—'}</small>`;
+
+        tr.innerHTML = `
+          <td class="td-mono" data-label="JOB#">
+            <a href="jobcard.html?job=${job.job_id}">${job.job_id}</a>
+          </td>
+          <td data-label="JOB NAME">${job.job_name}</td>
+          <td data-label="PARTY NAME">${job.party_name}</td>
+          <td data-label="PLATE PROVIDER">${job.operator_name || '—'}</td>
+          <td data-label="PAPER INFO">${paperInfo}</td>
+          <td data-label="STATUS">${statusBadge}</td>
+          <td data-label="BILL NUMBER">
+            <input type="text" class="table-input" id="bill-${job.job_id}" value="${job.bill_no || ''}" placeholder="Enter Bill No.">
+          </td>
+          <td data-label="CTCP NUMBER">
+            <input type="text" class="table-input" id="ctcp-${job.job_id}" value="${job.ctcp_bill_no || ''}" placeholder="Enter CTCP No.">
+          </td>
+          <td data-label="ACTION" style="text-align: center;">
+            <button class="btn btn-primary btn-save-row" id="btn-${job.job_id}" onclick="saveRow(${job.job_id})">SAVE</button>
+          </td>
+        `;
+        tableBody.appendChild(tr);
+      });
+
+      // Update pagination UI
+      if (totalPages > 1) {
+        paginationControls.style.display = 'flex';
+        paginationInfo.textContent = `Showing ${startIdx + 1}-${endIdx} of ${totalItems} records`;
+        
+        document.getElementById('btn-prev').disabled = currentPage === 1;
+        document.getElementById('btn-next').disabled = currentPage === totalPages;
+        
+        pageButtons.innerHTML = '';
+        
+        let pages = [];
+        if (totalPages <= 7) {
+          for (let i = 1; i <= totalPages; i++) pages.push(i);
+        } else {
+          pages.push(1);
+          let start = Math.max(2, currentPage - 1);
+          let end = Math.min(totalPages - 1, currentPage + 1);
+          
+          if (currentPage <= 3) {
+            end = 4;
+          }
+          if (currentPage >= totalPages - 2) {
+            start = totalPages - 3;
+          }
+          
+          if (start > 2) {
+            pages.push('...');
+          }
+          for (let i = start; i <= end; i++) {
+            pages.push(i);
+          }
+          if (end < totalPages - 1) {
+            pages.push('...');
+          }
+          pages.push(totalPages);
+        }
+        
+        pages.forEach(p => {
+          if (p === '...') {
+            const span = document.createElement('span');
+            span.style.display = 'inline-flex';
+            span.style.alignItems = 'center';
+            span.style.padding = '0 6px';
+            span.style.color = 'var(--text3)';
+            span.style.fontWeight = '600';
+            span.textContent = '...';
+            pageButtons.appendChild(span);
+          } else {
+            const btn = document.createElement('button');
+            btn.className = `page-num-btn ${currentPage === p ? 'active' : ''}`;
+            btn.textContent = p;
+            btn.onclick = () => { currentPage = p; renderTable(); };
+            pageButtons.appendChild(btn);
+          }
+        });
+      } else {
+        paginationControls.style.display = 'none';
+      }
+    }
+
+    // Save billing information
+    async function saveRow(jobId) {
+      const billInput = document.getElementById(`bill-${jobId}`);
+      const ctcpInput = document.getElementById(`ctcp-${jobId}`);
+      const btn = document.getElementById(`btn-${jobId}`);
+
+      const billVal = billInput.value.trim();
+      const ctcpVal = ctcpInput.value.trim();
+
+      // Disable inputs and button during request
+      billInput.disabled = true;
+      ctcpInput.disabled = true;
+      btn.disabled = true;
+      btn.textContent = '⏳';
+
+      try {
+        const res = await fetch(`${API_BASE}/update-bill-ctcp/${jobId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            bill_no: billVal,
+            ctcp_bill_no: ctcpVal
+          })
+        });
+
+        if (!res.ok) throw new Error("Update failed");
+
+        showToast(`Job #${jobId} updated successfully!`, "success");
+
+        // Update local dataset
+        const record = allRecords.find(j => j.job_id === jobId);
+        if (record) {
+          record.bill_no = billVal;
+          record.ctcp_bill_no = ctcpVal;
+        }
+
+        // Check if it should disappear (both info are present)
+        if (billVal.length > 0 && ctcpVal.length > 0) {
+          // Remove from local lists
+          allRecords = allRecords.filter(j => j.job_id !== jobId);
+          filteredRecords = filteredRecords.filter(j => j.job_id !== jobId);
+          
+          // Animate and remove from DOM
+          const row = document.getElementById(`row-${jobId}`);
+          row.classList.add('row-fade-out');
+          setTimeout(() => {
+            updateStats();
+            renderTable();
+          }, 500);
+        } else {
+          // Keep row, update inputs, badges, and stats
+          billInput.disabled = false;
+          ctcpInput.disabled = false;
+          btn.disabled = false;
+          btn.textContent = 'SAVE';
+          
+          // Flash green success highlight
+          btn.style.background = 'var(--green)';
+          btn.style.color = 'white';
+          btn.textContent = '✓ SAVED';
+          
+          setTimeout(() => {
+            btn.style.background = '';
+            btn.style.color = '';
+            btn.textContent = 'SAVE';
+            updateStats();
+            applyFilters(); // Re-filter (e.g. if status filter was active)
+          }, 1500);
+        }
+      } catch (err) {
+        console.error(err);
+        showToast(`Failed to update Job #${jobId}.`, "error");
+        billInput.disabled = false;
+        ctcpInput.disabled = false;
+        btn.disabled = false;
+        btn.textContent = 'SAVE';
+      }
+    }
+
+    // Pagination navigation
+    function changePage(direction) {
+      currentPage += direction;
+      renderTable();
+    }
+
+    // Show toast message
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = msg;
+      
+      // Style types
+      if (type === 'success') {
+        toast.style.background = 'var(--green)';
+        toast.style.color = 'white';
+      } else if (type === 'error') {
+        toast.style.background = 'var(--red)';
+        toast.style.color = 'white';
+      }
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    // Debounced search input trigger
+    let searchDebounce;
+    searchInput.addEventListener('input', () => {
+      clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(applyFilters, 300);
+    });
+
+    statusFilter.addEventListener('change', applyFilters);
+
+    // Initial load
+    loadData();
+  </script>
+</body>
+</html>

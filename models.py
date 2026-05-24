@@ -122,10 +122,14 @@ class Job(Base):
     # 'party'   → client's paper, deducts from party stock
     # 'company' → Labh Offset's paper, deducts from company stock
 
+    # Party Provider — who provides paper for cutting (usually same as party)
+    party_provider = Column(Text, nullable=True)
+
     # Status
     status               = Column(Text, nullable=False, default="pending")
     # pending | in_progress | done
     is_waiting_for_paper = Column(Boolean, default=False)
+    queue_order          = Column(Integer, default=0)
 
     created_at     = Column(Text)
     updated_at     = Column(Text)
@@ -269,3 +273,17 @@ class Config(Base):
 
     key   = Column(Text, primary_key=True)
     value = Column(Text, nullable=False)
+
+
+# ── USERS ─────────────────────────────────────────────────────────────────────
+class User(Base):
+    """
+    Application users for authentication and access control.
+    """
+    __tablename__ = "users"
+
+    id         = Column(Integer, primary_key=True, autoincrement=True)
+    username   = Column(Text, nullable=False, unique=True)
+    password   = Column(Text, nullable=False)      # Hashed password
+    is_admin   = Column(Boolean, default=False)
+    created_at = Column(Text)
