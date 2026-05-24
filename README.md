@@ -242,6 +242,11 @@ The New/Edit forms integrate real-time automation to speed up input:
 *   **Remarks Highlighting**: Moved the critical job Remarks section high up on the job card (directly below the paper specifications) and rendered it inside a styled amber alert box.
 *   **Premium Bottom Action Bar**: Redesigned all action buttons into a cohesive, floating glassmorphic action row with highlighted actions like A4 Slip Printing.
 
+### 5. Mobile-First Responsive Design
+*   **Responsive Data Tables**: All complex tabular data dynamically pivots into stacked, card-style layouts on mobile devices using `data-label` attributes, ensuring full readability without horizontal scrolling.
+*   **Touch-Friendly Navigation**: A dedicated sticky bottom navigation bar provides instant access to core routes (Dashboard, New Job, Pending, Stock), while a swipeable hamburger side-menu houses extended operations and logout functionality.
+*   **Smart Modals & Forms**: Multi-column forms and modals intelligently collapse into single-column vertical stacks on mobile, complete with touch-optimized margins, padded target areas, and smooth bottom-sheet animations for overlays.
+
 ---
 
 ## Local Setup & System Requirements
