@@ -45,11 +45,15 @@ def get_available_stock(
                   )
             ) AS total_out
         FROM (
-            SELECT DISTINCT party_code, paper_code, paper_desc, paper_size, stock_type
+            SELECT DISTINCT 
+                CASE WHEN stock_type = 'company' THEN NULL ELSE party_code END as party_code, 
+                paper_code, paper_desc, paper_size, stock_type
             FROM inward
             WHERE status = 'received'
             UNION
-            SELECT DISTINCT party_code, paper_code, paper_name, paper_size, stock_type
+            SELECT DISTINCT 
+                CASE WHEN stock_type = 'company' THEN NULL ELSE party_code END as party_code, 
+                paper_code, paper_name as paper_desc, paper_size, stock_type
             FROM outward
         ) main
         LEFT JOIN paper_master pm ON main.paper_code = pm.paper_code
@@ -188,10 +192,14 @@ def get_stock_register(
                   )
             ) AS total_outward
         FROM (
-            SELECT DISTINCT party_code, paper_code, paper_desc, paper_size, stock_type
+            SELECT DISTINCT 
+                CASE WHEN stock_type = 'company' THEN NULL ELSE party_code END as party_code, 
+                paper_code, paper_desc, paper_size, stock_type
             FROM inward
             UNION
-            SELECT DISTINCT party_code, paper_code, paper_name, paper_size, stock_type
+            SELECT DISTINCT 
+                CASE WHEN stock_type = 'company' THEN NULL ELSE party_code END as party_code, 
+                paper_code, paper_name as paper_desc, paper_size, stock_type
             FROM outward
         ) main
         LEFT JOIN parties p ON main.party_code = p.party_code

@@ -33,7 +33,7 @@ import re
 from datetime import datetime
 
 # ── CONFIGURATION ─────────────────────────────────────────────────────────────
-EXCEL_FILE = "Latest_data.xlsx"
+EXCEL_FILE = "latest_data_may_latest.xlsx"
 DB_FILE    = "labh_offset.db"
 
 # ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -47,8 +47,20 @@ def clean(val, default=None):
             return default
     except Exception:
         pass
-    s = str(val).strip()
-    return s if s and s.lower() not in ("nan", "none", "nat") else default
+def clean(val, default=""):
+    if pd.isna(val):
+        return default
+    return str(val).strip()
+
+def format_party_name(name):
+    if not name or name == "Unknown":
+        return name
+    lower_name = name.lower()
+    if "labh offset" in lower_name and "(lo)" not in lower_name:
+        return "Labh Offset (LO)"
+    if "labh graphics" in lower_name and "(lg)" not in lower_name:
+        return "Labh Graphics (LG)"
+    return name
 
 def to_int(val, default=None):
     """Safely convert to int."""
@@ -264,7 +276,7 @@ def import_parties(conn, df_entry):
         if code and name:
             code = code.strip().lower()
             if code not in seen:
-                seen[code] = name
+                seen[code] = format_party_name(name)
 
     # Also collect from Paper Stock client list
     try:
@@ -276,7 +288,7 @@ def import_parties(conn, df_entry):
             if code and name and len(code) > 2 and code.lower() not in ("client code", "nan"):
                 code = code.strip().lower()
                 if code not in seen:
-                    seen[code] = name
+                    seen[code] = format_party_name(name)
     except Exception as e:
         log(f"  Note: Could not read Paper Stock for extra parties: {e}")
 
@@ -394,8 +406,13 @@ def import_jobs(conn, df_entry):
         year_val    = to_int(r.get("YEAR"))
         month_val   = to_int(r.get("MO.NT"))
         party_code  = clean(r.get("PARTY CODE"), "unknown")
-        party_name  = clean(r.get("PARTY NAME"), "Unknown")
+        party_name  = format_party_name(clean(r.get("PARTY NAME"), "Unknown"))
         job_name    = clean(r.get("JOB NAME"), "")
+        
+        # Skip jobs that are missing essential details like job name or party name
+        if not job_name or not party_name or party_name.strip() == "" or party_name == "Unknown":
+            continue
+            
         paper_code  = clean(r.get("PAPER CODE") or r.get("Paper Code"))
         paper_size  = clean(r.get("Paper Size") or r.get("PAPER SIZE"))
         gsm_desc    = clean(r.get("GSM") or r.get("PAPER GSM"))
@@ -470,11 +487,14 @@ def import_lam_jobs(conn, df_entry):
     df = df_entry[pd.to_numeric(df_entry[job_col], errors="coerce").notna()].copy()
     df[job_col] = pd.to_numeric(df[job_col], errors="coerce").astype(int)
 
+    # Get valid job_ids from DB to avoid foreign key failures
+    valid_jobs = set(r[0] for r in cur.execute("SELECT job_id FROM jobs").fetchall())
+
     rows = []
     for _, r in df.iterrows():
         job_id  = to_int(r.get(job_col))
         process = clean(r.get("LAMINATION PROCESS"))
-        if not job_id or not process:
+        if not job_id or job_id not in valid_jobs or not process:
             continue
         rows.append((
             job_id,
@@ -506,12 +526,15 @@ def import_punch_jobs(conn, df_entry):
     df = df_entry[pd.to_numeric(df_entry[job_col], errors="coerce").notna()].copy()
     df[job_col] = pd.to_numeric(df[job_col], errors="coerce").astype(int)
 
+    # Get valid job_ids from DB to avoid foreign key failures
+    valid_jobs = set(r[0] for r in cur.execute("SELECT job_id FROM jobs").fetchall())
+
     rows = []
     for _, r in df.iterrows():
         job_id = to_int(r.get(job_col))
         dye    = clean(r.get("DYE"))
         agency = clean(r.get("AGENCY"))
-        if not job_id or (not dye and not agency):
+        if not job_id or job_id not in valid_jobs or (not dye and not agency):
             continue
         rows.append((
             job_id,
@@ -633,6 +656,9 @@ def import_outward(conn):
         party_code = clean(r.get("PARTY CODE"), "unknown")
         if party_code:
             party_code = party_code.strip().lower()
+            
+        party_name_raw = clean(r.get("PARTY NAME"), "Unknown")
+        party_name = format_party_name(party_name_raw)
 
         used = to_int(r.get("USED SHEET")) or 0
 
@@ -641,7 +667,7 @@ def import_outward(conn):
             to_date(r.get("DATE"), "2025-04-01"),
             i,
             party_code,
-            clean(r.get("PARTY NAME"), "Unknown"),
+            party_name,
             clean(r.get("JOB NAME"), ""),
             clean(r.get("PAPER CODE")),
             clean(r.get("PAPER NAME")),
@@ -658,6 +684,134 @@ def import_outward(conn):
     """, rows)
     conn.commit()
     log(f"Outward entries imported: {len(rows)}")
+
+# ── STEP 10.1: FIX OUTWARD ENTRIES ──────────────────────────────────────────
+
+def fix_outward_entries(conn):
+    cur = conn.cursor()
+    cur.execute("SELECT id, job_id, party_name, job_name, paper_code, paper_name, paper_size, used_sheets, party_code, date FROM outward")
+    outward_records = cur.fetchall()
+    updated_count = 0
+    for row in outward_records:
+        oid, jid, party_name, job_name, paper_code, paper_name, paper_size, used_sheets, party_code, out_date = row
+        if party_name == 'Unknown' or not job_name or used_sheets == 0 or party_code == 'unknown' or out_date == '2025-04-01':
+            cur.execute("SELECT party_code, party_name, job_name, paper_code, gsm_desc, paper_size, total_sheets, date FROM jobs WHERE job_id = ?", (jid,))
+            job_details = cur.fetchone()
+            if job_details:
+                j_pcode, j_pname, j_jname, j_papercode, j_papername, j_papersize, j_total, j_date = job_details
+                new_party_name = j_pname if party_name == 'Unknown' else party_name
+                new_job_name = j_jname if not job_name else job_name
+                new_paper_code = j_papercode if not paper_code else paper_code
+                new_paper_name = j_papername if not paper_name else paper_name
+                new_paper_size = j_papersize if not paper_size else paper_size
+                new_used = j_total if used_sheets == 0 else used_sheets
+                new_party_code = j_pcode if party_code == 'unknown' else party_code
+                new_date = j_date if out_date == '2025-04-01' else out_date
+                if new_used is None: new_used = 0
+                cur.execute("""
+                    UPDATE outward 
+                    SET party_code = ?, party_name = ?, job_name = ?, paper_code = ?, paper_name = ?, paper_size = ?, used_sheets = ?, date = ?
+                    WHERE id = ?
+                """, (new_party_code, new_party_name, new_job_name, new_paper_code, new_paper_name, new_paper_size, new_used, new_date, oid))
+                updated_count += 1
+    conn.commit()
+    log(f"Patched {updated_count} missing outward entries from jobs table.")
+
+# ── STEP 10.2: FIX PENDING JOBS ─────────────────────────────────────────────
+
+def get_stock_balance_db(cur, paper_code, paper_size, stock_type, party_code=None):
+    p_code = str(paper_code).strip().lower() if paper_code else ""
+    p_size = str(paper_size).strip().lower().replace(" ", "") if paper_size else ""
+    s_type = str(stock_type).strip().lower() if stock_type else "party"
+    p_party = str(party_code).strip().lower() if party_code else ""
+
+    # Sum inward
+    if s_type == "party" and p_party:
+        cur.execute("""
+            SELECT COALESCE(SUM(total_sheets), 0) FROM inward
+            WHERE LOWER(paper_code) = ? 
+              AND LOWER(REPLACE(paper_size, ' ', '')) = ? 
+              AND LOWER(stock_type) = ? 
+              AND LOWER(party_code) = ? 
+              AND status = 'received'
+        """, (p_code, p_size, s_type, p_party))
+    else:
+        cur.execute("""
+            SELECT COALESCE(SUM(total_sheets), 0) FROM inward
+            WHERE LOWER(paper_code) = ? 
+              AND LOWER(REPLACE(paper_size, ' ', '')) = ? 
+              AND LOWER(stock_type) = ? 
+              AND status = 'received'
+        """, (p_code, p_size, s_type))
+    total_in = cur.fetchone()[0] or 0
+
+    # Sum outward
+    if s_type == "party" and p_party:
+        cur.execute("""
+            SELECT COALESCE(SUM(used_sheets), 0) FROM outward
+            WHERE LOWER(paper_code) = ? 
+              AND LOWER(REPLACE(paper_size, ' ', '')) = ? 
+              AND LOWER(stock_type) = ? 
+              AND LOWER(party_code) = ?
+        """, (p_code, p_size, s_type, p_party))
+    else:
+        cur.execute("""
+            SELECT COALESCE(SUM(used_sheets), 0) FROM outward
+            WHERE LOWER(paper_code) = ? 
+              AND LOWER(REPLACE(paper_size, ' ', '')) = ? 
+              AND LOWER(stock_type) = ?
+        """, (p_code, p_size, s_type))
+    total_out = cur.fetchone()[0] or 0
+
+    return total_in, total_in - total_out
+
+def fix_pending_jobs(conn, excel_file):
+    cur = conn.cursor()
+    try:
+        df = pd.read_excel(excel_file, sheet_name='Pending List', header=1)
+        updated_count = 0
+        waiting_count = 0
+        for i in range(len(df)):
+            job_val = df.iloc[i, 0]
+            try:
+                job_id = int(job_val)
+            except (ValueError, TypeError):
+                continue
+            
+            # Fetch job details from DB
+            cur.execute("""
+                SELECT paper_code, paper_size, paper_source, party_code, total_sheets 
+                FROM jobs WHERE job_id = ?
+            """, (job_id,))
+            job_row = cur.fetchone()
+            if not job_row:
+                continue
+                
+            p_code, p_size, p_source, p_party, total_sheets = job_row
+            total_sheets = total_sheets or 0
+            
+            # Get live stock balance
+            total_in, balance = get_stock_balance_db(cur, p_code, p_size, p_source, p_party)
+            
+            # Determine waiting condition:
+            # 1. No inward entry exists at all (total_in == 0)
+            # 2. Or the stock balance is less than required sheets
+            is_waiting = (total_in == 0) or (balance < total_sheets)
+            
+            if is_waiting:
+                waiting_count += 1
+                
+            cur.execute("""
+                UPDATE jobs 
+                SET status = 'pending', is_waiting_for_paper = ? 
+                WHERE job_id = ?
+            """, (int(is_waiting), job_id))
+            updated_count += 1
+            
+        conn.commit()
+        log(f"Marked {updated_count} jobs as pending ({waiting_count} waiting for paper).")
+    except Exception as e:
+        log(f"Error processing Pending List: {e}")
 
 # ── STEP 11: SUMMARY REPORT ───────────────────────────────────────────────────
 
@@ -757,6 +911,12 @@ def main():
 
     print("  Step 10 — Importing outward register...")
     import_outward(conn)
+
+    print("  Step 10.1 — Patching missing outward data...")
+    fix_outward_entries(conn)
+
+    print("  Step 10.2 — Syncing pending jobs list...")
+    fix_pending_jobs(conn, EXCEL_FILE)
 
     print()
     print("  Step 11 — Generating summary report...")

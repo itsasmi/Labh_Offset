@@ -10,7 +10,7 @@ echo [STEP 1] Checking dependencies...
 pip install -r requirements.txt >nul 2>&1
 
 echo [STEP 2] Opening browser to http://localhost:8000
-start http://localhost:8000
+start chrome "http://localhost:8000" || start msedge "http://localhost:8000" || start "" "http://localhost:8000"
 
 echo [STEP 3] Launching Backend...
 echo.

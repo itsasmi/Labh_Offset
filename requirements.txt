@@ -7,7 +7,7 @@ weasyprint
 pandas
 openpyxl
 PyJWT
-passlib[bcrypt]
+bcrypt
 apscheduler
 google-api-python-client
 google-auth-httplib2

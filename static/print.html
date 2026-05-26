@@ -927,6 +927,23 @@
       return printing.toUpperCase();
     }
 
+    // Helper: format pulling with dynamic fallback for F+B
+    function formatPulling(job) {
+      if (!job.pulling) return '—';
+      let pullingText = job.pulling.toString();
+      let plannedPart = pullingText.split('|')[0].replace(/PLANNED:/gi, '').trim();
+      let actualPart = '';
+      if (pullingText.match(/ACTUAL:\s*[1-9]/i)) {
+        actualPart = pullingText.substring(pullingText.indexOf('|')).replace(/\|\s*ACTUAL:/gi, ' | ACTUAL:').trim();
+      }
+      
+      if (isFrontPlusBack(job.printing) && !plannedPart.includes('+')) {
+        let qty = job.qty || 0;
+        plannedPart = `${qty}+${qty}`;
+      }
+      return plannedPart + (actualPart ? ` ${actualPart}` : '');
+    }
+
     // Build common Slip Header (containing Labh Offset logo and Job no / Date boxes)
     function createSlipHeader(job, title, labels) {
       return `
@@ -1083,7 +1100,7 @@
               <td>${job.cut_size || '—'}</td>
               <td>${(job.qty || 0).toLocaleString()}</td>
               <td style="text-transform: uppercase;">${formatPrintingSide(job.printing, labels)}</td>
-              <td>${(job.pulling || '—').toString().replace(/PLANNED:/gi, '').replace(/\|\s*ACTUAL:/gi, ' | ACTUAL:').trim()}</td>
+              <td>${formatPulling(job)}</td>
             </tr>
           </tbody>
         </table>

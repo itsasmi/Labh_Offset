@@ -30,3 +30,12 @@ pdf/
 backups/
 gdrive_credentials.json
 Latest_data.xlsx
+*.xlsx
+*.bak*
+~$*
+check_*.py
+fix_*.py
+patch_*.py
+compare_*.py
+convert_*.py
+verify_*.py

@@ -578,11 +578,18 @@
         document.getElementById('r-qty').textContent = (d.qty || 0).toLocaleString();
         setText('r-printing', d.printing);
         let pullingText = (d.pulling || '0').toString();
+        let plannedPart = pullingText.split('|')[0].replace(/PLANNED:/gi, '').trim();
+        let actualPart = '';
         if (pullingText.match(/ACTUAL:\s*[1-9]/i)) {
-          document.getElementById('r-pulling').textContent = pullingText.replace(/PLANNED:/gi, '').replace(/\|\s*ACTUAL:/gi, ' | ACTUAL:').trim();
-        } else {
-          document.getElementById('r-pulling').textContent = pullingText.split('|')[0].replace(/PLANNED:/gi, '').trim();
+          actualPart = pullingText.substring(pullingText.indexOf('|')).replace(/\|\s*ACTUAL:/gi, ' | ACTUAL:').trim();
         }
+        
+        // Dynamic enforcement for older entries
+        if (d.printing === 'F+B' && !plannedPart.includes('+')) {
+          plannedPart = `${d.qty}+${d.qty}`;
+        }
+        
+        document.getElementById('r-pulling').textContent = plannedPart + (actualPart ? ` ${actualPart}` : '');
         setText('r-platesize', d.plate_size);
         setText('r-plateproc', d.plate_process);
         setText('r-operator',  d.operator_name);
